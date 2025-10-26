@@ -1,0 +1,48 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="boyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#boyGradient)" opacity="0.1"/>
+  
+  <!-- Head -->
+  <circle cx="100" cy="80" r="25" fill="#FBBF24"/>
+  
+  <!-- Hair -->
+  <path d="M75 65 Q100 50 125 65 Q125 70 120 75 Q110 70 100 70 Q90 70 80 75 Q75 70 75 65 Z" fill="#8B4513"/>
+  
+  <!-- Eyes -->
+  <circle cx="92" cy="75" r="3" fill="white"/>
+  <circle cx="108" cy="75" r="3" fill="white"/>
+  <circle cx="92" cy="75" r="1.5" fill="black"/>
+  <circle cx="108" cy="75" r="1.5" fill="black"/>
+  
+  <!-- Nose -->
+  <circle cx="100" cy="82" r="1" fill="#F59E0B"/>
+  
+  <!-- Mouth -->
+  <path d="M95 88 Q100 92 105 88" fill="none" stroke="#8B4513" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Body -->
+  <rect x="85" y="105" width="30" height="40" rx="5" fill="#3B82F6"/>
+  
+  <!-- Arms -->
+  <rect x="70" y="110" width="15" height="25" rx="7" fill="#FBBF24"/>
+  <rect x="115" y="110" width="15" height="25" rx="7" fill="#FBBF24"/>
+  
+  <!-- Legs -->
+  <rect x="88" y="145" width="10" height="30" rx="5" fill="#1D4ED8"/>
+  <rect x="102" y="145" width="10" height="30" rx="5" fill="#1D4ED8"/>
+  
+  <!-- Shoes -->
+  <ellipse cx="93" cy="180" rx="8" ry="4" fill="#374151"/>
+  <ellipse cx="107" cy="180" rx="8" ry="4" fill="#374151"/>
+  
+  <!-- T-shirt design -->
+  <circle cx="100" cy="120" r="4" fill="white"/>
+  <path d="M96 120 L100 124 L104 116" fill="none" stroke="white" stroke-width="1"/>
+</svg>

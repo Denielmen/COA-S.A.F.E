@@ -1,0 +1,46 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="learningGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#learningGradient)" opacity="0.1"/>
+  
+  <!-- Quiz/Game board -->
+  <rect x="60" y="60" width="80" height="80" rx="8" fill="white" stroke="#10B981" stroke-width="2"/>
+  
+  <!-- Quiz questions (represented as lines) -->
+  <rect x="70" y="75" width="40" height="3" rx="1" fill="#10B981"/>
+  <rect x="70" y="85" width="35" height="3" rx="1" fill="#10B981"/>
+  <rect x="70" y="95" width="45" height="3" rx="1" fill="#10B981"/>
+  
+  <!-- Multiple choice options -->
+  <circle cx="75" cy="110" r="3" fill="none" stroke="#06B6D4" stroke-width="1"/>
+  <rect x="82" y="107" width="20" height="2" rx="1" fill="#06B6D4"/>
+  
+  <circle cx="75" cy="120" r="3" fill="#06B6D4"/>
+  <rect x="82" y="117" width="25" height="2" rx="1" fill="#06B6D4"/>
+  
+  <!-- Progress bar -->
+  <rect x="70" y="50" width="60" height="4" rx="2" fill="#E5E7EB"/>
+  <rect x="70" y="50" width="35" height="4" rx="2" fill="#10B981"/>
+  
+  <!-- Character/Avatar -->
+  <circle cx="130" cy="40" r="12" fill="#F59E0B"/>
+  <circle cx="126" cy="37" r="1" fill="white"/>
+  <circle cx="134" cy="37" r="1" fill="white"/>
+  <path d="M126 42 Q130 45 134 42" fill="none" stroke="white" stroke-width="1"/>
+  
+  <!-- Trophy/Achievement -->
+  <path d="M150 70 L160 70 L158 80 L152 80 Z" fill="#F59E0B"/>
+  <rect x="153" y="80" width="4" height="6" fill="#F59E0B"/>
+  <rect x="151" y="86" width="8" height="2" fill="#F59E0B"/>
+  
+  <!-- Stars for gamification -->
+  <path d="M40 30 L42 36 L48 36 L43 40 L45 46 L40 42 L35 46 L37 40 L32 36 L38 36 Z" fill="#F59E0B"/>
+  <path d="M160 120 L162 126 L168 126 L163 130 L165 136 L160 132 L155 136 L157 130 L152 126 L158 126 Z" fill="#F59E0B"/>
+  <path d="M30 120 L32 126 L38 126 L33 130 L35 136 L30 132 L25 136 L27 130 L22 126 L28 126 Z" fill="#06B6D4"/>
+</svg>

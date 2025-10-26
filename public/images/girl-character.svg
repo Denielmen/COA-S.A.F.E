@@ -1,0 +1,69 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="girlGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EC4899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BE185D;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="url(#girlGradient)" opacity="0.1"/>
+  
+  <!-- Head -->
+  <circle cx="100" cy="80" r="25" fill="#FBBF24"/>
+  
+  <!-- Hair (longer with pigtails) -->
+  <path d="M75 65 Q100 50 125 65 Q125 75 120 80 Q110 75 100 75 Q90 75 80 80 Q75 75 75 65 Z" fill="#8B4513"/>
+  <!-- Pigtails -->
+  <circle cx="75" cy="70" r="8" fill="#8B4513"/>
+  <circle cx="125" cy="70" r="8" fill="#8B4513"/>
+  
+  <!-- Hair accessories (bows) -->
+  <path d="M70 65 L75 70 L80 65 L75 60 Z" fill="#EC4899"/>
+  <path d="M120 65 L125 70 L130 65 L125 60 Z" fill="#EC4899"/>
+  
+  <!-- Eyes -->
+  <circle cx="92" cy="75" r="3" fill="white"/>
+  <circle cx="108" cy="75" r="3" fill="white"/>
+  <circle cx="92" cy="75" r="1.5" fill="black"/>
+  <circle cx="108" cy="75" r="1.5" fill="black"/>
+  
+  <!-- Eyelashes -->
+  <path d="M89 72 L91 70" stroke="#8B4513" stroke-width="1"/>
+  <path d="M95 72 L97 70" stroke="#8B4513" stroke-width="1"/>
+  <path d="M105 72 L103 70" stroke="#8B4513" stroke-width="1"/>
+  <path d="M111 72 L109 70" stroke="#8B4513" stroke-width="1"/>
+  
+  <!-- Nose -->
+  <circle cx="100" cy="82" r="1" fill="#F59E0B"/>
+  
+  <!-- Mouth (with lipstick) -->
+  <path d="M95 88 Q100 92 105 88" fill="none" stroke="#EC4899" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Body (dress) -->
+  <path d="M85 105 L115 105 L120 145 L80 145 Z" fill="#EC4899"/>
+  
+  <!-- Arms -->
+  <rect x="70" y="110" width="15" height="25" rx="7" fill="#FBBF24"/>
+  <rect x="115" y="110" width="15" height="25" rx="7" fill="#FBBF24"/>
+  
+  <!-- Legs -->
+  <rect x="88" y="145" width="10" height="30" rx="5" fill="#FBBF24"/>
+  <rect x="102" y="145" width="10" height="30" rx="5" fill="#FBBF24"/>
+  
+  <!-- Shoes (with heels) -->
+  <ellipse cx="93" cy="180" rx="8" ry="4" fill="#BE185D"/>
+  <ellipse cx="107" cy="180" rx="8" ry="4" fill="#BE185D"/>
+  <rect x="91" y="178" width="4" height="6" fill="#BE185D"/>
+  <rect x="105" y="178" width="4" height="6" fill="#BE185D"/>
+  
+  <!-- Dress pattern -->
+  <circle cx="95" cy="120" r="2" fill="white"/>
+  <circle cx="105" cy="125" r="2" fill="white"/>
+  <circle cx="95" cy="130" r="2" fill="white"/>
+  <circle cx="105" cy="135" r="2" fill="white"/>
+  
+  <!-- Heart accessory -->
+  <path d="M100 115 C97 112, 93 112, 93 116 C93 118, 100 125, 100 125 C100 125, 107 118, 107 116 C107 112, 103 112, 100 115 Z" 
+        fill="#F59E0B"/>
+</svg>
