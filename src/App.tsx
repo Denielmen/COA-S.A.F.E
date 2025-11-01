@@ -8,6 +8,11 @@ import Welcome from "./pages/Welcome";
 import Onboarding from "./pages/Onboarding";
 import CharacterSelect from "./pages/CharacterSelect";
 import Dashboard from "./pages/Dashboard";
+import Lesson from "./pages/Lesson";
+import Lessons from "./pages/Lessons";
+import Quizzes from "./pages/Quizzes";
+import Quiz from "./pages/Quiz";
+import Progress from "./pages/Progress";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +45,11 @@ const App = () => (
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/character-select" element={<CharacterSelect />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/lessons" element={<Lessons />} />
+            <Route path="/lesson/:date" element={<Lesson />} />
+            <Route path="/quizzes" element={<Quizzes />} />
+            <Route path="/quiz/:month" element={<Quiz />} />
+            <Route path="/progress" element={<Progress />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

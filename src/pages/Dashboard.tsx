@@ -1,22 +1,21 @@
-import { Card, Badge, Calendar, Modal } from "antd";
-import { CheckCircle, Flame, Star, Award, Book } from "lucide-react";
+import { Card, Calendar } from "antd";
+import { CheckCircle, Flame, Star, Award } from "lucide-react";
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { useState, useEffect } from "react";
-import { getArticleForDate, type DailyArticle } from "@/data/dailyArticles";
+import { useNavigate } from "react-router-dom";
+import { getArticleForDate } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import boyCharacterImg from "/images/boy-character.svg";
 import girlCharacterImg from "/images/girl-character.svg";
 import BottomNavigation from "@/components/BottomNavigation";
 
 const Dashboard = () => {
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState<DailyArticle | null>(null);
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs().month(0)); // Start from January
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
-  const { markLessonCompleted, isLessonCompleted, getStats } = useUserProgress();
+  const { isLessonCompleted, getStats } = useUserProgress();
   const stats = getStats();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Read selected character from localStorage
@@ -26,16 +25,15 @@ const Dashboard = () => {
     }
   }, []);
 
-  const onPanelChange = (value: Dayjs, mode: any) => {
+  const onPanelChange = (value: Dayjs, mode: string) => {
     setCurrentMonth(value);
   };
 
   const onDateSelect = (date: Dayjs) => {
     const article = getArticleForDate(date.toDate());
     if (article) {
-      setSelectedDate(date);
-      setSelectedArticle(article);
-      setIsModalOpen(true);
+      // Navigate to lesson page with the date as parameter
+      navigate(`/lesson/${date.format('YYYY-MM-DD')}`);
     }
   };
 
@@ -57,20 +55,19 @@ const Dashboard = () => {
     
     return (
       <div 
-        className={`h-full p-1 cursor-pointer hover:opacity-80 transition-opacity relative ${
+        className={`h-full cursor-pointer hover:opacity-80 transition-opacity relative flex items-center justify-center ${
           isCompleted ? 'ring-2 ring-primary ring-offset-1' : ''
         }`}
         style={{ backgroundColor: bgColor, borderRadius: '8px' }}
         onClick={() => onDateSelect(date)}
       >
-        <div className="text-[10px] font-semibold text-foreground line-clamp-2">
-          {article.title}
+        {/* Date Number with Challenge Color */}
+        <div className="text-lg font-bold text-white drop-shadow-md">
+          {date.date()}
         </div>
-        <div className="text-[8px] text-foreground/70 line-clamp-2 mt-1">
-          {article.description}
-        </div>
+        
         {isCompleted && (
-          <CheckCircle className="w-3 h-3 text-primary bg-white rounded-full absolute top-1 right-1" />
+          <CheckCircle className="w-4 h-4 text-primary bg-white rounded-full absolute top-1 right-1" />
         )}
         {article.isRewardDay && !isCompleted && (
           <Award className="w-4 h-4 text-accent absolute bottom-1 right-1" />
@@ -150,80 +147,6 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Article Modal */}
-        <Modal
-          open={isModalOpen}
-          onCancel={() => setIsModalOpen(false)}
-          footer={null}
-          title={selectedArticle?.title}
-          centered
-        >
-          {selectedArticle && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 mb-3">
-                <Badge 
-                  color={getChallengeColor(selectedArticle.challengeType)} 
-                  text={selectedArticle.challengeType.replace('-', ' ').toUpperCase()} 
-                />
-              </div>
-              
-              <p className="text-sm text-muted-foreground mb-3">
-                {selectedArticle.description}
-              </p>
-              
-              {selectedArticle.externalLink ? (
-                <div className="bg-muted p-4 rounded-lg text-center">
-                  <p className="text-sm mb-3">Click the link below to read the full article:</p>
-                  <a 
-                    href={selectedArticle.externalLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    <Book className="w-4 h-4" />
-                    Read Full Article
-                  </a>
-                </div>
-              ) : selectedArticle.fullContent ? (
-                <div className="bg-muted p-4 rounded-lg">
-                  <p className="text-sm">{selectedArticle.fullContent}</p>
-                </div>
-              ) : null}
-
-              {selectedArticle.isRewardDay && selectedArticle.reward && (
-                <div className="bg-gradient-to-r from-accent/20 to-secondary/20 p-4 rounded-lg border-2 border-accent">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Award className="w-6 h-6 text-accent" />
-                    <h3 className="font-bold text-accent">{selectedArticle.reward.title}</h3>
-                  </div>
-                  <p className="text-sm">{selectedArticle.reward.message}</p>
-                </div>
-              )}
-
-              {/* Mark as Complete Button */}
-              <div className="flex justify-center mt-4">
-                {selectedDate && isLessonCompleted(selectedDate.toDate()) ? (
-                  <div className="flex items-center gap-2 text-primary">
-                    <CheckCircle className="w-5 h-5" />
-                    <span className="text-sm font-medium">Lesson Completed!</span>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => {
-                      if (selectedDate) {
-                        markLessonCompleted(selectedDate.toDate());
-                      }
-                    }}
-                    className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
-                  >
-                    <CheckCircle className="w-4 h-4" />
-                    Mark as Complete
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-        </Modal>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-3 gap-3 mb-6">

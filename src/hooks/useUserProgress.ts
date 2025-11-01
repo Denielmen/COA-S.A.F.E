@@ -99,7 +99,7 @@ export const useUserProgress = () => {
         newCompletedLessons.push(dateStr);
       }
 
-      let newEarnedRewards = [...prev.earnedRewards];
+      const newEarnedRewards = [...prev.earnedRewards];
       let newLevel = prev.currentLevel;
 
       // Check if this is a reward day and add to earned rewards
@@ -169,10 +169,27 @@ export const useUserProgress = () => {
     });
   };
 
+  const isMonthCompleted = (month: number, year?: number): boolean => {
+    const currentYear = year || new Date().getFullYear();
+    const daysInMonth = new Date(currentYear, month, 0).getDate();
+    
+    let completedDaysInMonth = 0;
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentYear, month - 1, day);
+      if (isLessonCompleted(date)) {
+        completedDaysInMonth++;
+      }
+    }
+    
+    // Consider month completed if at least 80% of days are completed
+    return (completedDaysInMonth / daysInMonth) >= 0.8;
+  };
+
   return {
     progress,
     markLessonCompleted,
     isLessonCompleted,
+    isMonthCompleted,
     getStats,
     resetProgress,
     updateStreakOnAppOpen
