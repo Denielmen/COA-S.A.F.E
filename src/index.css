@@ -54,3 +54,21 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Full-screen transition that "swallows" the screen with the primary color */
+.screen-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: hsl(var(--primary));
+  /* Start as a tiny circle at the center and expand to cover */
+  clip-path: circle(0% at 50% 50%);
+  animation: swallow 1.5s ease-in-out forwards;
+  pointer-events: none;
+}
+
+@keyframes swallow {
+  to {
+    clip-path: circle(150% at 50% 50%);
+  }
+}

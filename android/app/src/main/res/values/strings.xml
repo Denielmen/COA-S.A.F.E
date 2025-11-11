@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">COA SAFE</string>
+    <string name="title_activity_main">COA SAFE</string>
+    <string name="package_name">com.coa.safe</string>
+    <string name="custom_url_scheme">com.coa.safe</string>
+</resources>

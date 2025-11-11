@@ -2,13 +2,14 @@ import { Card, Calendar } from "antd";
 import { CheckCircle, Flame, Star, Award } from "lucide-react";
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getArticleForDate } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import boyCharacterImg from "/images/boy-character.svg";
 import girlCharacterImg from "/images/girl-character.svg";
 import BottomNavigation from "@/components/BottomNavigation";
+import mainLoopSfx from "@/soundEffects/main.mp3";
 
 const Dashboard = () => {
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs().month(0)); // Start from January
@@ -16,6 +17,8 @@ const Dashboard = () => {
   const { isLessonCompleted, getStats } = useUserProgress();
   const stats = getStats();
   const navigate = useNavigate();
+  const mainAudioRef = useRef<HTMLAudioElement | null>(null);
+  const resumeHandlerRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     // Read selected character from localStorage
@@ -25,6 +28,41 @@ const Dashboard = () => {
     }
   }, []);
 
+  // Background looped audio while user is idle on dashboard
+  useEffect(() => {
+    mainAudioRef.current = new Audio(mainLoopSfx);
+    mainAudioRef.current.loop = true;
+    mainAudioRef.current.volume = 0.25; // 25% volume
+    mainAudioRef.current.preload = "auto";
+
+    // Try autoplay; if blocked, wait for first user interaction
+    const tryPlay = async () => {
+      try {
+        await mainAudioRef.current?.play();
+      } catch {
+        const resumeOnInteraction = () => {
+          void mainAudioRef.current?.play();
+          if (resumeHandlerRef.current) {
+            document.removeEventListener("click", resumeHandlerRef.current);
+            resumeHandlerRef.current = null;
+          }
+        };
+        resumeHandlerRef.current = resumeOnInteraction;
+        document.addEventListener("click", resumeOnInteraction, { once: true });
+      }
+    };
+    void tryPlay();
+
+    return () => {
+      mainAudioRef.current?.pause();
+      mainAudioRef.current = null;
+      if (resumeHandlerRef.current) {
+        document.removeEventListener("click", resumeHandlerRef.current);
+        resumeHandlerRef.current = null;
+      }
+    };
+  }, []);
+
   const onPanelChange = (value: Dayjs, mode: string) => {
     setCurrentMonth(value);
   };
@@ -32,6 +70,8 @@ const Dashboard = () => {
   const onDateSelect = (date: Dayjs) => {
     const article = getArticleForDate(date.toDate());
     if (article) {
+      // Stop idle loop when starting a lesson
+      mainAudioRef.current?.pause();
       // Navigate to lesson page with the date as parameter
       navigate(`/lesson/${date.format('YYYY-MM-DD')}`);
     }

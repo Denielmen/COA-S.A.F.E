@@ -1,18 +1,37 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "antd";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import boyCharacterImg from "/images/boy-character.svg";
 import girlCharacterImg from "/images/girl-character.svg";
+import startSfx from "@/soundEffects/start.mp3";
 
 const CharacterSelect = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
   const navigate = useNavigate();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const [showTransition, setShowTransition] = useState(false);
+
+  useEffect(() => {
+    audioRef.current = new Audio(startSfx);
+    audioRef.current.volume = 0.8; // 80% volume
+    audioRef.current.preload = "auto";
+  }, []);
 
   const handleContinue = () => {
     // Save selected character to localStorage
     localStorage.setItem("selectedCharacter", selectedCharacter);
-    navigate("/dashboard");
+    // Trigger full-screen transition, then navigate after ~1.5s
+    setShowTransition(true);
+    // Play start sound at the moment the transition begins
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      void audioRef.current.play();
+    }
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1500);
   };
 
   return (
@@ -93,6 +112,7 @@ const CharacterSelect = () => {
           </div>
         </div>
       </div>
+      {showTransition && <div className="screen-transition" aria-hidden="true" />}
     </div>
   );
 };

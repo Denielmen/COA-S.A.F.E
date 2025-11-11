@@ -1,0 +1,8 @@
+include ':app'
+// Include Cordova plugin aggregator only if it exists
+if (file('capacitor-cordova-android-plugins').exists()) {
+    include ':capacitor-cordova-android-plugins'
+    project(':capacitor-cordova-android-plugins').projectDir = new File('./capacitor-cordova-android-plugins/')
+}
+
+apply from: 'capacitor.settings.gradle'
