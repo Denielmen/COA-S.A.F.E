@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import boyCharacterImg from "/images/boy-character.svg";
 import girlCharacterImg from "/images/girl-character.svg";
 import startSfx from "@/soundEffects/start.mp3";
+import Lottie from "lottie-react";
+import teamAnimation from "@/Lotties/team.json";
 
 const CharacterSelect = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
@@ -12,6 +14,7 @@ const CharacterSelect = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const [showTransition, setShowTransition] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   useEffect(() => {
     audioRef.current = new Audio(startSfx);
@@ -29,9 +32,16 @@ const CharacterSelect = () => {
       audioRef.current.currentTime = 0;
       void audioRef.current.play();
     }
+    // After the swallow animation, show a welcome modal; user will proceed manually
     setTimeout(() => {
-      navigate("/dashboard");
+      setShowTransition(false);
+      setShowWelcomeModal(true);
     }, 1500);
+  };
+
+  const closeWelcomeAndNavigate = () => {
+    setShowWelcomeModal(false);
+    navigate("/dashboard");
   };
 
   return (
@@ -113,6 +123,23 @@ const CharacterSelect = () => {
         </div>
       </div>
       {showTransition && <div className="screen-transition" aria-hidden="true" />}
+
+      {showWelcomeModal && (
+        <div className="fixed inset-0 z-[10000] bg-black/50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-sm welcome-bounce-in">
+            <div className="w-36 mx-auto">
+              <Lottie animationData={teamAnimation} loop autoplay />
+            </div>
+            <h2 className="text-xl font-bold text-center mt-4">Hi! 👋</h2>
+            <p className="text-center text-muted-foreground">Welcome back!</p>
+            <div className="mt-6 flex justify-center">
+              <Button type="primary" size="middle" onClick={closeWelcomeAndNavigate}>
+                Let’s go
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

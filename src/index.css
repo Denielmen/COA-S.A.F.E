@@ -72,3 +72,23 @@ All colors MUST be HSL.
     clip-path: circle(150% at 50% 50%);
   }
 }
+
+/* Welcome modal bounce-in animation */
+.welcome-bounce-in {
+  animation: welcome-bounce-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes welcome-bounce-in {
+  0% {
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(0) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
