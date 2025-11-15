@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { Button, Card } from "antd";
+import { Button } from "antd";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import familyProtectionImg from "/images/family-protection.svg";
-import interactiveLearningImg from "/images/interactive-learning.svg";
-import educationalContentImg from "/images/educational-content.svg";
+import familyProtectionImg from "/images/image 1.jpg";
+import interactiveLearningImg from "/images/image 2.jpg";
+import educationalContentImg from "/images/image 3.jpg";
 
 const onboardingData = [
   {
@@ -52,68 +52,64 @@ const Onboarding = () => {
   const isLastStep = currentStep === onboardingData.length - 1;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col items-center justify-between p-6 py-12">
-      <div className="max-w-md w-full flex-1 flex flex-col items-center justify-center space-y-8">
-        <Card
-          className="w-full rounded-3xl shadow-[var(--shadow-card)] border-2 border-primary/20 overflow-hidden"
-          bodyStyle={{ padding: "3rem 2rem" }}
-        >
-          <div className="text-center space-y-6">
-            <div className="mb-4 flex justify-center">
-              <img 
-                src={currentData.illustration} 
-                alt={currentData.title}
-                className="w-32 h-32 object-contain"
-              />
-            </div>
-            <h2 className="text-2xl font-bold text-primary">
-              {currentData.title}
-            </h2>
-            <p className="text-secondary text-base leading-relaxed">
-              {currentData.description}
-            </p>
-
-            {currentData.features && (
-              <div className="grid grid-cols-3 gap-4 pt-4">
-                {currentData.features.map((feature, idx) => (
-                  <div key={idx} className="text-center space-y-2">
-                    <div className="text-3xl">{feature.icon}</div>
-                    <p className="text-xs text-muted-foreground font-medium">
-                      {feature.title}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
+    <div className="min-h-screen bg-white flex flex-col items-center justify-between p-6 py-8">
+      <div className="max-w-md w-full flex-1 flex flex-col space-y-6">
+        {/* Illustration Container */}
+        <div className="w-full rounded-3xl bg-muted shadow-md overflow-hidden mb-4">
+          <div className="flex justify-center p-6">
+            <img 
+              src={currentData.illustration} 
+              alt={currentData.title}
+              className="w-full max-w-sm h-auto object-contain"
+            />
           </div>
-        </Card>
+        </div>
 
-        <div className="flex gap-2">
+        {/* Title and Description */}
+        <div className="text-center space-y-4 px-4">
+          <h2 className="text-2xl font-bold text-primary">
+            {currentData.title}
+          </h2>
+          <p className="text-secondary text-base leading-relaxed">
+            {currentData.description}
+          </p>
+
+          {currentData.features && (
+            <div className="grid grid-cols-3 gap-4 pt-4">
+              {currentData.features.map((feature, idx) => (
+                <div key={idx} className="text-center space-y-2">
+                  <div className="text-3xl">{feature.icon}</div>
+                  <p className="text-xs text-muted-foreground font-medium">
+                    {feature.title}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Navigation Indicators */}
+        <div className="flex items-center justify-center gap-2 pt-4">
           {onboardingData.map((_, idx) => (
             <div
               key={idx}
-              className={`h-2 rounded-full transition-all ${
+              className={`rounded-full transition-all ${
                 idx === currentStep
-                  ? "w-8 bg-secondary"
-                  : "w-2 bg-border"
+                  ? "w-3 h-3 bg-secondary"
+                  : "w-2 h-2 bg-gray-300"
               }`}
             />
           ))}
         </div>
-
-        {isLastStep && (
-          <p className="text-primary font-semibold text-sm">
-            Trusted by Filipino Families
-          </p>
-        )}
       </div>
 
-      <div className="max-w-md w-full flex items-center justify-between pt-6">
+      {/* Bottom Navigation Buttons */}
+      <div className="max-w-md w-full flex items-center justify-between pt-6 pb-4">
         <Button
           type="text"
           size="large"
           onClick={handleSkip}
-          className="text-primary font-semibold"
+          className="text-primary font-semibold hover:bg-transparent"
         >
           Skip
         </Button>
@@ -121,7 +117,7 @@ const Onboarding = () => {
           type="primary"
           size="large"
           onClick={handleNext}
-          className="h-12 px-8 text-base font-semibold rounded-full shadow-lg hover:shadow-xl"
+          className="h-12 px-8 text-base font-semibold rounded-full shadow-md hover:shadow-lg"
           icon={<ArrowRight className="w-5 h-5" />}
           iconPosition="end"
         >

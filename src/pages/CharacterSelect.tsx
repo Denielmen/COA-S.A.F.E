@@ -1,17 +1,47 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "antd";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import boyCharacterImg from "/images/boy-character.svg";
-import girlCharacterImg from "/images/girl-character.svg";
+import startSfx from "@/soundEffects/start.mp3";
+import Lottie from "lottie-react";
+import teamAnimation from "@/Lotties/team.json";
+
+const boyCharacterImg = "/images/boy.png";
+const girlCharacterImg = "/images/girl.png";
 
 const CharacterSelect = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
   const navigate = useNavigate();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const [showTransition, setShowTransition] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+  useEffect(() => {
+    audioRef.current = new Audio(startSfx);
+    audioRef.current.volume = 0.8; // 80% volume
+    audioRef.current.preload = "auto";
+  }, []);
 
   const handleContinue = () => {
     // Save selected character to localStorage
     localStorage.setItem("selectedCharacter", selectedCharacter);
+    // Trigger full-screen transition, then navigate after ~1.5s
+    setShowTransition(true);
+    // Play start sound at the moment the transition begins
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      void audioRef.current.play();
+    }
+    // After the swallow animation, show a welcome modal; user will proceed manually
+    setTimeout(() => {
+      setShowTransition(false);
+      setShowWelcomeModal(true);
+    }, 1500);
+  };
+
+  const closeWelcomeAndNavigate = () => {
+    setShowWelcomeModal(false);
     navigate("/dashboard");
   };
 
@@ -39,11 +69,17 @@ const CharacterSelect = () => {
             bodyStyle={{ padding: "2rem 1rem" }}
           >
             <div className="text-center space-y-4">
-              <img 
-                src={boyCharacterImg} 
-                alt="Boy character"
-                className="w-20 h-20 mx-auto object-contain"
-              />
+              <div className="flex justify-center">
+                <img 
+                  src={boyCharacterImg} 
+                  alt="Boy character"
+                  className="w-32 h-32 object-contain"
+                  onError={(e) => {
+                    console.error("Failed to load boy character image:", boyCharacterImg);
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
               <p className="text-lg font-bold text-accent">boy</p>
             </div>
           </Card>
@@ -59,11 +95,17 @@ const CharacterSelect = () => {
             bodyStyle={{ padding: "2rem 1rem" }}
           >
             <div className="text-center space-y-4">
-              <img 
-                src={girlCharacterImg} 
-                alt="Girl character"
-                className="w-20 h-20 mx-auto object-contain"
-              />
+              <div className="flex justify-center">
+                <img 
+                  src={girlCharacterImg} 
+                  alt="Girl character"
+                  className="w-32 h-32 object-contain"
+                  onError={(e) => {
+                    console.error("Failed to load girl character image:", girlCharacterImg);
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
+                />
+              </div>
               <p className="text-lg font-bold text-accent">girl</p>
             </div>
           </Card>
@@ -93,6 +135,24 @@ const CharacterSelect = () => {
           </div>
         </div>
       </div>
+      {showTransition && <div className="screen-transition" aria-hidden="true" />}
+
+      {showWelcomeModal && (
+        <div className="fixed inset-0 z-[10000] bg-black/50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-sm welcome-bounce-in">
+            <div className="w-36 mx-auto">
+              <Lottie animationData={teamAnimation} loop autoplay />
+            </div>
+            <h2 className="text-xl font-bold text-center mt-4">Hi! 👋</h2>
+            <p className="text-center text-muted-foreground">Welcome back!</p>
+            <div className="mt-6 flex justify-center">
+              <Button type="primary" size="middle" onClick={closeWelcomeAndNavigate}>
+                Let’s go
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

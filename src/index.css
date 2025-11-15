@@ -17,29 +17,29 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 20%;
 
-    --primary: 187 100% 42%;
+    --primary: 175 100% 33%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 33 100% 50%;
+    --secondary: 33 93% 54%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 187 50% 95%;
-    --muted-foreground: 187 10% 40%;
+    --muted: 175 50% 95%;
+    --muted-foreground: 175 10% 40%;
 
-    --accent: 45 100% 51%;
+    --accent: 33 93% 54%;
     --accent-foreground: 0 0% 20%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 187 30% 85%;
-    --input: 187 30% 90%;
-    --ring: 187 100% 42%;
+    --border: 175 30% 85%;
+    --input: 175 30% 90%;
+    --ring: 175 100% 33%;
 
     --radius: 1rem;
 
-    --gradient-hero: linear-gradient(135deg, hsl(187 100% 42%), hsl(187 80% 55%));
-    --shadow-card: 0 4px 20px hsla(187 100% 42% / 0.1);
+    --gradient-hero: linear-gradient(135deg, hsl(175 100% 33%), hsl(175 80% 45%));
+    --shadow-card: 0 4px 20px hsla(175 100% 33% / 0.1);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -52,5 +52,73 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Carlito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }
+}
+
+/* Full-screen transition that "swallows" the screen with the primary color */
+.screen-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: hsl(var(--primary));
+  /* Start as a tiny circle at the center and expand to cover */
+  clip-path: circle(0% at 50% 50%);
+  animation: swallow 1.5s ease-in-out forwards;
+  pointer-events: none;
+}
+
+@keyframes swallow {
+  to {
+    clip-path: circle(150% at 50% 50%);
+  }
+}
+
+/* Welcome modal bounce-in animation */
+.welcome-bounce-in {
+  animation: welcome-bounce-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes welcome-bounce-in {
+  0% {
+    transform: translateY(-20px) scale(0.95);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(0) scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Custom Calendar Styling */
+.custom-calendar .ant-picker-calendar-date {
+  padding: 4px;
+}
+
+.custom-calendar .ant-picker-calendar-date-content {
+  height: 100%;
+}
+
+/* Weekend days styling - Saturday and Sunday in orange */
+.custom-calendar .ant-picker-cell-weekend .ant-picker-calendar-date {
+  color: hsl(var(--secondary));
+}
+
+.custom-calendar .ant-picker-cell-weekend .ant-picker-calendar-date-value {
+  color: hsl(var(--secondary));
+}
+
+/* Current date highlighting */
+.custom-calendar .ant-picker-cell-selected .ant-picker-calendar-date {
+  background-color: hsl(var(--secondary));
+  border-radius: 8px;
+}
+
+.custom-calendar .ant-picker-cell-selected .ant-picker-calendar-date-value {
+  color: white;
+  font-weight: bold;
 }
