@@ -1,15 +1,16 @@
 import { Card, Calendar } from "antd";
-import { CheckCircle, Flame, Star, Award } from "lucide-react";
+import { CheckCircle, Flame, Star, Award, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getArticleForDate } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
-import boyCharacterImg from "/images/boy-character.svg";
-import girlCharacterImg from "/images/girl-character.svg";
 import BottomNavigation from "@/components/BottomNavigation";
 import mainLoopSfx from "@/soundEffects/main.mp3";
+
+const boyCharacterImg = "/images/boy.png";
+const girlCharacterImg = "/images/girl.png";
 
 const Dashboard = () => {
   const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs().month(0)); // Start from January
@@ -80,8 +81,8 @@ const Dashboard = () => {
   const getChallengeColor = (type: string) => {
     switch (type) {
       case 'individual': return '#FFD700'; // Yellow
-      case 'family': return '#00BCD4'; // Blue/Cyan
-      case 'social-media': return '#FF9800'; // Orange
+      case 'family': return '#00A99D'; // Teal
+      case 'social-media': return '#F7941D'; // Orange
       default: return '#E0E0E0';
     }
   };
@@ -116,33 +117,58 @@ const Dashboard = () => {
     );
   };
 
+  const handlePrevMonth = () => {
+    setCurrentMonth(prev => prev.subtract(1, 'month'));
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth(prev => prev.add(1, 'month'));
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted pb-20">
+    <div className="min-h-screen bg-white pb-20">
       {/* Header */}
-      <div className="bg-primary text-primary-foreground p-6 rounded-b-[2rem]">
+      <div className="bg-white p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold">Welcome to</h1>
-            <h1 className="text-2xl font-bold">SAFE !</h1>
-            <p className="text-sm text-primary-foreground/90">Learn Philippine Children's Law</p>
+            <h1 className="text-2xl font-bold text-primary">Welcome to</h1>
+            <h1 className="text-2xl font-bold tracking-tight">
+              <span className="text-[hsl(175,100%,33%)]">S</span>
+              <span className="text-[hsl(33,93%,54%)]">A</span>
+              <span className="text-[hsl(175,100%,33%)]">F</span>
+              <span className="text-[hsl(45,100%,51%)]">E</span>
+              <span className="text-[hsl(175,100%,33%)]"> !</span>
+            </h1>
+            <p className="text-sm text-secondary mt-1">Learn Philippine Children's Law</p>
           </div>
-          <Card className="rounded-2xl shadow-[var(--shadow-card)] border-2 border-accent/20 p-3">
-            <div className="text-center space-y-1">
-              <div className="w-12 h-12 rounded-full bg-secondary mx-auto flex items-center justify-center">
-                <img 
-                  src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
-                  alt={`${selectedCharacter} character`}
-                  className="w-10 h-10 object-contain"
-                />
+          <Card 
+            className="rounded-2xl shadow-md border border-gray-200 p-3 bg-white cursor-pointer hover:shadow-lg transition-shadow"
+            onClick={() => navigate("/profile")}
+          >
+            <div className="text-center space-y-1 relative">
+              <div className="relative inline-block">
+                <div className="w-12 h-12 rounded-full bg-white mx-auto flex items-center justify-center overflow-hidden border-2 border-gray-200">
+                  <img 
+                    src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
+                    alt={`${selectedCharacter} character`}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-yellow-400 rounded flex items-center justify-center border-2 border-white">
+                  <span className="text-[10px] font-bold text-white">L{stats.level}</span>
+                </div>
               </div>
-              <div className="text-xs font-semibold text-foreground">Level {stats.level}</div>
-              <div className="text-[10px] text-muted-foreground">{stats.completed}/31 Lessons</div>
+              <div className="text-xs font-semibold text-gray-600">{stats.completed}/31</div>
+              <div className="text-[10px] text-secondary">Lessons</div>
             </div>
           </Card>
         </div>
       </div>
 
-      <div className="px-4 mt-6">
+      {/* Horizontal Teal Line Separator */}
+      <div className="h-1 bg-primary mx-4"></div>
+
+      <div className="px-4 mt-4">
         {/* Calendar Section */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
@@ -150,78 +176,96 @@ const Dashboard = () => {
             <div className="flex items-center gap-2">
               <button 
                 onClick={() => setCurrentMonth(dayjs())}
-                className="px-3 py-1 bg-primary text-white rounded-lg text-sm font-medium"
+                className="px-3 py-1 bg-primary/20 text-primary rounded-lg text-sm font-medium hover:bg-primary/30 transition-colors"
               >
                 Today
+              </button>
+              <button 
+                onClick={handlePrevMonth}
+                className="p-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4 text-gray-600" />
+              </button>
+              <button 
+                onClick={handleNextMonth}
+                className="p-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                <ChevronRight className="w-4 h-4 text-gray-600" />
               </button>
             </div>
           </div>
           
           {/* Challenge Type Legend */}
-          <Card className="rounded-2xl shadow-[var(--shadow-card)] mb-3 p-3">
-            <div className="text-xs font-semibold mb-2">Type of Challenge</div>
+          <Card className="rounded-2xl shadow-sm border border-gray-200 mb-3 p-3 bg-white">
+            <div className="text-xs font-semibold mb-2 text-gray-900">Type of Challenge</div>
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#FFD700' }}></div>
-                <span className="text-xs">Individual</span>
+                <span className="text-xs text-gray-700">Individual</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#00BCD4' }}></div>
-                <span className="text-xs">Family</span>
+                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#00A99D' }}></div>
+                <span className="text-xs text-gray-700">Family</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#FF9800' }}></div>
-                <span className="text-xs">Social Media</span>
+                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#F7941D' }}></div>
+                <span className="text-xs text-gray-700">Social Media</span>
               </div>
             </div>
           </Card>
 
-          <Card className="rounded-2xl shadow-[var(--shadow-card)]">
+          <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white">
             <Calendar 
               fullscreen={false}
               value={currentMonth}
               onPanelChange={onPanelChange}
               cellRender={dateCellRender}
               className="custom-calendar"
+              headerRender={({ value, type, onChange, onTypeChange }) => null}
             />
           </Card>
         </div>
 
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <Card className="rounded-2xl shadow-[var(--shadow-card)] border-2 border-primary/20">
-            <div className="text-center space-y-2 p-2">
-              <div className="w-10 h-10 rounded-full bg-primary/10 mx-auto flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-primary" />
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
+          <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white p-0 overflow-hidden h-full">
+            <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
+              <div className="flex justify-center mb-2">
+                <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-primary">{stats.completed}</p>
-                <p className="text-xs text-muted-foreground">Completed</p>
-              </div>
-            </div>
-          </Card>
-
-          <Card className="rounded-2xl shadow-[var(--shadow-card)] border-2 border-secondary/20">
-            <div className="text-center space-y-2 p-2">
-              <div className="w-10 h-10 rounded-full bg-secondary/10 mx-auto flex items-center justify-center">
-                <Flame className="w-6 h-6 text-secondary" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-secondary">{stats.streak} {stats.streak === 1 ? 'day' : 'days'}</p>
-                <p className="text-xs text-muted-foreground">Streak</p>
+              <div className="flex-1 flex flex-col justify-center">
+                <p className="text-xl sm:text-2xl font-bold text-primary leading-tight">{stats.completed}</p>
+                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">Completed</p>
               </div>
             </div>
           </Card>
 
-          <Card className="rounded-2xl shadow-[var(--shadow-card)] border-2 border-accent/20">
-            <div className="text-center space-y-2 p-2">
-              <div className="w-10 h-10 rounded-full bg-accent/10 mx-auto flex items-center justify-center">
-                <Star className="w-6 h-6 text-accent fill-accent" />
+          <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white p-0 overflow-hidden h-full">
+            <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
+              <div className="flex justify-center mb-2">
+                <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
               </div>
-              <div>
-                <p className="text-2xl font-bold text-accent">{stats.level}</p>
-                <p className="text-xs text-muted-foreground">Level</p>
+              <div className="flex-1 flex flex-col justify-center">
+                <p className="text-xl sm:text-2xl font-bold text-secondary leading-tight">
+                  {stats.streak}
+                </p>
+                <p className="text-xs sm:text-sm font-bold text-secondary leading-tight">
+                  {stats.streak === 1 ? 'day' : 'days'}
+                </p>
+                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">Streak</p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white p-0 overflow-hidden h-full">
+            <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
+              <div className="flex justify-center mb-2">
+                <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500 fill-yellow-500" />
+              </div>
+              <div className="flex-1 flex flex-col justify-center">
+                <p className="text-xl sm:text-2xl font-bold text-yellow-500 leading-tight">{stats.level}</p>
+                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">Level</p>
               </div>
             </div>
           </Card>

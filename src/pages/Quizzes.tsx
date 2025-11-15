@@ -54,11 +54,11 @@ const Quizzes = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'available':
-        return 'border-green-200 bg-green-50';
+        return 'border-primary/20 bg-primary/10';
       case 'locked':
         return 'border-gray-200 bg-gray-50';
       case 'completed':
-        return 'border-green-200 bg-green-50';
+        return 'border-primary/20 bg-primary/10';
       default:
         return 'border-gray-200 bg-gray-50';
     }
@@ -69,9 +69,9 @@ const Quizzes = () => {
   ).length;
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-white pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-10">
+      <div className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button 
@@ -89,7 +89,7 @@ const Quizzes = () => {
       </div>
 
       {/* Stats Header */}
-      <div className="px-4 py-6 bg-gradient-to-r from-primary/10 to-primary/5">
+      <div className="px-4 py-6 bg-white border-b border-gray-200">
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Trophy className="w-6 h-6 text-primary" />
@@ -99,7 +99,7 @@ const Quizzes = () => {
             Complete monthly challenges to unlock quizzes and test your knowledge!
           </p>
           <div className="flex justify-center">
-            <div className="bg-white rounded-2xl px-6 py-3 shadow-sm">
+            <div className="bg-white rounded-2xl px-6 py-3 shadow-sm border border-gray-200">
               <div className="text-2xl font-bold text-primary">{availableQuizzes}</div>
               <div className="text-xs text-gray-600">Quizzes Unlocked</div>
             </div>
@@ -109,9 +109,9 @@ const Quizzes = () => {
 
       {/* How it Works */}
       <div className="px-4 py-4">
-        <div className="bg-blue-50 rounded-2xl p-4 border border-blue-200 mb-6">
-          <h3 className="font-semibold text-blue-900 mb-2">How it works:</h3>
-          <ul className="text-sm text-blue-800 space-y-1">
+        <div className="bg-white rounded-2xl p-4 border border-gray-200 mb-6 shadow-sm">
+          <h3 className="font-semibold text-primary mb-2">How it works:</h3>
+          <ul className="text-sm text-foreground space-y-1">
             <li>• Complete 80% of lessons in a month to unlock its quiz</li>
             <li>• Each quiz has 5 questions about that month's topics</li>
             <li>• Score 70% or higher to pass the quiz</li>
@@ -130,11 +130,11 @@ const Quizzes = () => {
             return (
               <div
                 key={monthNumber}
-                className={`rounded-2xl p-4 border-2 transition-all ${
+                className={`rounded-2xl p-4 border transition-all ${
                   canTakeQuiz 
-                    ? 'hover:shadow-md cursor-pointer' 
+                    ? 'hover:shadow-md cursor-pointer border-gray-200 bg-white shadow-sm' 
                     : 'cursor-not-allowed'
-                } ${getStatusColor(status)}`}
+                } ${!canTakeQuiz ? getStatusColor(status) : 'border-gray-200 bg-white shadow-sm'}`}
                 onClick={() => handleQuizClick(monthNumber)}
               >
                 <div className="flex items-center justify-between">
