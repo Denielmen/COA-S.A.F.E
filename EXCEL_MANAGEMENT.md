@@ -1,25 +1,25 @@
-# Excel-Based Daily Articles Management
+# Excel-Based Content Management
 
 ## Overview
-The daily articles data has been converted from hardcoded TypeScript arrays to an Excel-based management system. This allows for easier content management by non-technical users.
+Both daily articles and quiz data have been converted from hardcoded TypeScript arrays to an Excel-based management system. This allows for easier content management by non-technical users.
 
 ## Files Structure
 ```
 src/
 ├── data/
-│   └── dailyArticles.ts          # Updated to use Excel reader
+│   ├── dailyArticles.ts          # Updated to use Excel reader
+│   └── quizzes.ts                # Updated to use Excel reader
 ├── utils/
-│   ├── excelReader.ts            # Excel file reading utilities
-│   └── excelDataConverter.ts     # Conversion utilities
+│   ├── excelReader.ts            # Excel file reading utilities for articles
+│   └── quizExcelReader.ts        # Excel file reading utilities for quizzes
 public/
-└── dailyArticles.xlsx            # Main Excel data file
-scripts/
-└── createExcel.js                # Script to generate Excel template
+├── dailyArticles.xlsx            # Main Excel data file for articles
+└── quizzes.xlsx                  # Main Excel data file for quizzes
 ```
 
-## Excel File Format
-The Excel file should have the following columns:
+## Excel File Formats
 
+### Daily Articles (`dailyArticles.xlsx`)
 | Column | Type | Description |
 |--------|------|-------------|
 | Day | Number | Day of the month (1-31) |
@@ -32,6 +32,22 @@ The Excel file should have the following columns:
 | IsRewardDay | Text | 'TRUE' or 'FALSE' |
 | RewardTitle | Text | Reward title (if reward day) |
 | RewardMessage | Text | Reward message (if reward day) |
+
+### Quizzes (`quizzes.xlsx`)
+| Column | Type | Description |
+|--------|------|-------------|
+| Month | Number | Month number (1-12) |
+| QuizTitle | Text | Title of the quiz for that month |
+| QuizDescription | Text | Description of the quiz |
+| PassingScore | Number | Percentage needed to pass (e.g., 70) |
+| QuestionId | Number | Question number within the quiz (1, 2, 3, etc.) |
+| Question | Text | The quiz question text |
+| Option1 | Text | First answer choice |
+| Option2 | Text | Second answer choice |
+| Option3 | Text | Third answer choice |
+| Option4 | Text | Fourth answer choice |
+| CorrectAnswer | Number | Index of correct answer (0=Option1, 1=Option2, 2=Option3, 3=Option4) |
+| Explanation | Text | Explanation of the correct answer |
 
 ## How to Update Content
 
