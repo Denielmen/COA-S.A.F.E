@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "antd";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import boyCharacterImg from "/images/boy-character.svg";
+import girlCharacterImg from "/images/girl-character.svg";
 import startSfx from "@/soundEffects/start.mp3";
 import Lottie from "lottie-react";
 import teamAnimation from "@/Lotties/team.json";
-
-const boyCharacterImg = "/images/boy.png";
-const girlCharacterImg = "/images/girl.png";
 
 const CharacterSelect = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
@@ -69,17 +68,11 @@ const CharacterSelect = () => {
             bodyStyle={{ padding: "2rem 1rem" }}
           >
             <div className="text-center space-y-4">
-              <div className="flex justify-center">
-                <img 
-                  src={boyCharacterImg} 
-                  alt="Boy character"
-                  className="w-32 h-32 object-contain"
-                  onError={(e) => {
-                    console.error("Failed to load boy character image:", boyCharacterImg);
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-              </div>
+              <img 
+                src={boyCharacterImg} 
+                alt="Boy character"
+                className="w-20 h-20 mx-auto object-contain"
+              />
               <p className="text-lg font-bold text-accent">boy</p>
             </div>
           </Card>
@@ -95,17 +88,11 @@ const CharacterSelect = () => {
             bodyStyle={{ padding: "2rem 1rem" }}
           >
             <div className="text-center space-y-4">
-              <div className="flex justify-center">
-                <img 
-                  src={girlCharacterImg} 
-                  alt="Girl character"
-                  className="w-32 h-32 object-contain"
-                  onError={(e) => {
-                    console.error("Failed to load girl character image:", girlCharacterImg);
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
-              </div>
+              <img 
+                src={girlCharacterImg} 
+                alt="Girl character"
+                className="w-20 h-20 mx-auto object-contain"
+              />
               <p className="text-lg font-bold text-accent">girl</p>
             </div>
           </Card>

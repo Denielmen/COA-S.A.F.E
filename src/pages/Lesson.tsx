@@ -1,4 +1,8 @@
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
+import confetti from "canvas-confetti";
+import successSfx from "../soundEffects/success.mp3";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, CheckCircle, Share2, HelpCircle } from "lucide-react";
 import { Button, Progress } from "antd";
@@ -33,12 +37,62 @@ const Lesson = () => {
     }
   }, [date]);
 
-  const handleMarkComplete = () => {
-    if (date) {
+  const handleMarkComplete = async () => {
+    if (!date) return;
+
+    const result = await Swal.fire({
+      title: "Mark as completed?",
+      text: "Confirm to mark today's lesson as completed.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, mark it",
+      cancelButtonText: "Cancel",
+      focusCancel: true,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const audio = new Audio(successSfx);
+        const saved = localStorage.getItem("settings");
+        let enabled = true;
+        let vol = 0.9;
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (typeof parsed.successVolume === "number") {
+              vol = Math.max(0, Math.min(1, parsed.successVolume / 100));
+            }
+            if (typeof parsed.soundEffects === "boolean") {
+              enabled = parsed.soundEffects;
+            } else if (typeof parsed.soundVolume === "number") {
+              enabled = parsed.soundVolume > 0;
+            }
+          } catch {}
+        }
+        if (enabled && vol > 0) {
+          audio.volume = vol;
+          await audio.play();
+        }
+      } catch {}
+      // Celebrate with confetti
+      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      setTimeout(() => {
+        confetti({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 } });
+        confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } });
+      }, 200);
+
       // Parse date string manually to avoid timezone issues
       const [year, month, day] = date.split('-').map(Number);
       const selectedDate = new Date(year, month - 1, day);
       markLessonCompleted(selectedDate);
+
+      await Swal.fire({
+        title: "Completed!",
+        text: "Lesson marked as completed.",
+        icon: "success",
+        timer: 1800,
+        showConfirmButton: false,
+      });
     }
   };
 

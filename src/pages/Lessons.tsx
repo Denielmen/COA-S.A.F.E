@@ -42,11 +42,11 @@ const Lessons = () => {
   const getChallengeColor = (type: ChallengeType) => {
     switch (type) {
       case 'individual':
-        return 'bg-yellow-100 text-yellow-700 border-yellow-200';
+        return 'bg-blue-100 text-blue-700 border-blue-200';
       case 'family':
-        return 'bg-primary/10 text-primary border-primary/20';
+        return 'bg-green-100 text-green-700 border-green-200';
       case 'social-media':
-        return 'bg-secondary/10 text-secondary border-secondary/20';
+        return 'bg-purple-100 text-purple-700 border-purple-200';
       default:
         return 'bg-gray-100 text-gray-700 border-gray-200';
     }
@@ -69,9 +69,9 @@ const Lessons = () => {
   }).length;
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
+      <div className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button 
@@ -115,7 +115,7 @@ const Lessons = () => {
       </div>
 
       {/* Month Stats */}
-      <div className="px-4 py-4 bg-white border-b border-gray-200">
+      <div className="px-4 py-4 bg-gradient-to-r from-primary/10 to-primary/5">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-gray-900">
@@ -145,16 +145,16 @@ const Lessons = () => {
             return (
               <div
                 key={`${article.month}-${article.day}`}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start gap-3">
                   {/* Day Number */}
                   <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm ${
                     isCompleted 
-                      ? 'bg-primary/10 text-primary border-2 border-primary/20' 
+                      ? 'bg-green-100 text-green-700' 
                       : article.isRewardDay
-                        ? 'bg-yellow-100 text-yellow-700 border-2 border-yellow-200'
-                        : 'bg-gray-50 text-gray-700 border-2 border-gray-200'
+                        ? 'bg-yellow-100 text-yellow-700'
+                        : 'bg-primary/10 text-primary'
                   }`}>
                     {article.isRewardDay ? '🏆' : article.day}
                   </div>
@@ -168,7 +168,7 @@ const Lessons = () => {
                       {isCompleted && (
                         <Badge 
                           count="✓" 
-                          style={{ backgroundColor: '#00A99D', color: 'white' }}
+                          style={{ backgroundColor: '#10b981', color: 'white' }}
                         />
                       )}
                     </div>
@@ -198,7 +198,7 @@ const Lessons = () => {
 
                     {/* Reward Info */}
                     {article.isRewardDay && article.reward && (
-                      <div className="mt-3 p-3 bg-yellow-50 rounded-xl border border-yellow-200">
+                      <div className="mt-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                         <div className="text-sm font-medium text-yellow-800">
                           {article.reward.title}
                         </div>

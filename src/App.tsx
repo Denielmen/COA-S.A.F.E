@@ -13,7 +13,6 @@ import Lessons from "./pages/Lessons";
 import Quizzes from "./pages/Quizzes";
 import Quiz from "./pages/Quiz";
 import Progress from "./pages/Progress";
-import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,16 +22,16 @@ const App = () => (
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#00A99D",
-          colorSuccess: "#00A99D",
-          colorWarning: "#F7941D",
+          colorPrimary: "#00BCD4",
+          colorSuccess: "#00BCD4",
+          colorWarning: "#FF9800",
           colorError: "#f5222d",
           borderRadius: 16,
           fontSize: 16,
         },
         components: {
           Button: {
-            primaryShadow: "0 4px 15px rgba(0, 169, 157, 0.3)",
+            primaryShadow: "0 4px 15px rgba(0, 188, 212, 0.3)",
           },
         },
       }}
@@ -51,7 +50,6 @@ const App = () => (
             <Route path="/quizzes" element={<Quizzes />} />
             <Route path="/quiz/:month" element={<Quiz />} />
             <Route path="/progress" element={<Progress />} />
-            <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

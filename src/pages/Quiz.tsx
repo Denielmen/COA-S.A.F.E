@@ -244,7 +244,7 @@ const Quiz = () => {
       <div className="px-4 py-4 bg-white border-b border-gray-100">
         <Progress 
           percent={progress} 
-          strokeColor="#00A99D"
+          strokeColor="#00BCD4"
           trailColor="#f0f0f0"
           strokeWidth={8}
           showInfo={false}

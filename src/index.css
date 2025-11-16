@@ -17,29 +17,29 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 20%;
 
-    --primary: 175 100% 33%;
+    --primary: 187 100% 42%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 33 93% 54%;
+    --secondary: 33 100% 50%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 175 50% 95%;
-    --muted-foreground: 175 10% 40%;
+    --muted: 187 50% 95%;
+    --muted-foreground: 187 10% 40%;
 
-    --accent: 33 93% 54%;
+    --accent: 45 100% 51%;
     --accent-foreground: 0 0% 20%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 175 30% 85%;
-    --input: 175 30% 90%;
-    --ring: 175 100% 33%;
+    --border: 187 30% 85%;
+    --input: 187 30% 90%;
+    --ring: 187 100% 42%;
 
     --radius: 1rem;
 
-    --gradient-hero: linear-gradient(135deg, hsl(175 100% 33%), hsl(175 80% 45%));
-    --shadow-card: 0 4px 20px hsla(175 100% 33% / 0.1);
+    --gradient-hero: linear-gradient(135deg, hsl(187 100% 42%), hsl(187 80% 55%));
+    --shadow-card: 0 4px 20px hsla(187 100% 42% / 0.1);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -52,81 +52,9 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Carlito', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   }
 }
 
-/* Custom Calendar Styles with Background */
-.custom-calendar.bg-transparent {
-  background: transparent !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-calendar {
-  background: transparent !important;
-  border: none !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-calendar-header {
-  background: transparent !important;
-  margin-bottom: 16px;
-  padding: 12px;
-}
-
-.custom-calendar.bg-transparent .ant-picker-content {
-  background: transparent !important;
-  padding: 16px;
-  margin-top: 45px;
-}
-
-.custom-calendar.bg-transparent .ant-picker-body {
-  background: transparent !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-calendar-date {
-  background: transparent !important;
-  border: none !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-cell {
-  background: transparent !important;
-  border: none !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-cell .ant-picker-cell-inner {
-  background: transparent !important;
-  border: none !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-cell:hover .ant-picker-cell-inner {
-  background: rgba(255, 255, 255, 0.2) !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-cell-selected .ant-picker-cell-inner {
-  background: rgba(0, 188, 212, 0.3) !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-calendar-date-today .ant-picker-cell-inner {
-  background: transparent !important;
-  border: 2px solid #FFD700 !important;
-}
-
-/* Remove all possible white backgrounds */
-.custom-calendar.bg-transparent * {
-  background-color: transparent !important;
-}
-
-/* Make day headers bold */
-.custom-calendar.bg-transparent .ant-picker-calendar-date-content {
-  font-weight: bold !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-content thead th {
-  font-weight: bold !important;
-  font-size: 14px !important;
-}
-
-.custom-calendar.bg-transparent .ant-picker-content .ant-picker-calendar-header {
-  font-weight: bold !important;
 /* Full-screen transition that "swallows" the screen with the primary color */
 .screen-transition {
   position: fixed;
@@ -163,33 +91,4 @@ All colors MUST be HSL.
     transform: translateY(0) scale(1);
     opacity: 1;
   }
-}
-
-/* Custom Calendar Styling */
-.custom-calendar .ant-picker-calendar-date {
-  padding: 4px;
-}
-
-.custom-calendar .ant-picker-calendar-date-content {
-  height: 100%;
-}
-
-/* Weekend days styling - Saturday and Sunday in orange */
-.custom-calendar .ant-picker-cell-weekend .ant-picker-calendar-date {
-  color: hsl(var(--secondary));
-}
-
-.custom-calendar .ant-picker-cell-weekend .ant-picker-calendar-date-value {
-  color: hsl(var(--secondary));
-}
-
-/* Current date highlighting */
-.custom-calendar .ant-picker-cell-selected .ant-picker-calendar-date {
-  background-color: hsl(var(--secondary));
-  border-radius: 8px;
-}
-
-.custom-calendar .ant-picker-cell-selected .ant-picker-calendar-date-value {
-  color: white;
-  font-weight: bold;
 }
