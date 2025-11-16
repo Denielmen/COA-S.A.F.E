@@ -56,6 +56,77 @@ All colors MUST be HSL.
   }
 }
 
+/* Custom Calendar Styles with Background */
+.custom-calendar.bg-transparent {
+  background: transparent !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-calendar {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-calendar-header {
+  background: transparent !important;
+  margin-bottom: 16px;
+  padding: 12px;
+}
+
+.custom-calendar.bg-transparent .ant-picker-content {
+  background: transparent !important;
+  padding: 16px;
+  margin-top: 45px;
+}
+
+.custom-calendar.bg-transparent .ant-picker-body {
+  background: transparent !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-calendar-date {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-cell {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-cell .ant-picker-cell-inner {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-cell:hover .ant-picker-cell-inner {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-cell-selected .ant-picker-cell-inner {
+  background: rgba(0, 188, 212, 0.3) !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-calendar-date-today .ant-picker-cell-inner {
+  background: transparent !important;
+  border: 2px solid #FFD700 !important;
+}
+
+/* Remove all possible white backgrounds */
+.custom-calendar.bg-transparent * {
+  background-color: transparent !important;
+}
+
+/* Make day headers bold */
+.custom-calendar.bg-transparent .ant-picker-calendar-date-content {
+  font-weight: bold !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-content thead th {
+  font-weight: bold !important;
+  font-size: 14px !important;
+}
+
+.custom-calendar.bg-transparent .ant-picker-content .ant-picker-calendar-header {
+  font-weight: bold !important;
 /* Full-screen transition that "swallows" the screen with the primary color */
 .screen-transition {
   position: fixed;

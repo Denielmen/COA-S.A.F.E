@@ -6,6 +6,9 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getArticleForDate } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
+import boyCharacterImg from "/images/boy-character.svg";
+import girlCharacterImg from "/images/girl-character.svg";
+import calendarBg from "/images/1st Quarter Calendar Background.png";
 import BottomNavigation from "@/components/BottomNavigation";
 import mainLoopSfx from "@/soundEffects/main.mp3";
 
@@ -196,34 +199,46 @@ const Dashboard = () => {
           </div>
           
           {/* Challenge Type Legend */}
-          <Card className="rounded-2xl shadow-sm border border-gray-200 mb-3 p-3 bg-white">
-            <div className="text-xs font-semibold mb-2 text-gray-900">Type of Challenge</div>
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#FFD700' }}></div>
-                <span className="text-xs text-gray-700">Individual</span>
+          <Card className="rounded-2xl shadow-[var(--shadow-card)] mb-3 p-4 bg-white/95 backdrop-blur-sm border border-gray-200">
+            <div className="text-sm font-bold mb-3 text-center text-gray-800">Type of Challenge</div>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
+                <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FFD700' }}></div>
+                <span className="text-sm font-medium text-gray-800">Individual</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#00A99D' }}></div>
-                <span className="text-xs text-gray-700">Family</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: '#F7941D' }}></div>
-                <span className="text-xs text-gray-700">Social Media</span>
+              <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
+                <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#00BCD4' }}></div>
+                <span className="text-sm font-medium text-gray-800">Family</span>
+              </div>          
+              <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
+                <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FF9800' }}></div>
+                <span className="text-sm font-medium text-gray-800">Social Media</span>
               </div>
             </div>
           </Card>
 
+          <div 
+            className="rounded-2xl shadow-[var(--shadow-card)] relative overflow-hidden"
+            style={{
+              backgroundImage: `url(${calendarBg})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'right',
+              backgroundRepeat: 'no-repeat',
+              minHeight: '300px'
+            }}
+          >
           <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white">
             <Calendar 
               fullscreen={false}
               value={currentMonth}
               onPanelChange={onPanelChange}
               cellRender={dateCellRender}
+              className="custom-calendar bg-transparent"
+              headerRender={() => null}
               className="custom-calendar"
               headerRender={({ value, type, onChange, onTypeChange }) => null}
             />
-          </Card>
+          </div>
         </div>
 
 
