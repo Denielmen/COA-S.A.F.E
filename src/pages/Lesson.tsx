@@ -8,8 +8,9 @@ import { ArrowLeft, CheckCircle, Share2, HelpCircle } from "lucide-react";
 import { Button, Progress } from "antd";
 import { getArticleForDate, type DailyArticle } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
-import boyCharacterImg from "/images/boy-character.svg";
-import girlCharacterImg from "/images/girl-character.svg";
+
+const boyCharacterImg = "/images/boy.png";
+const girlCharacterImg = "/images/girl.png";
 
 const Lesson = () => {
   const { date } = useParams<{ date: string }>();
@@ -52,8 +53,26 @@ const Lesson = () => {
     if (result.isConfirmed) {
       try {
         const audio = new Audio(successSfx);
-        audio.volume = 0.9;
-        await audio.play();
+        const saved = localStorage.getItem("settings");
+        let enabled = true;
+        let vol = 0.9;
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            if (typeof parsed.successVolume === "number") {
+              vol = Math.max(0, Math.min(1, parsed.successVolume / 100));
+            }
+            if (typeof parsed.soundEffects === "boolean") {
+              enabled = parsed.soundEffects;
+            } else if (typeof parsed.soundVolume === "number") {
+              enabled = parsed.soundVolume > 0;
+            }
+          } catch {}
+        }
+        if (enabled && vol > 0) {
+          audio.volume = vol;
+          await audio.play();
+        }
       } catch {}
       // Celebrate with confetti
       confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
@@ -95,9 +114,9 @@ const Lesson = () => {
 
   if (!article || !date) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-muted-foreground">Lesson not found</h2>
+          <h2 className="text-xl font-bold text-gray-600">Lesson not found</h2>
           <Button 
             onClick={() => navigate("/dashboard")} 
             className="mt-4"
@@ -117,9 +136,9 @@ const Lesson = () => {
   const progressPercentage = Math.round((stats.completed / 31) * 100);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3">
+      <div className="bg-white border-b border-gray-200 px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button 
@@ -130,11 +149,11 @@ const Lesson = () => {
             </button>
             <h1 className="text-lg font-semibold text-primary">Daily Lesson</h1>
           </div>
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center overflow-hidden">
             <img 
               src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
               alt={`${selectedCharacter} character`}
-              className="w-8 h-8 object-contain"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
@@ -160,7 +179,7 @@ const Lesson = () => {
           </div>
           <Progress 
             percent={progressPercentage} 
-            strokeColor="#00BCD4"
+            strokeColor="#00A99D"
             trailColor="#f0f0f0"
             strokeWidth={8}
             showInfo={false}
@@ -168,7 +187,7 @@ const Lesson = () => {
         </div>
 
         {/* Article Content */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
           {/* Show full content if available, otherwise show description */}
           {article.fullContent && (
             <div className="mb-4">
@@ -209,7 +228,7 @@ const Lesson = () => {
         </div>
 
         {/* Image placeholder - you can add actual images here */}
-        <div className="bg-gray-100 rounded-2xl h-48 mb-6 flex items-center justify-center">
+        <div className="bg-gray-50 rounded-2xl h-48 mb-6 flex items-center justify-center border border-gray-200">
           <div className="text-center text-gray-500">
             <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-2 flex items-center justify-center">
               <div className="w-8 h-8 bg-gray-300 rounded"></div>
@@ -222,9 +241,9 @@ const Lesson = () => {
         <div className="space-y-3">
           {/* Mark as Complete Button */}
           {isCompleted ? (
-            <div className="flex items-center justify-center gap-2 py-3 bg-green-50 rounded-xl border border-green-200">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <span className="text-green-700 font-medium">Lesson Completed!</span>
+            <div className="flex items-center justify-center gap-2 py-3 bg-primary/10 rounded-xl border border-primary/20">
+              <CheckCircle className="w-5 h-5 text-primary" />
+              <span className="text-primary font-medium">Lesson Completed!</span>
             </div>
           ) : (
             <Button
@@ -232,7 +251,7 @@ const Lesson = () => {
               size="large"
               block
               onClick={handleMarkComplete}
-              className="h-12 rounded-xl font-medium"
+              className="h-12 rounded-xl font-medium shadow-sm"
               icon={<CheckCircle className="w-5 h-5" />}
             >
               Mark as Complete
@@ -255,7 +274,7 @@ const Lesson = () => {
             size="large"
             block
             onClick={handleShareWithFamily}
-            className="h-12 rounded-xl font-medium bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100"
+            className="h-12 rounded-xl font-medium bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 shadow-sm"
             icon={<Share2 className="w-5 h-5" />}
           >
             Share with Family
