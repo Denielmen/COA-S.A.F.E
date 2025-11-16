@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, Book, Users, Share2 } from "lucide-react";
-import { Button, Badge } from "antd";
+import { Button, Badge, Spin } from "antd";
 import { dailyArticles, type DailyArticle, type ChallengeType } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -9,8 +9,36 @@ import BottomNavigation from "@/components/BottomNavigation";
 const Lessons = () => {
   const navigate = useNavigate();
   const [selectedMonth, setSelectedMonth] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState(true);
   const { isLessonCompleted, getStats } = useUserProgress();
   const stats = getStats();
+
+  // Wait for articles to load
+  useEffect(() => {
+    // Check if articles are loaded
+    if (dailyArticles.length > 0) {
+      setIsLoading(false);
+    } else {
+      // Poll for articles to load (they load asynchronously)
+      const checkInterval = setInterval(() => {
+        if (dailyArticles.length > 0) {
+          setIsLoading(false);
+          clearInterval(checkInterval);
+        }
+      }, 100);
+      
+      // Timeout after 5 seconds
+      const timeout = setTimeout(() => {
+        clearInterval(checkInterval);
+        setIsLoading(false);
+      }, 5000);
+      
+      return () => {
+        clearInterval(checkInterval);
+        clearTimeout(timeout);
+      };
+    }
+  }, []);
 
   // Group articles by month
   const articlesByMonth = dailyArticles.reduce((acc, article) => {
@@ -42,11 +70,11 @@ const Lessons = () => {
   const getChallengeColor = (type: ChallengeType) => {
     switch (type) {
       case 'individual':
-        return 'bg-blue-100 text-blue-700 border-blue-200';
+        return 'bg-yellow-100 text-yellow-700 border-yellow-200';
       case 'family':
-        return 'bg-green-100 text-green-700 border-green-200';
+        return 'bg-primary/10 text-primary border-primary/20';
       case 'social-media':
-        return 'bg-purple-100 text-purple-700 border-purple-200';
+        return 'bg-secondary/10 text-secondary border-secondary/20';
       default:
         return 'bg-gray-100 text-gray-700 border-gray-200';
     }
@@ -68,10 +96,18 @@ const Lessons = () => {
     return isLessonCompleted(date);
   }).length;
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white pb-20 flex items-center justify-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-white pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-10">
+      <div className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button 
@@ -115,7 +151,7 @@ const Lessons = () => {
       </div>
 
       {/* Month Stats */}
-      <div className="px-4 py-4 bg-gradient-to-r from-primary/10 to-primary/5">
+      <div className="px-4 py-4 bg-white border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-gray-900">
@@ -145,16 +181,16 @@ const Lessons = () => {
             return (
               <div
                 key={`${article.month}-${article.day}`}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
+                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start gap-3">
                   {/* Day Number */}
                   <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm ${
                     isCompleted 
-                      ? 'bg-green-100 text-green-700' 
+                      ? 'bg-primary/10 text-primary border-2 border-primary/20' 
                       : article.isRewardDay
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-primary/10 text-primary'
+                        ? 'bg-yellow-100 text-yellow-700 border-2 border-yellow-200'
+                        : 'bg-gray-50 text-gray-700 border-2 border-gray-200'
                   }`}>
                     {article.isRewardDay ? '🏆' : article.day}
                   </div>
@@ -168,7 +204,7 @@ const Lessons = () => {
                       {isCompleted && (
                         <Badge 
                           count="✓" 
-                          style={{ backgroundColor: '#10b981', color: 'white' }}
+                          style={{ backgroundColor: '#00A99D', color: 'white' }}
                         />
                       )}
                     </div>
@@ -182,7 +218,7 @@ const Lessons = () => {
                       <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getChallengeColor(article.challengeType)}`}>
                         {getChallengeIcon(article.challengeType)}
                         {article.challengeType === 'social-media' ? 'Social Media' : 
-                         article.challengeType.charAt(0).toUpperCase() + article.challengeType.slice(1)}
+                         article.challengeType ? article.challengeType.charAt(0).toUpperCase() + article.challengeType.slice(1) : 'Challenge'}
                       </div>
 
                       {/* Action Button */}
@@ -198,7 +234,7 @@ const Lessons = () => {
 
                     {/* Reward Info */}
                     {article.isRewardDay && article.reward && (
-                      <div className="mt-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                      <div className="mt-3 p-3 bg-yellow-50 rounded-xl border border-yellow-200">
                         <div className="text-sm font-medium text-yellow-800">
                           {article.reward.title}
                         </div>
