@@ -141,14 +141,14 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-white pb-20 mt-5">
       {/* Header */}
-      <div className="bg-white p-6">
+      <div className=" bg-white p-6 px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-bold text-primary">Welcome to</h1>
             <h1 className="text-2xl font-bold tracking-tight">
-              <span className="text-[hsl(175,100%,33%)]">S</span>
+              <span className="text-[hsl(187,100%,42%)]">S</span>
               <span className="text-[hsl(33,93%,54%)]">A</span>
               <span className="text-[hsl(175,100%,33%)]">F</span>
               <span className="text-[hsl(45,100%,51%)]">E</span>
@@ -178,12 +178,13 @@ const Dashboard = () => {
             </div>
           </Card>
         </div>
+        {/* Horizontal Teal Line Separator */}
+      <div className="h-0.5 bg-primary"></div>
       </div>
 
-      {/* Horizontal Teal Line Separator */}
-      <div className="h-1 bg-primary mx-4"></div>
+      
 
-      <div className="px-4 mt-4">
+      <div className="px-4 mt-2">
         {/* Calendar Section */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
@@ -254,7 +255,7 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
-          <Card className="rounded-2xl shadow-lg border border-gray-200 bg-white p-0 overflow-hidden h-full">
+          <Card className="rounded-2xl shadow-lg border-primary/30 bg-white p-0 overflow-hidden h-full">
             <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
               <div className="flex justify-center mb-2">
                 <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
@@ -266,7 +267,7 @@ const Dashboard = () => {
             </div>
           </Card>
 
-          <Card className="rounded-2xl shadow-lg border border-gray-200 bg-white p-0 overflow-hidden h-full">
+          <Card className="rounded-2xl shadow-lg border-secondary/30 bg-white p-0 overflow-hidden h-full">
             <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
               <div className="flex justify-center mb-2">
                 <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
@@ -283,7 +284,7 @@ const Dashboard = () => {
             </div>
           </Card>
 
-          <Card className="rounded-2xl shadow-lg border border-gray-200 bg-white p-0 overflow-hidden h-full">
+          <Card className="rounded-2xl shadow-lg border-1 border-yellow-200 bg-white p-0 overflow-hidden h-full">
             <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
               <div className="flex justify-center mb-2">
                 <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500 fill-yellow-500" />

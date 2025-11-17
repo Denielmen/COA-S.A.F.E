@@ -15,7 +15,7 @@ const Welcome = () => {
           <h1 className="text-6xl font-bold tracking-tight">
             <span className="text-[hsl(187,100%,42%)]">S</span>
             <span className="text-[hsl(33,100%,50%)]">A</span>
-            <span className="text-[hsl(187,100%,42%)]">F</span>
+            <span className="text-[hsl(175,100%,33%)]">F</span>
             <span className="text-[hsl(45,100%,51%)]">E</span>
             <span className="text-[hsl(187,100%,42%)]"> !</span>
           </h1>
