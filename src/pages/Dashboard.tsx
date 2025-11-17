@@ -201,33 +201,11 @@ const Dashboard = () => {
               >
                 <ChevronLeft className="w-4 h-4 text-gray-600" />
               </button>
-              <button 
-                onClick={handleNextMonth}
-                className="p-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
+              <button onClick={handleNextMonth} className="p-1.5 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                 <ChevronRight className="w-4 h-4 text-gray-600" />
               </button>
             </div>
           </div>
-          
-          {/* Challenge Type Legend */}
-          <Card className="rounded-2xl shadow-[var(--shadow-card)] mb-3 p-4 bg-white/95 backdrop-blur-sm border border-gray-200">
-            <div className="text-sm font-bold mb-3 text-center text-gray-800">Type of Challenge</div>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
-                <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FFD700' }}></div>
-                <span className="text-sm font-medium text-gray-800">Individual</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
-                <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#00BCD4' }}></div>
-                <span className="text-sm font-medium text-gray-800">Family</span>
-              </div>          
-              <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
-                <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FF9800' }}></div>
-                <span className="text-sm font-medium text-gray-800">Social Media</span>
-              </div>
-            </div>
-          </Card>
 
           <div 
             className="rounded-2xl shadow-[var(--shadow-card)] relative overflow-hidden"
@@ -239,7 +217,7 @@ const Dashboard = () => {
               minHeight: '300px'
             }}
           >
-          <Card className="rounded-2xl shadow-sm border border-gray-200 bg-transparent">
+          <Card className="mt-5 rounded-2xl shadow-sm border border-gray-200 bg-transparent">
             <Calendar 
               key={progress.completedLessons.length}
               fullscreen={false}
@@ -252,12 +230,31 @@ const Dashboard = () => {
             />
           </Card>
           </div>
+
+          {/* Challenge Type Legend */}
+          <Card className="rounded-2xl shadow-[var(--shadow-card)] mt-5 mb-3 p-4 bg-white/95 backdrop-blur-sm border border-gray-200">
+            <div className="text-sm font-bold mb-3 text-center text-gray-800">Types of Challenges</div>
+            {/* <div className="flex flex-wrap items-center justify-center gap-4"> */}
+              <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
+                <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FFD700' }}></div>
+                <span className="text-sm font-medium text-gray-800">Individual</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
+                <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#00BCD4' }}></div>
+                <span className="text-sm font-medium text-gray-800">Family</span>
+              </div>          
+              <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
+                <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FF9800' }}></div>
+                <span className="text-sm font-medium text-gray-800">Social Media</span>
+              </div>
+            {/* </div> */}
+          </Card>
         
 
 
         {/* Stats Cards */}
         <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
-          <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white p-0 overflow-hidden h-full">
+          <Card className="rounded-2xl shadow-lg border border-gray-200 bg-white p-0 overflow-hidden h-full">
             <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
               <div className="flex justify-center mb-2">
                 <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
@@ -269,7 +266,7 @@ const Dashboard = () => {
             </div>
           </Card>
 
-          <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white p-0 overflow-hidden h-full">
+          <Card className="rounded-2xl shadow-lg border border-gray-200 bg-white p-0 overflow-hidden h-full">
             <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
               <div className="flex justify-center mb-2">
                 <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
@@ -286,7 +283,7 @@ const Dashboard = () => {
             </div>
           </Card>
 
-          <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white p-0 overflow-hidden h-full">
+          <Card className="rounded-2xl shadow-lg border border-gray-200 bg-white p-0 overflow-hidden h-full">
             <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
               <div className="flex justify-center mb-2">
                 <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500 fill-yellow-500" />
