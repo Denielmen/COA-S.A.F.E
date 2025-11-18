@@ -6,8 +6,8 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getArticleForDate } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
-import boyCharacterImg from "/images/boy.png";
-import girlCharacterImg from "/images/girl.png";
+import boyCharacterImg from "/images/Icon2.png";
+import girlCharacterImg from "/images/Icon.png";
 import calendarBg1st from "/images/Project SAFE Calendar/Project SAFE Calendar Elements/1st Quarter Calendar Background.png";
 import calendarBg2nd from "/images/Project SAFE Calendar/Project SAFE Calendar Elements/2nd Quarter Calendar Background.png";
 import calendarBg3rd from "/images/Project SAFE Calendar/Project SAFE Calendar Elements/3rd Quarter Calendar Background.png";
@@ -157,19 +157,19 @@ const Dashboard = () => {
             <p className="text-sm text-secondary mt-1">Learn Philippine Children's Law</p>
           </div>
           <Card 
-            className="rounded-2xl shadow-md border border-gray-200 p-3 bg-white cursor-pointer hover:shadow-lg transition-shadow"
+            className="rounded-2xl drop-shadow-xl/50 border-2 border-secondary/100 p-3 bg-white cursor-pointer hover:shadow-lg transition-shadow"
             onClick={() => navigate("/profile")}
           >
             <div className="text-center space-y-1 relative">
               <div className="relative inline-block">
-                <div className="w-12 h-12 rounded-full bg-white mx-auto flex items-center justify-center overflow-hidden border-2 border-gray-200">
+                <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center overflow-hidden bg-primary/10">
                   <img 
                     src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
                     alt={`${selectedCharacter} character`}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-yellow-400 rounded flex items-center justify-center border-2 border-white">
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-primary/100 rounded flex items-center justify-center border-2 border-white">
                   <span className="text-[10px] font-bold text-white">L{stats.level}</span>
                 </div>
               </div>

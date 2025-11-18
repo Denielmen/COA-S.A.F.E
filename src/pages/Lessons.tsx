@@ -114,9 +114,9 @@ const Lessons = () => {
               onClick={() => navigate("/dashboard")}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <ArrowLeft className="w-5 h-5 text-primary" />
+              <ArrowLeft className="w-5 h-5 text-secondary" />
             </button>
-            <h1 className="text-lg font-semibold text-primary">All Lessons</h1>
+            <h1 className="text-lg font-semibold text-primary">Lessons</h1>
           </div>
           <div className="text-sm text-gray-600">
             {stats.completed} / {dailyArticles.length} completed
