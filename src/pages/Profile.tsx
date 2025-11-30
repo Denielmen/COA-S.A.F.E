@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Settings, Bell, Save, Edit2 } from "lucide-react";
 import { Card, Tabs, Button, Input, Switch, Select } from "antd";
@@ -21,12 +21,26 @@ const Profile = () => {
     email: "user@example.com",
   });
 
-  const [settings, setSettings] = useState({
-    notifications: true,
-    soundEffects: true,
-    darkMode: false,
-    language: "en",
+  const [settings, setSettings] = useState(() => {
+    const saved = localStorage.getItem("settings");
+    return saved
+      ? JSON.parse(saved)
+      : {
+          notifications: true,
+          soundEffects: true,
+          darkMode: false,
+          language: "en",
+        };
   });
+
+  // Dark mode will only change when the user toggles the switch.
+  const handleDarkModeToggle = (checked: boolean) => {
+    const newSettings = { ...settings, darkMode: checked };
+    setSettings(newSettings);
+    document.documentElement.classList.toggle("theme-dark", checked);
+    localStorage.setItem("theme", checked ? "dark" : "light");
+    localStorage.setItem("settings", JSON.stringify(newSettings));
+  };
 
   const handleCharacterChange = (character: "boy" | "girl") => {
     setSelectedCharacter(character);
@@ -48,7 +62,7 @@ const Profile = () => {
     {
       key: "profile",
       label: (
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-2 text-foreground">
           <User className="w-4 h-4" />
           Profile
         </span>
@@ -57,7 +71,7 @@ const Profile = () => {
     {
       key: "settings",
       label: (
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-2 text-foreground">
           <Settings className="w-4 h-4" />
           Settings
         </span>
@@ -66,7 +80,7 @@ const Profile = () => {
     {
       key: "notifications",
       label: (
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-2 text-foreground">
           <Bell className="w-4 h-4" />
           Notifications
         </span>
@@ -75,14 +89,14 @@ const Profile = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
+      <div className="bg-card border-b border-border px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => navigate("/dashboard")}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-muted rounded-full transition-colors"
             >
               <ArrowLeft className="w-5 h-5 text-primary" />
             </button>
@@ -106,26 +120,26 @@ const Profile = () => {
         {activeTab === "profile" && (
           <div className="space-y-4">
             {/* Character Selection */}
-            <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white">
-              <h3 className="font-semibold text-gray-900 mb-4">Character Selection</h3>
+            <Card className="rounded-2xl shadow-sm border border-border bg-card">
+              <h3 className="font-semibold text-foreground mb-4">Character Selection</h3>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <button
                   onClick={() => handleCharacterChange("boy")}
                   className={`rounded-2xl p-4 border-2 transition-all ${
                     selectedCharacter === "boy"
                       ? "border-primary shadow-md scale-105"
-                      : "border-gray-200 hover:border-gray-300"
+                      : "border-border hover:border-muted"
                   }`}
                 >
                   <div className="text-center space-y-2">
-                    <div className="w-16 h-16 rounded-full bg-white mx-auto flex items-center justify-center overflow-hidden border-2 border-gray-200">
+                    <div className="w-16 h-16 rounded-full bg-card mx-auto flex items-center justify-center overflow-hidden border-2 border-border">
                       <img 
                         src={boyCharacterImg}
                         alt="Boy character"
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="text-sm font-medium text-gray-700">Boy</p>
+                    <p className="text-sm font-medium text-muted-foreground">Boy</p>
                   </div>
                 </button>
 
@@ -134,18 +148,18 @@ const Profile = () => {
                   className={`rounded-2xl p-4 border-2 transition-all ${
                     selectedCharacter === "girl"
                       ? "border-primary shadow-md scale-105"
-                      : "border-gray-200 hover:border-gray-300"
+                      : "border-border hover:border-muted"
                   }`}
                 >
                   <div className="text-center space-y-2">
-                    <div className="w-16 h-16 rounded-full bg-white mx-auto flex items-center justify-center overflow-hidden border-2 border-gray-200">
+                    <div className="w-16 h-16 rounded-full bg-card mx-auto flex items-center justify-center overflow-hidden border-2 border-border">
                       <img 
                         src={girlCharacterImg}
                         alt="Girl character"
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="text-sm font-medium text-gray-700">Girl</p>
+                    <p className="text-sm font-medium text-muted-foreground">Girl</p>
                   </div>
                 </button>
               </div>
@@ -211,13 +225,13 @@ const Profile = () => {
 
         {activeTab === "settings" && (
           <div className="space-y-4">
-            <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white">
-              <h3 className="font-semibold text-gray-900 mb-4">General Settings</h3>
+            <Card className="rounded-2xl shadow-sm border border-border bg-card">
+              <h3 className="font-semibold text-foreground mb-4">General Settings</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">Sound Effects</p>
-                    <p className="text-sm text-gray-600">Enable sound effects in the app</p>
+                    <p className="font-medium text-foreground">Sound Effects</p>
+                    <p className="text-sm text-muted-foreground">Enable sound effects in the app</p>
                   </div>
                   <Switch
                     checked={settings.soundEffects}
@@ -227,17 +241,17 @@ const Profile = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">Dark Mode</p>
-                    <p className="text-sm text-gray-600">Switch to dark theme</p>
+                    <p className="font-medium text-foreground">Dark Mode</p>
+                    <p className="text-sm text-muted-foreground">Switch to dark theme</p>
                   </div>
                   <Switch
                     checked={settings.darkMode}
-                    onChange={(checked) => setSettings({ ...settings, darkMode: checked })}
+                    onChange={handleDarkModeToggle}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Language
                   </label>
                   <Select
@@ -262,9 +276,9 @@ const Profile = () => {
               </div>
             </Card>
 
-            <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white">
-              <h3 className="font-semibold text-gray-900 mb-4">About</h3>
-              <div className="space-y-2 text-sm text-gray-600">
+            <Card className="rounded-2xl shadow-sm border border-border bg-card">
+              <h3 className="font-semibold text-foreground mb-4">About</h3>
+              <div className="space-y-2 text-sm text-muted-foreground">
                 <p>COA-S.A.F.E App</p>
                 <p>Version 1.0.0</p>
                 <p>Learn Philippine Children's Law</p>
@@ -275,13 +289,13 @@ const Profile = () => {
 
         {activeTab === "notifications" && (
           <div className="space-y-4">
-            <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white">
-              <h3 className="font-semibold text-gray-900 mb-4">Notification Preferences</h3>
+            <Card className="rounded-2xl shadow-sm border border-border bg-card">
+              <h3 className="font-semibold text-foreground mb-4">Notification Preferences</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">Push Notifications</p>
-                    <p className="text-sm text-gray-600">Receive push notifications</p>
+                    <p className="font-medium text-foreground">Push Notifications</p>
+                    <p className="text-sm text-muted-foreground">Receive push notifications</p>
                   </div>
                   <Switch
                     checked={settings.notifications}
@@ -291,24 +305,24 @@ const Profile = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">Daily Reminders</p>
-                    <p className="text-sm text-gray-600">Get reminded to complete daily lessons</p>
+                    <p className="font-medium text-foreground">Daily Reminders</p>
+                    <p className="text-sm text-muted-foreground">Get reminded to complete daily lessons</p>
                   </div>
                   <Switch defaultChecked />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">Quiz Notifications</p>
-                    <p className="text-sm text-gray-600">Notify when quizzes are available</p>
+                    <p className="font-medium text-foreground">Quiz Notifications</p>
+                    <p className="text-sm text-muted-foreground">Notify when quizzes are available</p>
                   </div>
                   <Switch defaultChecked />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-gray-900">Achievement Alerts</p>
-                    <p className="text-sm text-gray-600">Get notified about achievements</p>
+                    <p className="font-medium text-foreground">Achievement Alerts</p>
+                    <p className="text-sm text-muted-foreground">Get notified about achievements</p>
                   </div>
                   <Switch defaultChecked />
                 </div>

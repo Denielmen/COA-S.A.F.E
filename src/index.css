@@ -45,6 +45,45 @@ All colors MUST be HSL.
 
 }
 
+/* Dark theme variables applied when .theme-dark is set on html */
+@layer base {
+  .theme-dark {
+    --background: 0 0% 8%;
+    --foreground: 0 0% 96%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 96%;
+
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 96%;
+
+    --primary: 175 100% 33%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 33 93% 54%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 175 20% 18%;
+    --muted-foreground: 175 10% 80%;
+
+    --accent: 33 93% 54%;
+    --accent-foreground: 0 0% 96%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 96%;
+
+    --border: 175 10% 25%;
+    --input: 175 10% 20%;
+    --ring: 175 100% 33%;
+
+    --radius: 1rem;
+
+    --gradient-hero: linear-gradient(135deg, hsl(175 60% 28%), hsl(175 70% 40%));
+    --shadow-card: 0 8px 30px hsla(175 40% 10% / 0.35);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -127,21 +166,56 @@ All colors MUST be HSL.
 
 .custom-calendar.bg-transparent .ant-picker-content .ant-picker-calendar-header {
   font-weight: bold !important;
+}
 /* Full-screen transition that "swallows" the screen with the primary color */
 .screen-transition {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: hsl(var(--primary));
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   /* Start as a tiny circle at the center and expand to cover */
   clip-path: circle(0% at 50% 50%);
   animation: swallow 1.5s ease-in-out forwards;
   pointer-events: none;
 }
 
+/* Static full-screen overlay (no swallow animation) for post-transition visuals */
+.screen-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
 @keyframes swallow {
   to {
     clip-path: circle(150% at 50% 50%);
+  }
+}
+
+/* Zoom-out animation for overlay text */
+.safe-zoom-out {
+  animation: safe-zoom-out 1.5s ease-in-out both;
+  will-change: transform, opacity;
+}
+
+@keyframes safe-zoom-out {
+  0% {
+    transform: scale(2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
@@ -183,6 +257,31 @@ All colors MUST be HSL.
   color: hsl(var(--secondary));
 }
 
+/* Dark mode overrides for AntD Tabs used in Profile */
+.theme-dark .custom-tabs .ant-tabs-nav {
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.theme-dark .custom-tabs .ant-tabs-tab .ant-tabs-tab-btn {
+  color: hsl(var(--muted-foreground));
+}
+
+.theme-dark .custom-tabs .ant-tabs-tab:hover .ant-tabs-tab-btn {
+  color: hsl(var(--foreground));
+}
+
+.theme-dark .custom-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: hsl(var(--foreground));
+}
+
+.theme-dark .custom-tabs .ant-tabs-ink-bar {
+  background: hsl(var(--primary));
+}
+
+.theme-dark .custom-tabs .ant-tabs-content-holder {
+  background: hsl(var(--background));
+}
+
 /* Current date highlighting */
 .custom-calendar .ant-picker-cell-selected .ant-picker-calendar-date {
   background-color: hsl(var(--secondary));
@@ -222,4 +321,14 @@ All colors MUST be HSL.
   color: white;
   font-weight: bold;
 }
+
+/* Utility overrides to make existing light classes adapt in dark mode */
+@layer base {
+  .theme-dark .bg-white { background-color: hsl(var(--card)) !important; }
+  .theme-dark .bg-gray-100 { background-color: hsl(var(--muted)) !important; }
+  .theme-dark .hover\:bg-gray-100:hover { background-color: hsl(var(--muted)) !important; }
+  .theme-dark .border-gray-200 { border-color: hsl(var(--border)) !important; }
+  .theme-dark .text-gray-900 { color: hsl(var(--foreground)) !important; }
+  .theme-dark .text-gray-700 { color: hsl(var(--foreground)) !important; opacity: 0.9; }
+  .theme-dark .text-gray-600 { color: hsl(var(--muted-foreground)) !important; }
 }

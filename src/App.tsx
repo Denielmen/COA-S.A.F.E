@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ConfigProvider } from "antd";
+import { useEffect } from "react";
 import Welcome from "./pages/Welcome";
 import Onboarding from "./pages/Onboarding";
 import CharacterSelect from "./pages/CharacterSelect";
@@ -18,7 +19,12 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  // Initialize theme from localStorage
+  // Theme is controlled from pages (Profile switch) and persists via localStorage.
+  // We don't auto-apply saved theme on app mount to avoid unexpected route-based changes.
+
+  return (
   <QueryClientProvider client={queryClient}>
     <ConfigProvider
       theme={{
@@ -59,6 +65,7 @@ const App = () => (
       </TooltipProvider>
     </ConfigProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
