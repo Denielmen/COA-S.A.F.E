@@ -38,7 +38,28 @@ const Dashboard = () => {
   useEffect(() => {
     mainAudioRef.current = new Audio(mainLoopSfx);
     mainAudioRef.current.loop = true;
-    mainAudioRef.current.volume = 0.25; // 25% volume
+    // Read saved settings to set initial music volume
+    try {
+      const saved = localStorage.getItem("settings");
+      let vol = 0.25; // default 25%
+      let enabled = true;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.musicVolume === "number") {
+          vol = Math.max(0, Math.min(1, parsed.musicVolume / 100));
+        } else if (typeof parsed.soundVolume === "number") {
+          vol = Math.max(0, Math.min(1, parsed.soundVolume / 100));
+        }
+        if (typeof parsed.soundEffects === "boolean") {
+          enabled = parsed.soundEffects;
+        } else if (typeof parsed.soundVolume === "number") {
+          enabled = parsed.soundVolume > 0;
+        }
+      }
+      mainAudioRef.current.volume = enabled ? vol : 0;
+    } catch {
+      mainAudioRef.current.volume = 0.25;
+    }
     mainAudioRef.current.preload = "auto";
 
     // Try autoplay; if blocked, wait for first user interaction
@@ -59,6 +80,34 @@ const Dashboard = () => {
     };
     void tryPlay();
 
+    const onVisibility = () => {
+      const a = mainAudioRef.current;
+      if (!a) return;
+      if (document.hidden) {
+        a.pause();
+      } else {
+        a.volume = a.volume; // keep same
+        void a.play();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    let removeAppState: (() => void) | null = null;
+    import("@capacitor/app")
+      .then(({ App }) => {
+        const sub = App.addListener("appStateChange", ({ isActive }) => {
+          const a = mainAudioRef.current;
+          if (!a) return;
+          if (!isActive) {
+            a.pause();
+          } else {
+            void a.play();
+          }
+        });
+        removeAppState = () => sub.remove();
+      })
+      .catch(() => {});
+
     return () => {
       mainAudioRef.current?.pause();
       mainAudioRef.current = null;
@@ -66,6 +115,37 @@ const Dashboard = () => {
         document.removeEventListener("click", resumeHandlerRef.current);
         resumeHandlerRef.current = null;
       }
+      document.removeEventListener("visibilitychange", onVisibility);
+      if (removeAppState) removeAppState();
+    };
+  }, []);
+
+  // React to settings being saved to adjust music volume live
+  useEffect(() => {
+    const onSettingsSaved = (e: Event) => {
+      try {
+        const detail = (e as CustomEvent<any>).detail;
+        if (!mainAudioRef.current) return;
+        let vol = 0.25;
+        let enabled = true;
+        if (detail && typeof detail === "object") {
+          if (typeof detail.musicVolume === "number") {
+            vol = Math.max(0, Math.min(1, detail.musicVolume / 100));
+          } else if (typeof detail.soundVolume === "number") {
+            vol = Math.max(0, Math.min(1, detail.soundVolume / 100));
+          }
+          if (typeof detail.soundEffects === "boolean") {
+            enabled = detail.soundEffects;
+          } else if (typeof detail.soundVolume === "number") {
+            enabled = detail.soundVolume > 0;
+          }
+        }
+        mainAudioRef.current.volume = enabled ? vol : 0;
+      } catch {}
+    };
+    window.addEventListener("settings-saved", onSettingsSaved as EventListener);
+    return () => {
+      window.removeEventListener("settings-saved", onSettingsSaved as EventListener);
     };
   }, []);
 

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.min.css";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Settings, Bell, Save, Edit2 } from "lucide-react";
-import { Card, Tabs, Button, Input, Switch, Select } from "antd";
+import { Card, Tabs, Button, Input, Switch, Select, Slider } from "antd";
 import { useUserProgress } from "@/hooks/useUserProgress";
 
 const boyCharacterImg = "/images/boy.png";
@@ -28,10 +30,13 @@ const Profile = () => {
       : {
           notifications: true,
           soundEffects: true,
+          soundVolume: 80,
+          vibrate: true,
           darkMode: false,
           language: "en",
         };
   });
+  const [dirty, setDirty] = useState(false);
 
   // Dark mode will only change when the user toggles the switch.
   const handleDarkModeToggle = (checked: boolean) => {
@@ -52,10 +57,33 @@ const Profile = () => {
     console.log("Saving profile:", profileData);
   };
 
-  const handleSaveSettings = () => {
-    // Save settings
+  const handleSaveSettings = async () => {
+    // Persist settings and trigger side effects
     localStorage.setItem("settings", JSON.stringify(settings));
-    console.log("Saving settings:", settings);
+    setDirty(false);
+    try {
+      // Notify other pages to react (e.g., adjust music volume)
+      window.dispatchEvent(new CustomEvent("settings-saved", { detail: settings }));
+    } catch {}
+    try {
+      const { Capacitor } = await import("@capacitor/core");
+      if (Capacitor.getPlatform() !== "web") {
+        const scheduler = await import("@/notifications/mobileScheduler");
+        if (settings.notifications) {
+          await scheduler.ensureDailyUnlockRepeating();
+          await scheduler.scheduleForTodayIfNeeded();
+        } else {
+          await scheduler.cancelTodayReminders();
+          await scheduler.cancelDailyUnlockRepeating();
+        }
+      }
+    } catch {}
+    await Swal.fire({
+      title: "Settings saved",
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
   };
 
   const tabItems = [
@@ -230,13 +258,24 @@ const Profile = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">Sound Effects</p>
-                    <p className="text-sm text-muted-foreground">Enable sound effects in the app</p>
+                    <p className="font-medium text-foreground">Sound Effects Volume</p>
+                    <p className="text-sm text-muted-foreground">Adjust all sound effects volume (0–100)</p>
                   </div>
-                  <Switch
-                    checked={settings.soundEffects}
-                    onChange={(checked) => setSettings({ ...settings, soundEffects: checked })}
-                  />
+                  <div className="flex items-center gap-3">
+                    <div className="text-sm text-muted-foreground" aria-label="current volume">{settings.soundVolume ?? 80}%</div>
+                    <Slider
+                      min={0}
+                      max={100}
+                      value={settings.soundVolume ?? 80}
+                      onChange={(value) => {
+                        const vol = Array.isArray(value) ? value[0] : value;
+                        const newSettings = { ...settings, soundVolume: vol, soundEffects: vol > 0 };
+                        setSettings(newSettings);
+                        setDirty(true);
+                      }}
+                      style={{ width: 160 }}
+                    />
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between">
@@ -270,6 +309,7 @@ const Profile = () => {
                   icon={<Save className="w-4 h-4" />}
                   onClick={handleSaveSettings}
                   className="w-full h-12 rounded-xl font-medium shadow-sm"
+                  disabled={!dirty}
                 >
                   Save Settings
                 </Button>
@@ -299,7 +339,11 @@ const Profile = () => {
                   </div>
                   <Switch
                     checked={settings.notifications}
-                    onChange={(checked) => setSettings({ ...settings, notifications: checked })}
+                    onChange={async (checked) => {
+                      const newSettings = { ...settings, notifications: checked };
+                      setSettings(newSettings);
+                      setDirty(true);
+                    }}
                   />
                 </div>
 
@@ -310,6 +354,22 @@ const Profile = () => {
                   </div>
                   <Switch defaultChecked />
                 </div>
+
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-foreground">Vibrate</p>
+                    <p className="text-sm text-muted-foreground">Vibrate when notifications arrive</p>
+                  </div>
+                  <Switch
+                    checked={settings.vibrate !== false}
+                    onChange={(checked) => {
+                      const newSettings = { ...settings, vibrate: checked };
+                      setSettings(newSettings);
+                      setDirty(true);
+                    }}
+                  />
+                </div>
+
 
                 <div className="flex items-center justify-between">
                   <div>
@@ -332,6 +392,7 @@ const Profile = () => {
                   icon={<Save className="w-4 h-4" />}
                   onClick={handleSaveSettings}
                   className="w-full h-12 rounded-xl font-medium shadow-sm"
+                  disabled={!dirty}
                 >
                   Save Notification Settings
                 </Button>

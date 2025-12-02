@@ -248,6 +248,118 @@ All colors MUST be HSL.
   height: 100%;
 }
 
+/* Playful Reward SweetAlert styling */
+.reward-modal {
+  background: transparent;
+  border-radius: 1rem;
+  box-shadow: 0 12px 28px hsla(220 60% 20% / 0.35);
+  border: none;
+  color: white;
+}
+
+.reward-title {
+  font-weight: 800;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #facc15, #f472b6, #60a5fa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.reward-content {
+  font-size: 0.95rem;
+}
+
+.reward-content .badge {
+  display: inline-block;
+  background: hsla(175 100% 33% / 0.12);
+  border: 1px solid hsla(175 100% 33% / 0.25);
+  color: hsl(var(--primary));
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.reward-confirm {
+  background: linear-gradient(135deg, #22c55e, #10b981) !important;
+  color: white !important;
+  border-radius: 999px !important;
+  padding: 10px 18px !important;
+  box-shadow: 0 6px 16px hsla(145 60% 40% / 0.35);
+}
+
+.reward-confirm:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.reward-popup-enter {
+  animation: rewardPopIn 320ms cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.reward-popup-exit {
+  animation: rewardPopOut 220ms ease both;
+}
+
+@keyframes rewardPopIn {
+  0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes rewardPopOut {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(10px) scale(0.97); }
+}
+
+/* Continuous zoom (pulse) for the reward Lottie while modal is open */
+.reward-lottie-pulse {
+  animation: rewardPulse 2.2s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes rewardPulse {
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(0.96); }
+}
+
+/* Welcome title zoom-out animation (2s) */
+.welcome-zoomout {
+  animation: welcomeZoomOut 2s ease-out both;
+}
+
+@keyframes welcomeZoomOut {
+  0% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Welcome title side wave-in (2s) */
+.welcome-wave-in {
+  animation: welcomeWaveIn 2s ease-out both;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes welcomeWaveIn {
+  0% {
+    transform: perspective(800px) translateX(-100vw) rotateY(-35deg) scale(1.15);
+    opacity: 0;
+  }
+  35% {
+    transform: perspective(800px) translateX(8vw) rotateY(18deg) scale(1.05);
+    opacity: 1;
+  }
+  65% {
+    transform: perspective(800px) translateX(-3vw) rotateY(-8deg) scale(1.02);
+  }
+  100% {
+    transform: perspective(800px) translateX(0) rotateY(0deg) scale(1);
+  }
+}
+
 /* Weekend days styling - Saturday and Sunday in orange */
 .custom-calendar .ant-picker-cell-weekend .ant-picker-calendar-date {
   color: hsl(var(--secondary));
