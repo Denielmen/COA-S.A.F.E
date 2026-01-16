@@ -1,7 +1,7 @@
 import { Card, Calendar } from "antd";
 import { CheckCircle, Flame, Star, Award, ChevronLeft, ChevronRight } from "lucide-react";
-import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getArticleForDate } from "@/data/dailyArticles";
@@ -13,18 +13,20 @@ import calendarBg2nd from "/images/Project SAFE Calendar/Project SAFE Calendar E
 import calendarBg3rd from "/images/Project SAFE Calendar/Project SAFE Calendar Elements/3rd Quarter Calendar Background.png";
 import BottomNavigation from "@/components/BottomNavigation";
 import mainLoopSfx from "@/soundEffects/main.mp3";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 // const boyCharacterImg = "/images/boy.png";
 // const girlCharacterImg = "/images/girl.png";
 
 const Dashboard = () => {
-  const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs().month(0)); // Start from January
+  const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs().month(0));
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
   const { isLessonCompleted, getStats, progress } = useUserProgress();
   const stats = getStats();
   const navigate = useNavigate();
   const mainAudioRef = useRef<HTMLAudioElement | null>(null);
   const resumeHandlerRef = useRef<(() => void) | null>(null);
+  const language = getCurrentLanguage();
 
   useEffect(() => {
     // Read selected character from localStorage
@@ -156,23 +158,21 @@ const Dashboard = () => {
   const onDateSelect = (date: Dayjs) => {
     const article = getArticleForDate(date.toDate());
     if (article) {
-      // Stop idle loop when starting a lesson
       mainAudioRef.current?.pause();
-      // Navigate to lesson page with the date as parameter
-      navigate(`/lesson/${date.format('YYYY-MM-DD')}`);
+      navigate(`/lesson/${date.format("YYYY-MM-DD")}`);
     }
   };
 
   const getCalendarBackground = (month: Dayjs) => {
-    const monthNum = month.month(); // 0-11
+    const monthNum = month.month();
     if (monthNum >= 0 && monthNum <= 2) {
-      return calendarBg1st; // Jan, Feb, Mar (1st Quarter)
+      return calendarBg1st;
     } else if (monthNum >= 3 && monthNum <= 5) {
-      return calendarBg2nd; // Apr, May, Jun (2nd Quarter)
+      return calendarBg2nd;
     } else if (monthNum >= 6 && monthNum <= 8) {
-      return calendarBg3rd; // Jul, Aug, Sep (3rd Quarter)
+      return calendarBg3rd;
     } else {
-      return calendarBg1st; // Oct, Nov, Dec (fallback to 1st for now)
+      return calendarBg1st;
     }
   };
 
@@ -217,7 +217,7 @@ const Dashboard = () => {
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(prev => prev.add(1, 'month'));
+    setCurrentMonth((prev) => prev.add(1, "month"));
   };
 
   return (
@@ -226,7 +226,13 @@ const Dashboard = () => {
       <div className="bg-white p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-primary">Welcome to</h1>
+            <h1 className="text-2xl font-bold text-primary">
+              {translate(language, {
+                en: "Welcome to",
+                tl: "Maligayang pagdating sa",
+                bis: "Maayong pag-abot sa",
+              })}
+            </h1>
             <h1 className="text-2xl font-bold tracking-tight">
               <span className="text-[hsl(175,100%,33%)]">S</span>
               <span className="text-[hsl(33,93%,54%)]">A</span>
@@ -234,7 +240,13 @@ const Dashboard = () => {
               <span className="text-[hsl(45,100%,51%)]">E</span>
               <span className="text-[hsl(175,100%,33%)]"> !</span>
             </h1>
-            <p className="text-sm text-secondary mt-1">Learn Philippine Children's Law</p>
+            <p className="text-sm text-secondary mt-1">
+              {translate(language, {
+                en: "Learn Philippine Children's Law",
+                tl: "Alamin ang Batas para sa mga Bata sa Pilipinas",
+                bis: "Pagtuon sa Balaod sa mga Bata sa Pilipinas",
+              })}
+            </p>
           </div>
           <Card 
             className="rounded-2xl shadow-md border border-gray-200 p-3 bg-white cursor-pointer hover:shadow-lg transition-shadow"
@@ -253,8 +265,16 @@ const Dashboard = () => {
                   <span className="text-[10px] font-bold text-white">L{stats.level}</span>
                 </div>
               </div>
-              <div className="text-xs font-semibold text-gray-600">{stats.completed}/31</div>
-              <div className="text-[10px] text-secondary">Lessons</div>
+              <div className="text-xs font-semibold text-gray-600">
+                {stats.completed}/31
+              </div>
+              <div className="text-[10px] text-secondary">
+                {translate(language, {
+                  en: "Lessons",
+                  tl: "Mga Aralin",
+                  bis: "Mga Leksyon",
+                })}
+              </div>
             </div>
           </Card>
         </div>
@@ -267,13 +287,19 @@ const Dashboard = () => {
         {/* Calendar Section */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xl font-bold text-secondary">{currentMonth.format('MMMM YYYY')}</h2>
+            <h2 className="text-xl font-bold text-secondary">
+              {currentMonth.format("MMMM YYYY")}
+            </h2>
             <div className="flex items-center gap-2">
-              <button 
+              <button
                 onClick={() => setCurrentMonth(dayjs())}
                 className="px-3 py-1 bg-primary/20 text-primary rounded-lg text-sm font-medium hover:bg-primary/30 transition-colors"
               >
-                Today
+                {translate(language, {
+                  en: "Today",
+                  tl: "Ngayon",
+                  bis: "Karon",
+                })}
               </button>
               <button 
                 onClick={handlePrevMonth}
@@ -313,19 +339,43 @@ const Dashboard = () => {
 
           {/* Challenge Type Legend */}
           <Card className="rounded-2xl shadow-[var(--shadow-card)] mt-5 mb-3 p-4 bg-white/95 backdrop-blur-sm border border-gray-200">
-            <div className="text-sm font-bold mb-3 text-center text-gray-800">Types of Challenges</div>
+            <div className="text-sm font-bold mb-3 text-center text-gray-800">
+              {translate(language, {
+                en: "Types of Challenges",
+                tl: "Mga Uri ng Hamon",
+                bis: "Mga Klase sa Hagit",
+              })}
+            </div>
             {/* <div className="flex flex-wrap items-center justify-center gap-4"> */}
               <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
                 <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FFD700' }}></div>
-                <span className="text-sm font-medium text-gray-800">Individual</span>
+                <span className="text-sm font-medium text-gray-800">
+                  {translate(language, {
+                    en: "Individual",
+                    tl: "Indibidwal",
+                    bis: "Individual",
+                  })}
+                </span>
               </div>
               <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
                 <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#00BCD4' }}></div>
-                <span className="text-sm font-medium text-gray-800">Family</span>
+                <span className="text-sm font-medium text-gray-800">
+                  {translate(language, {
+                    en: "Family",
+                    tl: "Pamilya",
+                    bis: "Pamilya",
+                  })}
+                </span>
               </div>          
               <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
                 <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FF9800' }}></div>
-                <span className="text-sm font-medium text-gray-800">Social Media</span>
+                <span className="text-sm font-medium text-gray-800">
+                  {translate(language, {
+                    en: "Social Media",
+                    tl: "Social Media",
+                    bis: "Social Media",
+                  })}
+                </span>
               </div>
             {/* </div> */}
           </Card>
@@ -341,7 +391,13 @@ const Dashboard = () => {
               </div>
               <div className="flex-1 flex flex-col justify-center">
                 <p className="text-xl sm:text-2xl font-bold text-primary leading-tight">{stats.completed}</p>
-                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">Completed</p>
+                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">
+                  {translate(language, {
+                    en: "Completed",
+                    tl: "Tapos",
+                    bis: "Humana",
+                  })}
+                </p>
               </div>
             </div>
           </Card>
@@ -356,9 +412,25 @@ const Dashboard = () => {
                   {stats.streak}
                 </p>
                 <p className="text-xs sm:text-sm font-bold text-secondary leading-tight">
-                  {stats.streak === 1 ? 'day' : 'days'}
+                  {stats.streak === 1
+                    ? translate(language, {
+                        en: "day",
+                        tl: "araw",
+                        bis: "adlaw",
+                      })
+                    : translate(language, {
+                        en: "days",
+                        tl: "araw",
+                        bis: "mga adlaw",
+                      })}
                 </p>
-                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">Streak</p>
+                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">
+                  {translate(language, {
+                    en: "Streak",
+                    tl: "Sunod-sunod na Araw",
+                    bis: "Sunod-sunod nga Adlaw",
+                  })}
+                </p>
               </div>
             </div>
           </Card>
@@ -370,7 +442,13 @@ const Dashboard = () => {
               </div>
               <div className="flex-1 flex flex-col justify-center">
                 <p className="text-xl sm:text-2xl font-bold text-yellow-500 leading-tight">{stats.level}</p>
-                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">Level</p>
+                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">
+                  {translate(language, {
+                    en: "Level",
+                    tl: "Antas",
+                    bis: "Lebel",
+                  })}
+                </p>
               </div>
             </div>
           </Card>

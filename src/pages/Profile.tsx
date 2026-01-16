@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Settings, Bell, Save, Edit2 } from "lucide-react";
 import { Card, Tabs, Button, Input, Switch, Select, Slider } from "antd";
 import { useUserProgress } from "@/hooks/useUserProgress";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
@@ -13,6 +14,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const { getStats } = useUserProgress();
   const stats = getStats();
+  const language = getCurrentLanguage();
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">(() => {
     return (localStorage.getItem("selectedCharacter") as "boy" | "girl") || "girl";
   });
@@ -79,7 +81,11 @@ const Profile = () => {
       }
     } catch {}
     await Swal.fire({
-      title: "Settings saved",
+      title: translate(language, {
+        en: "Settings saved",
+        tl: "Na-save ang settings",
+        bis: "Nasave na ang settings",
+      }),
       icon: "success",
       timer: 1500,
       showConfirmButton: false,
@@ -92,7 +98,11 @@ const Profile = () => {
       label: (
         <span className="flex items-center gap-2 text-foreground">
           <User className="w-4 h-4" />
-          Profile
+          {translate(language, {
+            en: "Profile",
+            tl: "Profile",
+            bis: "Profile",
+          })}
         </span>
       ),
     },
@@ -101,7 +111,11 @@ const Profile = () => {
       label: (
         <span className="flex items-center gap-2 text-foreground">
           <Settings className="w-4 h-4" />
-          Settings
+          {translate(language, {
+            en: "Settings",
+            tl: "Mga Setting",
+            bis: "Mga Settings",
+          })}
         </span>
       ),
     },
@@ -110,7 +124,11 @@ const Profile = () => {
       label: (
         <span className="flex items-center gap-2 text-foreground">
           <Bell className="w-4 h-4" />
-          Notifications
+          {translate(language, {
+            en: "Notifications",
+            tl: "Mga Notipikasyon",
+            bis: "Mga Notipikasyon",
+          })}
         </span>
       ),
     },
@@ -128,7 +146,13 @@ const Profile = () => {
             >
               <ArrowLeft className="w-5 h-5 text-primary" />
             </button>
-            <h1 className="text-lg font-semibold text-primary">Profile & Settings</h1>
+            <h1 className="text-lg font-semibold text-primary">
+              {translate(language, {
+                en: "Profile & Settings",
+                tl: "Profile at Mga Setting",
+                bis: "Profile ug Mga Settings",
+              })}
+            </h1>
           </div>
         </div>
       </div>
@@ -149,7 +173,13 @@ const Profile = () => {
           <div className="space-y-4">
             {/* Character Selection */}
             <Card className="rounded-2xl shadow-sm border border-border bg-card">
-              <h3 className="font-semibold text-foreground mb-4">Character Selection</h3>
+              <h3 className="font-semibold text-foreground mb-4">
+                {translate(language, {
+                  en: "Character Selection",
+                  tl: "Pagpili ng Character",
+                  bis: "Pagpili sa Character",
+                })}
+              </h3>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <button
                   onClick={() => handleCharacterChange("boy")}
@@ -167,7 +197,13 @@ const Profile = () => {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="text-sm font-medium text-muted-foreground">Boy</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      {translate(language, {
+                        en: "Boy",
+                        tl: "Lalaki",
+                        bis: "Bata nga Lalaki",
+                      })}
+                    </p>
                   </div>
                 </button>
 
@@ -187,7 +223,13 @@ const Profile = () => {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <p className="text-sm font-medium text-muted-foreground">Girl</p>
+                    <p className="text-sm font-medium text-muted-foreground">
+                      {translate(language, {
+                        en: "Girl",
+                        tl: "Babae",
+                        bis: "Bata nga Babaye",
+                      })}
+                    </p>
                   </div>
                 </button>
               </div>
@@ -195,27 +237,49 @@ const Profile = () => {
 
             {/* User Profile Info */}
             <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white">
-              <h3 className="font-semibold text-gray-900 mb-4">User Information</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">
+                {translate(language, {
+                  en: "User Information",
+                  tl: "Impormasyon ng User",
+                  bis: "Impormasyon sa User",
+                })}
+              </h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Name
+                    {translate(language, {
+                      en: "Name",
+                      tl: "Pangalan",
+                      bis: "Ngalan",
+                    })}
                   </label>
                   <Input
                     value={profileData.name}
                     onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                    placeholder="Enter your name"
+                    placeholder={translate(language, {
+                      en: "Enter your name",
+                      tl: "Ilagay ang iyong pangalan",
+                      bis: "Ibutang ang imong ngalan",
+                    })}
                     className="rounded-lg"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email
+                    {translate(language, {
+                      en: "Email",
+                      tl: "Email",
+                      bis: "Email",
+                    })}
                   </label>
                   <Input
                     value={profileData.email}
                     onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                    placeholder="Enter your email"
+                    placeholder={translate(language, {
+                      en: "Enter your email",
+                      tl: "Ilagay ang iyong email",
+                      bis: "Ibutang ang imong email",
+                    })}
                     className="rounded-lg"
                   />
                 </div>
@@ -225,26 +289,54 @@ const Profile = () => {
                   onClick={handleSaveProfile}
                   className="w-full h-12 rounded-xl font-medium shadow-sm"
                 >
-                  Save Changes
+                  {translate(language, {
+                    en: "Save Changes",
+                    tl: "I-save ang mga Pagbabago",
+                    bis: "I-save ang mga Ka-usaban",
+                  })}
                 </Button>
               </div>
             </Card>
 
             {/* Stats Summary */}
             <Card className="rounded-2xl shadow-sm border border-gray-200 bg-white">
-              <h3 className="font-semibold text-gray-900 mb-4">Your Progress</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">
+                {translate(language, {
+                  en: "Your Progress",
+                  tl: "Iyong Progreso",
+                  bis: "Imong Progreso",
+                })}
+              </h3>
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{stats.completed}</div>
-                  <div className="text-xs text-gray-600">Completed</div>
+                  <div className="text-xs text-gray-600">
+                    {translate(language, {
+                      en: "Completed",
+                      tl: "Tapos",
+                      bis: "Humana",
+                    })}
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-secondary">{stats.streak}</div>
-                  <div className="text-xs text-gray-600">Streak</div>
+                  <div className="text-xs text-gray-600">
+                    {translate(language, {
+                      en: "Streak",
+                      tl: "Sunod-sunod na Araw",
+                      bis: "Sunod-sunod nga Adlaw",
+                    })}
+                  </div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-yellow-500">{stats.level}</div>
-                  <div className="text-xs text-gray-600">Level</div>
+                  <div className="text-xs text-gray-600">
+                    {translate(language, {
+                      en: "Level",
+                      tl: "Antas",
+                      bis: "Lebel",
+                    })}
+                  </div>
                 </div>
               </div>
             </Card>
@@ -254,12 +346,30 @@ const Profile = () => {
         {activeTab === "settings" && (
           <div className="space-y-4">
             <Card className="rounded-2xl shadow-sm border border-border bg-card">
-              <h3 className="font-semibold text-foreground mb-4">General Settings</h3>
+              <h3 className="font-semibold text-foreground mb-4">
+                {translate(language, {
+                  en: "General Settings",
+                  tl: "Pangunahing Settings",
+                  bis: "General nga Settings",
+                })}
+              </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">Sound Effects Volume</p>
-                    <p className="text-sm text-muted-foreground">Adjust all sound effects volume (0–100)</p>
+                    <p className="font-medium text-foreground">
+                      {translate(language, {
+                        en: "Sound Effects Volume",
+                        tl: "Lakas ng Sound Effects",
+                        bis: "Kusog sa Sound Effects",
+                      })}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {translate(language, {
+                        en: "Adjust all sound effects volume (0–100)",
+                        tl: "Ayusin ang lakas ng lahat ng sound effects (0–100)",
+                        bis: "Usba ang kusog sa tanang sound effects (0–100)",
+                      })}
+                    </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="text-sm text-muted-foreground" aria-label="current volume">{settings.soundVolume ?? 80}%</div>
@@ -280,8 +390,20 @@ const Profile = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">Dark Mode</p>
-                    <p className="text-sm text-muted-foreground">Switch to dark theme</p>
+                    <p className="font-medium text-foreground">
+                      {translate(language, {
+                        en: "Dark Mode",
+                        tl: "Dark Mode",
+                        bis: "Dark Mode",
+                      })}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {translate(language, {
+                        en: "Switch to dark theme",
+                        tl: "Lumipat sa dark na tema",
+                        bis: "Ibalhin sa dark nga tema",
+                      })}
+                    </p>
                   </div>
                   <Switch
                     checked={settings.darkMode}
@@ -291,15 +413,23 @@ const Profile = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">
-                    Language
+                    {translate(language, {
+                      en: "Language",
+                      tl: "Wika",
+                      bis: "Pinulongan",
+                    })}
                   </label>
                   <Select
                     value={settings.language}
-                    onChange={(value) => setSettings({ ...settings, language: value })}
+                    onChange={(value) => {
+                      setSettings({ ...settings, language: value });
+                      setDirty(true);
+                    }}
                     className="w-full"
                     options={[
                       { value: "en", label: "English" },
                       { value: "tl", label: "Tagalog" },
+                      { value: "bis", label: "Bisaya" },
                     ]}
                   />
                 </div>
@@ -311,17 +441,33 @@ const Profile = () => {
                   className="w-full h-12 rounded-xl font-medium shadow-sm"
                   disabled={!dirty}
                 >
-                  Save Settings
+                  {translate(language, {
+                    en: "Save Settings",
+                    tl: "I-save ang Settings",
+                    bis: "I-save ang Settings",
+                  })}
                 </Button>
               </div>
             </Card>
 
             <Card className="rounded-2xl shadow-sm border border-border bg-card">
-              <h3 className="font-semibold text-foreground mb-4">About</h3>
+              <h3 className="font-semibold text-foreground mb-4">
+                {translate(language, {
+                  en: "About",
+                  tl: "Tungkol sa App",
+                  bis: "Mahitungod sa App",
+                })}
+              </h3>
               <div className="space-y-2 text-sm text-muted-foreground">
                 <p>COA-S.A.F.E App</p>
                 <p>Version 1.0.0</p>
-                <p>Learn Philippine Children's Law</p>
+                <p>
+                  {translate(language, {
+                    en: "Learn Philippine Children's Law",
+                    tl: "Alamin ang Batas para sa mga Bata sa Pilipinas",
+                    bis: "Pagtuon sa Balaod sa mga Bata sa Pilipinas",
+                  })}
+                </p>
               </div>
             </Card>
           </div>
@@ -330,12 +476,30 @@ const Profile = () => {
         {activeTab === "notifications" && (
           <div className="space-y-4">
             <Card className="rounded-2xl shadow-sm border border-border bg-card">
-              <h3 className="font-semibold text-foreground mb-4">Notification Preferences</h3>
+              <h3 className="font-semibold text-foreground mb-4">
+                {translate(language, {
+                  en: "Notification Preferences",
+                  tl: "Mga Setting ng Notipikasyon",
+                  bis: "Mga Setting sa Notipikasyon",
+                })}
+              </h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">Push Notifications</p>
-                    <p className="text-sm text-muted-foreground">Receive push notifications</p>
+                    <p className="font-medium text-foreground">
+                      {translate(language, {
+                        en: "Push Notifications",
+                        tl: "Push Notifications",
+                        bis: "Push Notifications",
+                      })}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {translate(language, {
+                        en: "Receive push notifications",
+                        tl: "Tumanggap ng push notifications",
+                        bis: "Dawat og push notifications",
+                      })}
+                    </p>
                   </div>
                   <Switch
                     checked={settings.notifications}
@@ -349,16 +513,40 @@ const Profile = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">Daily Reminders</p>
-                    <p className="text-sm text-muted-foreground">Get reminded to complete daily lessons</p>
+                    <p className="font-medium text-foreground">
+                      {translate(language, {
+                        en: "Daily Reminders",
+                        tl: "Araw-araw na Paalala",
+                        bis: "Adlaw-adlaw nga Pahinumdom",
+                      })}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {translate(language, {
+                        en: "Get reminded to complete daily lessons",
+                        tl: "Paalala para tapusin ang araw-araw na lessons",
+                        bis: "Pahinumdom nga tapuson ang adlaw-adlaw nga leksiyon",
+                      })}
+                    </p>
                   </div>
                   <Switch defaultChecked />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">Vibrate</p>
-                    <p className="text-sm text-muted-foreground">Vibrate when notifications arrive</p>
+                    <p className="font-medium text-foreground">
+                      {translate(language, {
+                        en: "Vibrate",
+                        tl: "Vibrate",
+                        bis: "Vibrate",
+                      })}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {translate(language, {
+                        en: "Vibrate when notifications arrive",
+                        tl: "Mag-vibrate kapag may notification",
+                        bis: "Mag-vibrate kung naay notification",
+                      })}
+                    </p>
                   </div>
                   <Switch
                     checked={settings.vibrate !== false}
@@ -373,16 +561,40 @@ const Profile = () => {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">Quiz Notifications</p>
-                    <p className="text-sm text-muted-foreground">Notify when quizzes are available</p>
+                    <p className="font-medium text-foreground">
+                      {translate(language, {
+                        en: "Quiz Notifications",
+                        tl: "Mga Notipikasyon sa Quiz",
+                        bis: "Mga Notipikasyon sa Quiz",
+                      })}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {translate(language, {
+                        en: "Notify when quizzes are available",
+                        tl: "Ipaalam kapag may quizzes na puwede na",
+                        bis: "Sultihi kung pwede na ang quizzes",
+                      })}
+                    </p>
                   </div>
                   <Switch defaultChecked />
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium text-foreground">Achievement Alerts</p>
-                    <p className="text-sm text-muted-foreground">Get notified about achievements</p>
+                    <p className="font-medium text-foreground">
+                      {translate(language, {
+                        en: "Achievement Alerts",
+                        tl: "Mga Alert sa Achievement",
+                        bis: "Mga Alert sa Achievement",
+                      })}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {translate(language, {
+                        en: "Get notified about achievements",
+                        tl: "Makatanggap ng alert kapag may naabot na achievement",
+                        bis: "Makadawat og alert kung naay achievement",
+                      })}
+                    </p>
                   </div>
                   <Switch defaultChecked />
                 </div>
@@ -394,7 +606,11 @@ const Profile = () => {
                   className="w-full h-12 rounded-xl font-medium shadow-sm"
                   disabled={!dirty}
                 >
-                  Save Notification Settings
+                  {translate(language, {
+                    en: "Save Notification Settings",
+                    tl: "I-save ang Notification Settings",
+                    bis: "I-save ang Notification Settings",
+                  })}
                 </Button>
               </div>
             </Card>

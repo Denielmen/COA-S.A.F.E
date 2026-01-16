@@ -3,10 +3,12 @@ import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import welcomeSound from "@/soundEffects/welcome.wav";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const Welcome = () => {
   const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const language = getCurrentLanguage();
 
   useEffect(() => {
     const audio = new Audio(welcomeSound);
@@ -41,7 +43,11 @@ const Welcome = () => {
       <div className="max-w-md w-full text-center space-y-8">
         <div className="space-y-4">
           <h2 className="text-xl text-muted-foreground font-medium">
-            Welcome to
+            {translate(language, {
+              en: "Welcome to",
+              tl: "Maligayang pagdating sa",
+              bis: "Maayong pag-abot sa",
+            })}
           </h2>
           <h1 className="welcome-wave-in text-6xl font-bold tracking-tight">
             <span className="text-[hsl(187,100%,42%)]">S</span>
@@ -54,7 +60,11 @@ const Welcome = () => {
 
         <div className="pt-20 space-y-4">
           <p className="text-secondary text-sm font-medium">
-            Learn Philippine Children's Law
+            {translate(language, {
+              en: "Learn Philippine Children's Law",
+              tl: "Alamin ang Batas para sa mga Bata sa Pilipinas",
+              bis: "Pagtuon sa Balaod sa mga Bata sa Pilipinas",
+            })}
           </p>
           <Button
             type="primary"
@@ -64,7 +74,11 @@ const Welcome = () => {
             icon={<ArrowRight className="w-5 h-5" />}
             iconPosition="end"
           >
-            Get Started
+            {translate(language, {
+              en: "Get Started",
+              tl: "Magsimula",
+              bis: "Sugdi na",
+            })}
           </Button>
         </div>
       </div>

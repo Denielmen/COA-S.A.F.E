@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import starAnimation from "@/Lotties/Star.json";
 import startSfx from "@/soundEffects/start.mp3";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
@@ -13,6 +14,7 @@ const CharacterSelect = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
   const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const language = getCurrentLanguage();
 
   const [showTransition, setShowTransition] = useState(false);
   const [transitionStyle, setTransitionStyle] = useState<React.CSSProperties | undefined>(undefined);
@@ -51,10 +53,18 @@ const CharacterSelect = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-primary">
-            Choose Your Child's Character
+            {translate(language, {
+              en: "Choose Your Child's Character",
+              tl: "Piliin ang Character ng Iyong Anak",
+              bis: "Pili-a ang Character sa Imong Anak",
+            })}
           </h1>
           <p className="text-secondary text-sm">
-            Select a character to track your progress and unlock achievements together!
+            {translate(language, {
+              en: "Select a character to track your progress and unlock achievements together!",
+              tl: "Pumili ng character para masubaybayan ang progreso at ma-unlock ang achievements nang magkasama!",
+              bis: "Pili ug character para masubaybayan ang progreso ug ma-unlock ang achievements kuyog ninyo!",
+            })}
           </p>
         </div>
 
@@ -81,7 +91,13 @@ const CharacterSelect = () => {
                   }}
                 />
               </div>
-              <p className="text-lg font-bold text-accent">boy</p>
+              <p className="text-lg font-bold text-accent">
+                {translate(language, {
+                  en: "Boy",
+                  tl: "Lalaki",
+                  bis: "Bata nga Lalaki",
+                })}
+              </p>
             </div>
           </Card>
 
@@ -107,13 +123,25 @@ const CharacterSelect = () => {
                   }}
                 />
               </div>
-              <p className="text-lg font-bold text-accent">girl</p>
+              <p className="text-lg font-bold text-accent">
+                {translate(language, {
+                  en: "Girl",
+                  tl: "Babae",
+                  bis: "Bata nga Babaye",
+                })}
+              </p>
             </div>
           </Card>
         </div>
 
         <div className="text-center space-y-4">
-          <p className="text-primary text-sm font-medium">Let's Start!</p>
+          <p className="text-primary text-sm font-medium">
+            {translate(language, {
+              en: "Let's Start!",
+              tl: "Magsimula na tayo!",
+              bis: "Magsugod ta!",
+            })}
+          </p>
           <Button
             type="primary"
             size="large"
@@ -122,7 +150,11 @@ const CharacterSelect = () => {
             icon={<ArrowRight className="w-5 h-5" />}
             iconPosition="end"
           >
-            Continue
+            {translate(language, {
+              en: "Continue",
+              tl: "Magpatuloy",
+              bis: "Padayon",
+            })}
           </Button>
           <div className="flex gap-2 justify-center pt-2">
             {[0, 1, 2, 3].map((idx) => (

@@ -14,6 +14,7 @@ import { Button, Progress } from "antd";
 import { getArticleForDate, isRewardDay as isRewardDate, type DailyArticle } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { cancelTodayReminders } from "@/notifications/mobileScheduler";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
@@ -25,6 +26,7 @@ const Lesson = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
   const { markLessonCompleted, isLessonCompleted, getStats, progress } = useUserProgress();
   const stats = getStats();
+  const language = getCurrentLanguage();
 
   useEffect(() => {
     // Read selected character from localStorage
@@ -47,12 +49,28 @@ const Lesson = () => {
     if (!date) return;
 
     const result = await Swal.fire({
-      title: "Mark as completed?",
-      text: "Confirm to mark today's lesson as completed.",
+      title: translate(language, {
+        en: "Mark as completed?",
+        tl: "Markahan bilang tapos?",
+        bis: "I-mark nga nahuman na?",
+      }),
+      text: translate(language, {
+        en: "Confirm to mark today's lesson as completed.",
+        tl: "Kumpirmahin para markahan ang lesson ngayon bilang tapos.",
+        bis: "Kumpirmaha nga nahuman na nimo ang karon nga leksiyon.",
+      }),
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Yes, mark it",
-      cancelButtonText: "Cancel",
+      confirmButtonText: translate(language, {
+        en: "Yes, mark it",
+        tl: "Oo, markahan",
+        bis: "Oo, i-mark",
+      }),
+      cancelButtonText: translate(language, {
+        en: "Cancel",
+        tl: "Kanselahin",
+        bis: "Kanselahon",
+      }),
       focusCancel: true,
     });
 
@@ -121,8 +139,20 @@ const Lesson = () => {
           selectedAnimation = goldencandy;
         } // 3rd, 4th, 5th... use goldenFlame
 
-        const rewardTitle = article?.reward?.title ?? "Reward Day! 🎉";
-        const rewardMessage = article?.reward?.message ?? "Fantastic job — you completed 30 days of learning!";
+        const rewardTitle =
+          article?.reward?.title ??
+          translate(language, {
+            en: "Reward Day! 🎉",
+            tl: "Reward Day! 🎉",
+            bis: "Adlaw sa Ganti! 🎉",
+          });
+        const rewardMessage =
+          article?.reward?.message ??
+          translate(language, {
+            en: "Fantastic job — you completed 30 days of learning!",
+            tl: "Ang galing — natapos mo ang 30 araw ng pag-aaral!",
+            bis: "Nindot kaayo — nahuman nimo ang 30 ka adlaw sa pagtuon!",
+          });
 
         // Mount Lottie into SweetAlert content
         let lottieRoot: ReturnType<typeof createRoot> | null = null;
@@ -163,8 +193,16 @@ const Lesson = () => {
         });
       } else {
         await Swal.fire({
-          title: "Completed!",
-          text: "Lesson marked as completed.",
+          title: translate(language, {
+            en: "Completed!",
+            tl: "Tapos na!",
+            bis: "Nahuman na!",
+          }),
+          text: translate(language, {
+            en: "Lesson marked as completed.",
+            tl: "Naka-mark na ang lesson bilang tapos.",
+            bis: "Na-mark na ang leksiyon nga nahuman na.",
+          }),
           icon: "success",
           timer: 1800,
           showConfirmButton: false,
@@ -193,13 +231,23 @@ const Lesson = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-muted-foreground">Lesson not found</h2>
+          <h2 className="text-xl font-bold text-muted-foreground">
+            {translate(language, {
+              en: "Lesson not found",
+              tl: "Walang nahanap na lesson",
+              bis: "Wala nakit-an nga leksiyon",
+            })}
+          </h2>
           <Button 
             onClick={() => navigate("/dashboard")} 
             className="mt-4"
             type="primary"
           >
-            Back to Dashboard
+            {translate(language, {
+              en: "Back to Dashboard",
+              tl: "Bumalik sa Dashboard",
+              bis: "Balik sa Dashboard",
+            })}
           </Button>
         </div>
       </div>
@@ -229,7 +277,13 @@ const Lesson = () => {
             >
               <ArrowLeft className="w-5 h-5 text-primary" />
             </button>
-            <h1 className="text-lg font-semibold text-primary">Daily Lesson</h1>
+            <h1 className="text-lg font-semibold text-primary">
+              {translate(language, {
+                en: "Daily Lesson",
+                tl: "Araw-araw na Lesson",
+                bis: "Adlaw-adlaw nga Leksyon",
+              })}
+            </h1>
           </div>
           <div className="w-10 h-10 rounded-full bg-card border-2 border-border flex items-center justify-center overflow-hidden">
             <img 
@@ -256,7 +310,13 @@ const Lesson = () => {
         {/* Reading Progress */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-muted-foreground">Reading Progress:</span>
+            <span className="text-sm text-muted-foreground">
+              {translate(language, {
+                en: "Reading Progress:",
+                tl: "Pag-usad sa Pagbabasa:",
+                bis: "Pag-uswag sa Pagbasa:",
+              })}
+            </span>
             <span className="text-sm font-medium text-primary">{progressPercentage}%</span>
           </div>
           <Progress 
@@ -273,7 +333,13 @@ const Lesson = () => {
           {/* Show full content if available, otherwise show description */}
           {article.fullContent && (
             <div className="mb-4">
-              <h4 className="font-semibold text-foreground mb-3">Content:</h4>
+              <h4 className="font-semibold text-foreground mb-3">
+                {translate(language, {
+                  en: "Content:",
+                  tl: "Nilalaman:",
+                  bis: "Sulod:",
+                })}
+              </h4>
               <p className="text-foreground leading-relaxed">
                 {article.fullContent}
               </p>
@@ -294,7 +360,13 @@ const Lesson = () => {
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-foreground mb-2">Learn More:</h4>
+                  <h4 className="font-medium text-foreground mb-2">
+                    {translate(language, {
+                      en: "Learn More:",
+                      tl: "Matuto Pa:",
+                      bis: "Dugangi ang Kahibalo:",
+                    })}
+                  </h4>
                   <a 
                     href={article.externalLink}
                     target="_blank"
@@ -315,7 +387,13 @@ const Lesson = () => {
             <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
               <div className="w-8 h-8 bg-muted rounded"></div>
             </div>
-            <p className="text-sm">Lesson illustration</p>
+            <p className="text-sm">
+              {translate(language, {
+                en: "Lesson illustration",
+                tl: "Ilustrasyon ng lesson",
+                bis: "Hulagway sa leksiyon",
+              })}
+            </p>
           </div>
         </div>
 
@@ -325,7 +403,13 @@ const Lesson = () => {
           {isCompleted ? (
             <div className="flex items-center justify-center gap-2 py-3 bg-primary/10 rounded-xl border border-primary/20">
               <CheckCircle className="w-5 h-5 text-primary" />
-              <span className="text-primary font-medium">Lesson Completed!</span>
+              <span className="text-primary font-medium">
+                {translate(language, {
+                  en: "Lesson Completed!",
+                  tl: "Tapos na ang lesson!",
+                  bis: "Nahuman na ang leksiyon!",
+                })}
+              </span>
             </div>
           ) : (
             <Button
@@ -336,7 +420,11 @@ const Lesson = () => {
               className="h-12 rounded-xl font-medium shadow-sm"
               icon={<CheckCircle className="w-5 h-5" />}
             >
-              Mark as Complete
+              {translate(language, {
+                en: "Mark as Complete",
+                tl: "Markahan bilang Tapos",
+                bis: "I-mark nga Nahuman",
+              })}
             </Button>
           )}
 
@@ -348,7 +436,11 @@ const Lesson = () => {
             className="h-12 rounded-xl font-medium border-2 border-primary text-primary hover:bg-primary hover:text-white"
             icon={<HelpCircle className="w-5 h-5" />}
           >
-            Quiz
+            {translate(language, {
+              en: "Quiz",
+              tl: "Quiz",
+              bis: "Quiz",
+            })}
           </Button>
 
           {/* Share Button */}
@@ -359,7 +451,11 @@ const Lesson = () => {
             className="h-12 rounded-xl font-medium bg-card border-2 border-border text-foreground hover:bg-muted shadow-sm"
             icon={<Share2 className="w-5 h-5" />}
           >
-            Share with Family
+            {translate(language, {
+              en: "Share with Family",
+              tl: "Ibahagi sa Pamilya",
+              bis: "I-share sa Pamilya",
+            })}
           </Button>
         </div>
       </div>

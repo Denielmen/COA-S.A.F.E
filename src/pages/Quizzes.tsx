@@ -5,11 +5,13 @@ import { Button, Badge, Progress } from "antd";
 import { monthlyQuizzes, hasQuizForMonth } from "@/data/quizzes";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import BottomNavigation from "@/components/BottomNavigation";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const Quizzes = () => {
   const navigate = useNavigate();
   const { isMonthCompleted, getStats } = useUserProgress();
   const stats = getStats();
+  const language = getCurrentLanguage();
 
   const months = [
     "January", "February", "March", "April", "May", "June",
@@ -80,10 +82,21 @@ const Quizzes = () => {
             >
               <ArrowLeft className="w-5 h-5 text-primary" />
             </button>
-            <h1 className="text-lg font-semibold text-primary">Monthly Quizzes</h1>
+            <h1 className="text-lg font-semibold text-primary">
+              {translate(language, {
+                en: "Monthly Quizzes",
+                tl: "Mga Quiz Buwan-buwan",
+                bis: "Mga Quiz Matag Bulan",
+              })}
+            </h1>
           </div>
           <div className="text-sm text-gray-600">
-            {availableQuizzes} / {monthlyQuizzes.length} available
+            {availableQuizzes} / {monthlyQuizzes.length}{" "}
+            {translate(language, {
+              en: "available",
+              tl: "na available",
+              bis: "nga available",
+            })}
           </div>
         </div>
       </div>
@@ -93,15 +106,31 @@ const Quizzes = () => {
         <div className="text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Trophy className="w-6 h-6 text-primary" />
-            <h2 className="text-xl font-bold text-gray-900">Activity Center</h2>
+            <h2 className="text-xl font-bold text-gray-900">
+              {translate(language, {
+                en: "Activity Center",
+                tl: "Sentro ng Gawain",
+                bis: "Sentro sa Aktibidad",
+              })}
+            </h2>
           </div>
           <p className="text-sm text-gray-600 mb-4">
-            Complete monthly challenges to unlock quizzes and test your knowledge!
+            {translate(language, {
+              en: "Complete monthly challenges to unlock quizzes and test your knowledge!",
+              tl: "Tapusin ang mga buwanang hamon para ma-unlock ang quizzes at masubukan ang iyong kaalaman!",
+              bis: "Humanon ang mga hagit matag bulan para ma-unlock ang quizzes ug matestingan ang imong kahibalo!",
+            })}
           </p>
           <div className="flex justify-center">
             <div className="bg-white rounded-2xl px-6 py-3 shadow-sm border border-gray-200">
               <div className="text-2xl font-bold text-primary">{availableQuizzes}</div>
-              <div className="text-xs text-gray-600">Quizzes Unlocked</div>
+              <div className="text-xs text-gray-600">
+                {translate(language, {
+                  en: "Quizzes Unlocked",
+                  tl: "Mga Quiz na Na-unlock",
+                  bis: "Mga Quiz nga Na-unlock",
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -110,12 +139,42 @@ const Quizzes = () => {
       {/* How it Works */}
       <div className="px-4 py-4">
         <div className="bg-white rounded-2xl p-4 border border-gray-200 mb-6 shadow-sm">
-          <h3 className="font-semibold text-primary mb-2">How it works:</h3>
+          <h3 className="font-semibold text-primary mb-2">
+            {translate(language, {
+              en: "How it works:",
+              tl: "Paano ito gumagana:",
+              bis: "Unsaon ni siya pagtrabaho:",
+            })}
+          </h3>
           <ul className="text-sm text-foreground space-y-1">
-            <li>• Complete 80% of lessons in a month to unlock its quiz</li>
-            <li>• Each quiz has 5 questions about that month's topics</li>
-            <li>• Score 70% or higher to pass the quiz</li>
-            <li>• Earn rewards and level up your knowledge!</li>
+            <li>
+              {translate(language, {
+                en: "• Complete 80% of lessons in a month to unlock its quiz",
+                tl: "• Tapusin ang 80% ng mga leksyon sa isang buwan para ma-unlock ang quiz nito",
+                bis: "• Humanon ang 80% sa mga leksiyon sa usa ka bulan para ma-unlock ang iyang quiz",
+              })}
+            </li>
+            <li>
+              {translate(language, {
+                en: "• Each quiz has 5 questions about that month's topics",
+                tl: "• Bawat quiz ay may 5 tanong tungkol sa paksa ng buwan na iyon",
+                bis: "• Kada quiz adunay 5 ka pangutana bahin sa mga hilisgutan sa maong bulan",
+              })}
+            </li>
+            <li>
+              {translate(language, {
+                en: "• Score 70% or higher to pass the quiz",
+                tl: "• Kailangan ng 70% o mas mataas para pumasa sa quiz",
+                bis: "• Kinahanglan 70% o mas taas para makapasar sa quiz",
+              })}
+            </li>
+            <li>
+              {translate(language, {
+                en: "• Earn rewards and level up your knowledge!",
+                tl: "• Kumita ng rewards at i-level up ang iyong kaalaman!",
+                bis: "• Makakuha og rewards ug mapa-taas ang imong kahibalo!",
+              })}
+            </li>
           </ul>
         </div>
 
@@ -190,8 +249,22 @@ const Quizzes = () => {
                 {quiz && (
                   <div className="mt-3 pt-3 border-t border-gray-200">
                     <div className="flex items-center justify-between text-xs text-gray-600">
-                      <span>{quiz.questions.length} questions</span>
-                      <span>Pass: {quiz.passingScore}%</span>
+                      <span>
+                        {quiz.questions.length}{" "}
+                        {translate(language, {
+                          en: "questions",
+                          tl: "mga tanong",
+                          bis: "ka pangutana",
+                        })}
+                      </span>
+                      <span>
+                        {translate(language, {
+                          en: "Pass",
+                          tl: "Pasa",
+                          bis: "Pasa",
+                        })}
+                        : {quiz.passingScore}%
+                      </span>
                     </div>
                   </div>
                 )}
@@ -201,7 +274,11 @@ const Quizzes = () => {
                     <div className="flex items-center gap-2">
                       <Lock className="w-4 h-4 text-gray-400" />
                       <span className="text-xs text-gray-500">
-                        Complete {monthName} challenges to unlock
+                        {translate(language, {
+                          en: `Complete ${monthName} challenges to unlock`,
+                          tl: `Tapusin ang mga hamon sa ${monthName} para ma-unlock`,
+                          bis: `Huma ang mga hagit sa ${monthName} para ma-unlock`,
+                        })}
                       </span>
                     </div>
                   </div>

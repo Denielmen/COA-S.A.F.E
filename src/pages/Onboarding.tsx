@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import familyProtectionImg from "/images/image 1.jpg";
 import interactiveLearningImg from "/images/image 2.jpg";
 import educationalContentImg from "/images/image 3.jpg";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const onboardingData = [
   {
@@ -35,6 +36,7 @@ const onboardingData = [
 const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const navigate = useNavigate();
+  const language = getCurrentLanguage();
 
   const handleNext = () => {
     if (currentStep < onboardingData.length - 1) {
@@ -111,7 +113,11 @@ const Onboarding = () => {
           onClick={handleSkip}
           className="text-primary font-semibold hover:bg-transparent"
         >
-          Skip
+          {translate(language, {
+            en: "Skip",
+            tl: "Laktawan",
+            bis: "Lakta",
+          })}
         </Button>
         <Button
           type="primary"
@@ -121,7 +127,17 @@ const Onboarding = () => {
           icon={<ArrowRight className="w-5 h-5" />}
           iconPosition="end"
         >
-          {isLastStep ? "Get Started" : "Next"}
+          {isLastStep
+            ? translate(language, {
+                en: "Get Started",
+                tl: "Magsimula",
+                bis: "Sugdi na",
+              })
+            : translate(language, {
+                en: "Next",
+                tl: "Susunod",
+                bis: "Sunod",
+              })}
         </Button>
       </div>
     </div>
