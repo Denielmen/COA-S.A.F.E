@@ -176,7 +176,7 @@ const GlobalAudio = () => {
     let removeAppState: (() => void) | null = null;
     import("@capacitor/app")
       .then(({ App }) => {
-        const sub = App.addListener("appStateChange", ({ isActive }) => {
+        App.addListener("appStateChange", ({ isActive }) => {
           const a = audioRef.current;
           if (!a) return;
           if (!isActive) {
@@ -185,8 +185,9 @@ const GlobalAudio = () => {
             a.volume = computeVolumeFromSettings();
             a.play().catch(() => {});
           }
+        }).then(sub => {
+          removeAppState = () => sub.remove();
         });
-        removeAppState = () => sub.remove();
       })
       .catch(() => {});
 

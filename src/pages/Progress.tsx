@@ -7,20 +7,40 @@ import { dailyArticles } from "@/data/dailyArticles";
 import BottomNavigation from "@/components/BottomNavigation";
 import { getCurrentLanguage, translate } from "@/lib/utils";
 
-const boyCharacterImg = "/images/boy.png";
-const girlCharacterImg = "/images/girl.png";
+const characterImg = "/images/pfp!!.jpeg";
+const rewardCharacterImg1 = "/images/_ (1).jpeg";
+const rewardCharacterImg2 = "/images/_ (2).jpeg";
 
 const Progress = () => {
   const navigate = useNavigate();
   const [selectedCharacter] = useState<"boy" | "girl">(() => {
     return (localStorage.getItem("selectedCharacter") as "boy" | "girl") || "girl";
   });
-  const { getStats } = useUserProgress();
+  const { getStats, progress } = useUserProgress();
   const stats = getStats();
 
   const totalLessons = dailyArticles.length;
   const completionPercentage = Math.round((stats.completed / totalLessons) * 100);
   const passScore = 85.5; // Example pass score
+
+  // Check if user has earned any rewards
+  const hasEarnedRewards = progress.earnedRewards.length > 0;
+  
+  // Determine which image to show based on current month and rewards
+  const getCharacterImage = () => {
+    const currentMonth = new Date().getMonth() + 1; // 1-12 for Jan-Dec
+    
+    switch(currentMonth) {
+      case 1: // January
+        return characterImg; // pfp!!.jpeg
+      case 2: // February
+        return rewardCharacterImg1; // _ (1).jpeg
+      case 3: // March
+        return rewardCharacterImg2; // _ (2).jpeg
+      default:
+        return characterImg; // Default to base image for other months
+    }
+  };
 
   const [activeTab, setActiveTab] = useState("overview");
   const language = getCurrentLanguage();
@@ -86,8 +106,8 @@ const Progress = () => {
               <div className="text-center">
                 <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-3 flex items-center justify-center border-4 border-primary">
                   <img 
-                    src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
-                    alt={`${selectedCharacter} character`}
+                    src={getCharacterImage()}
+                    alt="character"
                     className="w-16 h-16 object-contain"
                   />
               </div>
@@ -109,7 +129,7 @@ const Progress = () => {
                 })}
               </p>
                 <div className="flex items-center justify-center gap-1 mt-1">
-                  <span className="text-secondary text-lg">70%</span>
+                  <span className="text-secondary text-lg">{completionPercentage}%</span>
                   <Trophy className="w-4 h-4 text-secondary" />
                 </div>
               </div>
@@ -120,11 +140,16 @@ const Progress = () => {
               <div className="text-center h-full flex flex-col justify-center">
                 <div className="w-24 h-24 mx-auto mb-2">
                   <img 
-                    src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
+                    src={getCharacterImage()}
                     alt="character"
                     className="w-full h-full object-contain"
                   />
                 </div>
+                {hasEarnedRewards && (
+                  <div className="text-xs text-primary font-medium">
+                    Rewards Earned: {progress.earnedRewards.length}
+                  </div>
+                )}
               </div>
             </Card>
           </div>

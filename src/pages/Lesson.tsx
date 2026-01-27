@@ -351,8 +351,20 @@ const Lesson = () => {
               {article.description}
             </p>
           )}
+        </div>
 
-          {/* Show external link if available */}
+          {/* Image placeholder - you can add actual images here */}
+        <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
+          <div className="text-center text-muted-foreground">
+            <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
+              <div className="w-8 h-8 bg-muted rounded"></div>
+            </div>
+            <p className="text-sm">Lesson illustration</p>
+          </div>
+        </div>
+
+        {/* Show external link if available */}
+        <div>
           {article.externalLink && (
             <div className="mt-4 p-4 bg-green-50 rounded-xl border-l-4 border-green-500">
               <div className="flex items-start gap-3">

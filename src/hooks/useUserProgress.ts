@@ -8,6 +8,7 @@ interface UserProgress {
   currentStreak: number;
   currentLevel: number;
   earnedRewards: string[]; // Array of earned reward dates
+  quizScores: { [month: number]: number }; // Store quiz scores by month
 }
 
 interface UserStats {
@@ -24,7 +25,8 @@ export const useUserProgress = () => {
     lastActiveDate: null,
     currentStreak: 0,
     currentLevel: 1,
-    earnedRewards: []
+    earnedRewards: [],
+    quizScores: {}
   });
 
   // Load progress from localStorage on mount
@@ -165,8 +167,28 @@ export const useUserProgress = () => {
       lastActiveDate: null,
       currentStreak: 0,
       currentLevel: 1,
-      earnedRewards: []
+      earnedRewards: [],
+      quizScores: {}
     });
+  };
+
+  const setQuizScore = (month: number, score: number) => {
+    setProgress(prev => ({
+      ...prev,
+      quizScores: {
+        ...prev.quizScores,
+        [month]: score
+      }
+    }));
+  };
+
+  const getQuizScore = (month: number): number | null => {
+    return progress.quizScores[month] || null;
+  };
+
+  const isQuizPassed = (month: number): boolean => {
+    const score = getQuizScore(month);
+    return score !== null && score >= 70;
   };
 
   const isMonthCompleted = (month: number, year?: number): boolean => {
@@ -192,6 +214,9 @@ export const useUserProgress = () => {
     isMonthCompleted,
     getStats,
     resetProgress,
-    updateStreakOnAppOpen
+    updateStreakOnAppOpen,
+    setQuizScore,
+    getQuizScore,
+    isQuizPassed
   };
 };

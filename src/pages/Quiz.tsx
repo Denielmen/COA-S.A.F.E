@@ -4,10 +4,11 @@ import { ArrowLeft, CheckCircle, XCircle, Trophy, RotateCcw } from "lucide-react
 import { Button, Progress, Card } from "antd";
 import { getQuizForMonth, type MonthlyQuiz, type QuizQuestion } from "@/data/quizzes";
 import { getCurrentLanguage, translate } from "@/lib/utils";
-
+import { useUserProgress } from "@/hooks/useUserProgress";
 const Quiz = () => {
   const { month } = useParams<{ month: string }>();
   const navigate = useNavigate();
+  const { setQuizScore } = useUserProgress();
   const [quiz, setQuiz] = useState<MonthlyQuiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
@@ -56,6 +57,13 @@ const Quiz = () => {
 
     const percentage = Math.round((correctAnswers / quiz.questions.length) * 100);
     setScore(percentage);
+    
+    // Save quiz score if passed
+    if (month && percentage >= 70) {
+      const monthNumber = parseInt(month);
+      setQuizScore(monthNumber, percentage);
+    }
+    
     setShowResults(true);
   };
 
@@ -263,9 +271,9 @@ const Quiz = () => {
               type="primary"
               size="large"
               block
-              onClick={resetQuiz}
+              onClick={isPassed ? () => navigate("/lessons") : resetQuiz}
               className="h-12 rounded-xl font-medium"
-              icon={<RotateCcw className="w-5 h-5" />}
+              icon={isPassed ? undefined : <RotateCcw className="w-5 h-5" />}
             >
               {translate(language, {
                 en: "Try Again",

@@ -9,7 +9,7 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const Quizzes = () => {
   const navigate = useNavigate();
-  const { isMonthCompleted, getStats } = useUserProgress();
+  const { isMonthCompleted, getStats, getQuizScore, isQuizPassed } = useUserProgress();
   const stats = getStats();
   const language = getCurrentLanguage();
 
@@ -21,9 +21,14 @@ const Quizzes = () => {
   const getMonthStatus = (month: number) => {
     const monthCompleted = isMonthCompleted(month);
     const hasQuiz = hasQuizForMonth(month);
+    const quizPassed = isQuizPassed(month);
     
     if (!hasQuiz) {
       return { status: 'coming-soon', canTakeQuiz: false };
+    }
+    
+    if (quizPassed) {
+      return { status: 'completed', canTakeQuiz: false };
     }
     
     if (monthCompleted) {
@@ -233,6 +238,12 @@ const Quizzes = () => {
                     {status === 'available' && (
                       <Badge 
                         count="Available" 
+                        style={{ backgroundColor: '#10b981' }}
+                      />
+                    )}
+                    {status === 'completed' && (
+                      <Badge 
+                        count={`Done ${getQuizScore(monthNumber)}%`} 
                         style={{ backgroundColor: '#10b981' }}
                       />
                     )}

@@ -13,6 +13,7 @@ import calendarBg2nd from "/images/Project SAFE Calendar/Project SAFE Calendar E
 import calendarBg3rd from "/images/Project SAFE Calendar/Project SAFE Calendar Elements/3rd Quarter Calendar Background.png";
 import BottomNavigation from "@/components/BottomNavigation";
 import mainLoopSfx from "@/soundEffects/main.mp3";
+import { App } from '@capacitor/app';
 import { getCurrentLanguage, translate } from "@/lib/utils";
 
 // const boyCharacterImg = "/images/boy.png";
@@ -96,19 +97,17 @@ const Dashboard = () => {
 
     let removeAppState: (() => void) | null = null;
     import("@capacitor/app")
-      .then(({ App }) => {
-        const sub = App.addListener("appStateChange", ({ isActive }) => {
-          const a = mainAudioRef.current;
-          if (!a) return;
-          if (!isActive) {
-            a.pause();
-          } else {
-            void a.play();
-          }
-        });
-        removeAppState = () => sub.remove();
-      })
-      .catch(() => {});
+      App.addListener('appStateChange', ({ isActive }) => {
+        const a = mainAudioRef.current;
+        if (!a) return;
+        if (!isActive) {
+          a.pause();
+        } else {
+          void a.play();
+        }
+      }).then(handle => {
+        removeAppState = () => handle.remove();
+      }).catch(console.error);
 
     return () => {
       mainAudioRef.current?.pause();
@@ -315,12 +314,14 @@ const Dashboard = () => {
 
           <div 
             className="rounded-2xl shadow-[var(--shadow-card)] relative overflow-hidden"
+            // Background image removed as requested
             style={{
-              backgroundImage: `url(${getCalendarBackground(currentMonth)})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'right',
-              backgroundRepeat: 'no-repeat',
-              minHeight: '300px'
+              // backgroundImage: `url(${getCalendarBackground(currentMonth)})`,
+              // backgroundSize: 'cover',
+              // backgroundPosition: 'right',
+              // backgroundRepeat: 'no-repeat',
+              minHeight: '300px',
+              backgroundColor: 'white' // Adding white background to maintain contrast
             }}
           >
           <Card className="mt-5 rounded-2xl shadow-sm border border-gray-200 bg-transparent">
