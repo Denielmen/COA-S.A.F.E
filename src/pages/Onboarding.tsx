@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import familyProtectionImg from "/images/image 1.jpg";
 import interactiveLearningImg from "/images/image 2.jpg";
 import educationalContentImg from "/images/image 3.jpg";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const onboardingData = [
   {
@@ -33,6 +34,7 @@ const onboardingData = [
 const Onboarding = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const navigate = useNavigate();
+  const language = getCurrentLanguage();
 
   const handleNext = () => {
     if (currentStep < onboardingData.length - 1) {
@@ -104,6 +106,23 @@ const Onboarding = () => {
       {/* Bottom Navigation Buttons - stacked for mobile */}
       <div className="max-w-md w-full py-6">
         <button
+      {/* Bottom Navigation Buttons */}
+      <div className="max-w-md w-full flex items-center justify-between pt-6 pb-4">
+        <Button
+          type="text"
+          size="large"
+          onClick={handleSkip}
+          className="text-primary font-semibold hover:bg-transparent"
+        >
+          {translate(language, {
+            en: "Skip",
+            tl: "Laktawan",
+            bis: "Lakta",
+          })}
+        </Button>
+        <Button
+          type="primary"
+          size="large"
           onClick={handleNext}
           className="w-full bg-teal-700 hover:bg-teal-600 text-white h-12 rounded-full font-semibold shadow-md"
           aria-label={isLastStep ? "Get Started" : "Next"}
@@ -120,6 +139,18 @@ const Onboarding = () => {
             Skip
           </button>
         </div>
+          {isLastStep
+            ? translate(language, {
+                en: "Get Started",
+                tl: "Magsimula",
+                bis: "Sugdi na",
+              })
+            : translate(language, {
+                en: "Next",
+                tl: "Susunod",
+                bis: "Sunod",
+              })}
+        </Button>
       </div>
     </div>
   );

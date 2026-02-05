@@ -24,33 +24,9 @@ export let dailyArticles: DailyArticle[] = [];
 const loadArticles = async () => {
   try {
     dailyArticles = await loadArticlesFromExcel();
-    console.log(`Loaded ${dailyArticles.length} articles from Excel file`);
   } catch (error) {
     console.error('Failed to load articles from Excel, using fallback data:', error);
-    // Fallback to minimal data if Excel file fails
-    dailyArticles = [
-      {
-        day: 1,
-        month: 1,
-        title: "Our Right to Survival",
-        description: "Learn about Article 6 (Right to life) - every child's fundamental right to survive and develop.",
-        externalLink: "https://www.unicef.org/child-rights-convention/convention-text-childrens-version",
-        challengeType: 'individual'
-      },
-      {
-        day: 30,
-        month: 1,
-        title: "REWARD DAY - Gauntlets of Safety",
-        description: "Congratulations! You learned your rights for 30 days!",
-        fullContent: "🎉 Amazing achievement! You've completed 30 days of learning about your rights!",
-        challengeType: 'individual',
-        isRewardDay: true,
-        reward: {
-          title: "Armor part earned: Gauntlets of Safety",
-          message: "These gloves give you the power to protect yourself, because you know what is right and fair for you."
-        }
-      }
-    ];
+    dailyArticles = [];
   }
 };
 

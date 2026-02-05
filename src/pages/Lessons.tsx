@@ -5,6 +5,7 @@ import { Button, Badge, Spin } from "antd";
 import { dailyArticles, type DailyArticle, type ChallengeType } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import BottomNavigation from "@/components/BottomNavigation";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const Lessons = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Lessons = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { isLessonCompleted, getStats } = useUserProgress();
   const stats = getStats();
+  const language = getCurrentLanguage();
 
   // Wait for articles to load
   useEffect(() => {
@@ -117,9 +119,21 @@ const Lessons = () => {
               <ArrowLeft className="w-5 h-5 text-secondary" />
             </button>
             <h1 className="text-lg font-semibold text-primary">Tasks</h1>
+            <h1 className="text-lg font-semibold text-primary">
+              {translate(language, {
+                en: "All Lessons",
+                tl: "Lahat ng Aralin",
+                bis: "Tanang Leksyon",
+              })}
+            </h1>
           </div>
           <div className="text-sm text-gray-600">
-            {stats.completed} / {dailyArticles.length} completed
+            {stats.completed} / {dailyArticles.length}{" "}
+            {translate(language, {
+              en: "completed",
+              tl: "tapos",
+              bis: "humana",
+            })}
           </div>
         </div>
       </div>
@@ -158,14 +172,25 @@ const Lessons = () => {
               {months[selectedMonth - 1]}
             </h2>
             <p className="text-sm text-gray-600">
-              {currentMonthArticles.length} lessons available
+              {currentMonthArticles.length}{" "}
+              {translate(language, {
+                en: "lessons available",
+                tl: "mga leksyon na available",
+                bis: "ka mga leksiyon nga available",
+              })}
             </p>
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-primary">
               {completedInMonth}/{currentMonthArticles.length}
             </div>
-            <p className="text-xs text-gray-600">completed</p>
+            <p className="text-xs text-gray-600">
+              {translate(language, {
+                en: "completed",
+                tl: "tapos",
+                bis: "humana",
+              })}
+            </p>
           </div>
         </div>
       </div>
@@ -254,10 +279,18 @@ const Lessons = () => {
           <div className="text-center py-12">
             <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No lessons available
+              {translate(language, {
+                en: "No lessons available",
+                tl: "Walang mga leksyon na available",
+                bis: "Walay leksiyon nga available",
+              })}
             </h3>
             <p className="text-gray-600">
-              Lessons for {months[selectedMonth - 1]} are coming soon!
+              {translate(language, {
+                en: `Lessons for ${months[selectedMonth - 1]} are coming soon!`,
+                tl: `Paparating pa ang mga leksyon para sa ${months[selectedMonth - 1]}!`,
+                bis: `Umaabot pa ang mga leksiyon para sa ${months[selectedMonth - 1]}!`,
+              })}
             </p>
           </div>
         )}

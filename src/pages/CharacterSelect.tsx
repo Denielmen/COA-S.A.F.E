@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "antd";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import startSfx from "@/soundEffects/start.mp3";
 import Lottie from "lottie-react";
-import teamAnimation from "@/Lotties/team.json";
+import starAnimation from "@/Lotties/Star.json";
+import startSfx from "@/soundEffects/start.mp3";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
@@ -14,9 +15,11 @@ const CharacterSelect = () => {
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl" | null>(null);
   const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const language = getCurrentLanguage();
 
   const [showTransition, setShowTransition] = useState(false);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [transitionStyle, setTransitionStyle] = useState<React.CSSProperties | undefined>(undefined);
+  const [showStar, setShowStar] = useState(false);
 
   useEffect(() => {
     audioRef.current = new Audio(startSfx);
@@ -27,23 +30,23 @@ const CharacterSelect = () => {
   const handleContinue = () => {
     // Save selected character to localStorage
     localStorage.setItem("selectedCharacter", selectedCharacter);
-    // Trigger full-screen transition, then navigate after ~1.5s
+    // Trigger full-screen blue transition, then show welcome modal after ~1.5s
+    setTransitionStyle({ background: "#2563eb" });
     setShowTransition(true);
     // Play start sound at the moment the transition begins
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
       void audioRef.current.play();
     }
-    // After the swallow animation, show a welcome modal; user will proceed manually
+    // After the swallow animation, show star Lottie for 1.5s, then navigate
     setTimeout(() => {
       setShowTransition(false);
-      setShowWelcomeModal(true);
+      setShowStar(true);
+      setTimeout(() => {
+        setShowStar(false);
+        navigate("/dashboard");
+      }, 1500);
     }, 1500);
-  };
-
-  const closeWelcomeAndNavigate = () => {
-    setShowWelcomeModal(false);
-    navigate("/dashboard");
   };
 
   return (
@@ -51,10 +54,18 @@ const CharacterSelect = () => {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold text-primary">
-            Choose Your Child's Character
+            {translate(language, {
+              en: "Choose Your Child's Character",
+              tl: "Piliin ang Character ng Iyong Anak",
+              bis: "Pili-a ang Character sa Imong Anak",
+            })}
           </h1>
           <p className="text-secondary text-sm">
-            Select a character to track your progress and unlock achievements together!
+            {translate(language, {
+              en: "Select a character to track your progress and unlock achievements together!",
+              tl: "Pumili ng character para masubaybayan ang progreso at ma-unlock ang achievements nang magkasama!",
+              bis: "Pili ug character para masubaybayan ang progreso ug ma-unlock ang achievements kuyog ninyo!",
+            })}
           </p>
         </div>
 
@@ -85,6 +96,13 @@ const CharacterSelect = () => {
                 />
               </div>
               <p className="text-lg font-bold text-teal-700 capitalize">Boy</p>
+              <p className="text-lg font-bold text-accent">
+                {translate(language, {
+                  en: "Boy",
+                  tl: "Lalaki",
+                  bis: "Bata nga Lalaki",
+                })}
+              </p>
             </div>
           </Card>
 
@@ -114,6 +132,13 @@ const CharacterSelect = () => {
                 />
               </div>
               <p className="text-lg font-bold text-teal-700 capitalize">Girl</p>
+              <p className="text-lg font-bold text-accent">
+                {translate(language, {
+                  en: "Girl",
+                  tl: "Babae",
+                  bis: "Bata nga Babaye",
+                })}
+              </p>
             </div>
           </Card>
         </div>
@@ -122,6 +147,16 @@ const CharacterSelect = () => {
           <p className="text-teal-700 text-sm font-medium">Tap to select.</p>
 
           <button
+          <p className="text-primary text-sm font-medium">
+            {translate(language, {
+              en: "Let's Start!",
+              tl: "Magsimula na tayo!",
+              bis: "Magsugod ta!",
+            })}
+          </p>
+          <Button
+            type="primary"
+            size="large"
             onClick={handleContinue}
             disabled={!selectedCharacter}
             aria-disabled={!selectedCharacter}
@@ -137,28 +172,55 @@ const CharacterSelect = () => {
           <div className="flex gap-2 justify-center pt-3">
             {['boy','girl'].map((c, idx) => (
               <div key={idx} className={`w-2 h-2 rounded-full ${selectedCharacter === (c as any) ? 'bg-amber-400' : 'bg-amber-200'}`} />
+            {translate(language, {
+              en: "Continue",
+              tl: "Magpatuloy",
+              bis: "Padayon",
+            })}
+          </Button>
+          <div className="flex gap-2 justify-center pt-2">
+            {[0, 1, 2, 3].map((idx) => (
+              <div
+                key={idx}
+                className={`w-2 h-2 rounded-full ${
+                  idx === 3 ? "bg-primary" : "bg-border"
+                }`}
+              />
             ))}
           </div>
         </div>
       </div>
-      {showTransition && <div className="screen-transition" aria-hidden="true" />}
-
-      {showWelcomeModal && (
-        <div className="fixed inset-0 z-[10000] bg-black/50 flex items-center justify-center">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-sm welcome-bounce-in">
-            <div className="w-36 mx-auto">
-              <Lottie animationData={teamAnimation} loop autoplay />
-            </div>
-            <h2 className="text-xl font-bold text-center mt-4">Hi! 👋</h2>
-            <p className="text-center text-muted-foreground">Welcome back!</p>
-            <div className="mt-6 flex justify-center">
-              <Button type="primary" size="middle" onClick={closeWelcomeAndNavigate}>
-                Let’s go
-              </Button>
-            </div>
-          </div>
+      {showTransition && (
+        <div
+          className="screen-transition"
+          style={transitionStyle}
+          aria-hidden="true"
+        >
+          <h1 className="text-6xl font-bold tracking-tight safe-zoom-out">
+            <span className="text-[hsl(187,100%,42%)]">S</span>
+            <span className="text-[hsl(33,100%,50%)]">A</span>
+            <span className="text-[hsl(187,100%,42%)]">F</span>
+            <span className="text-[hsl(45,100%,51%)]">E</span>
+            <span className="text-[hsl(187,100%,42%)]"> !</span>
+          </h1>
         </div>
       )}
+
+      {showStar && (
+        <div
+          className="screen-overlay"
+          style={transitionStyle}
+          aria-hidden="true"
+        >
+          <Lottie
+            animationData={starAnimation}
+            loop={false}
+            style={{ width: 220, height: 220 }}
+          />
+        </div>
+      )}
+
+      {/* Welcome modal removed */}
     </div>
   );
 };

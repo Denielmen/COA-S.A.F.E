@@ -1,18 +1,60 @@
 import { Calendar as CalendarIcon, Book, FileQuestion, BarChart3 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 interface BottomNavigationProps {
-  activeTab?: 'calendar' | 'lessons' | 'quizzes' | 'progress';
+  activeTab?: "calendar" | "lessons" | "quizzes" | "progress";
 }
 
-const BottomNavigation = ({ activeTab = 'calendar' }: BottomNavigationProps) => {
+const BottomNavigation = ({ activeTab = "calendar" }: BottomNavigationProps) => {
   const navigate = useNavigate();
-  
+  const language = getCurrentLanguage();
+
   const navItems = [
     { id: 'calendar', icon: CalendarIcon, label: 'Calendar', path: '/dashboard' },
     { id: 'lessons', icon: Book, label: 'Tasks', path: '/lessons' },
     { id: 'quizzes', icon: FileQuestion, label: 'Challenges', path: '/quizzes' },
     { id: 'progress', icon: BarChart3, label: 'Progress', path: '/progress' }
+    {
+      id: "calendar",
+      icon: CalendarIcon,
+      label: translate(language, {
+        en: "Calendar",
+        tl: "Kalendaryo",
+        bis: "Kalendaryo",
+      }),
+      path: "/dashboard",
+    },
+    {
+      id: "lessons",
+      icon: Book,
+      label: translate(language, {
+        en: "Lessons",
+        tl: "Mga Aralin",
+        bis: "Mga Leksyon",
+      }),
+      path: "/lessons",
+    },
+    {
+      id: "quizzes",
+      icon: FileQuestion,
+      label: translate(language, {
+        en: "Activity",
+        tl: "Gawain",
+        bis: "Aktibidad",
+      }),
+      path: "/quizzes",
+    },
+    {
+      id: "progress",
+      icon: BarChart3,
+      label: translate(language, {
+        en: "Progress",
+        tl: "Progreso",
+        bis: "Progreso",
+      }),
+      path: "/progress",
+    },
   ];
 
   const handleNavigation = (path: string) => {

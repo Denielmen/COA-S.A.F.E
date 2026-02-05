@@ -1,7 +1,7 @@
 import { Card, Calendar } from "antd";
 import { CheckCircle, Flame, Star, Award, ChevronLeft, ChevronRight } from "lucide-react";
-import type { Dayjs } from 'dayjs';
-import dayjs from 'dayjs';
+import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { getArticleForDate } from "@/data/dailyArticles";
@@ -13,12 +13,14 @@ import calendarBg2nd from "/images/Project SAFE Calendar/Project SAFE Calendar E
 import calendarBg3rd from "/images/Project SAFE Calendar/Project SAFE Calendar Elements/3rd Quarter Calendar Background.png";
 import BottomNavigation from "@/components/BottomNavigation";
 import mainLoopSfx from "@/soundEffects/main.mp3";
+import { App } from '@capacitor/app';
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 // const boyCharacterImg = "/images/boy.png";
 // const girlCharacterImg = "/images/girl.png";
 
 const Dashboard = () => {
-  const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs().month(0)); // Start from January
+  const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs().month(0));
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
   const [username, setUsername] = useState<string>(() => localStorage.getItem('username') || '');
   const { isLessonCompleted, getStats, progress } = useUserProgress();
@@ -26,6 +28,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const mainAudioRef = useRef<HTMLAudioElement | null>(null);
   const resumeHandlerRef = useRef<(() => void) | null>(null);
+  const language = getCurrentLanguage();
 
   useEffect(() => {
     // Read selected character from localStorage
@@ -51,7 +54,28 @@ const Dashboard = () => {
   useEffect(() => {
     mainAudioRef.current = new Audio(mainLoopSfx);
     mainAudioRef.current.loop = true;
-    mainAudioRef.current.volume = 0.25; // 25% volume
+    // Read saved settings to set initial music volume
+    try {
+      const saved = localStorage.getItem("settings");
+      let vol = 0.25; // default 25%
+      let enabled = true;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (typeof parsed.musicVolume === "number") {
+          vol = Math.max(0, Math.min(1, parsed.musicVolume / 100));
+        } else if (typeof parsed.soundVolume === "number") {
+          vol = Math.max(0, Math.min(1, parsed.soundVolume / 100));
+        }
+        if (typeof parsed.soundEffects === "boolean") {
+          enabled = parsed.soundEffects;
+        } else if (typeof parsed.soundVolume === "number") {
+          enabled = parsed.soundVolume > 0;
+        }
+      }
+      mainAudioRef.current.volume = enabled ? vol : 0;
+    } catch {
+      mainAudioRef.current.volume = 0.25;
+    }
     mainAudioRef.current.preload = "auto";
 
     // Try autoplay; if blocked, wait for first user interaction
@@ -72,6 +96,32 @@ const Dashboard = () => {
     };
     void tryPlay();
 
+    const onVisibility = () => {
+      const a = mainAudioRef.current;
+      if (!a) return;
+      if (document.hidden) {
+        a.pause();
+      } else {
+        a.volume = a.volume; // keep same
+        void a.play();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    let removeAppState: (() => void) | null = null;
+    import("@capacitor/app")
+      App.addListener('appStateChange', ({ isActive }) => {
+        const a = mainAudioRef.current;
+        if (!a) return;
+        if (!isActive) {
+          a.pause();
+        } else {
+          void a.play();
+        }
+      }).then(handle => {
+        removeAppState = () => handle.remove();
+      }).catch(console.error);
+
     return () => {
       mainAudioRef.current?.pause();
       mainAudioRef.current = null;
@@ -79,6 +129,37 @@ const Dashboard = () => {
         document.removeEventListener("click", resumeHandlerRef.current);
         resumeHandlerRef.current = null;
       }
+      document.removeEventListener("visibilitychange", onVisibility);
+      if (removeAppState) removeAppState();
+    };
+  }, []);
+
+  // React to settings being saved to adjust music volume live
+  useEffect(() => {
+    const onSettingsSaved = (e: Event) => {
+      try {
+        const detail = (e as CustomEvent<any>).detail;
+        if (!mainAudioRef.current) return;
+        let vol = 0.25;
+        let enabled = true;
+        if (detail && typeof detail === "object") {
+          if (typeof detail.musicVolume === "number") {
+            vol = Math.max(0, Math.min(1, detail.musicVolume / 100));
+          } else if (typeof detail.soundVolume === "number") {
+            vol = Math.max(0, Math.min(1, detail.soundVolume / 100));
+          }
+          if (typeof detail.soundEffects === "boolean") {
+            enabled = detail.soundEffects;
+          } else if (typeof detail.soundVolume === "number") {
+            enabled = detail.soundVolume > 0;
+          }
+        }
+        mainAudioRef.current.volume = enabled ? vol : 0;
+      } catch {}
+    };
+    window.addEventListener("settings-saved", onSettingsSaved as EventListener);
+    return () => {
+      window.removeEventListener("settings-saved", onSettingsSaved as EventListener);
     };
   }, []);
 
@@ -89,23 +170,21 @@ const Dashboard = () => {
   const onDateSelect = (date: Dayjs) => {
     const article = getArticleForDate(date.toDate());
     if (article) {
-      // Stop idle loop when starting a lesson
       mainAudioRef.current?.pause();
-      // Navigate to lesson page with the date as parameter
-      navigate(`/lesson/${date.format('YYYY-MM-DD')}`);
+      navigate(`/lesson/${date.format("YYYY-MM-DD")}`);
     }
   };
 
   const getCalendarBackground = (month: Dayjs) => {
-    const monthNum = month.month(); // 0-11
+    const monthNum = month.month();
     if (monthNum >= 0 && monthNum <= 2) {
-      return calendarBg1st; // Jan, Feb, Mar (1st Quarter)
+      return calendarBg1st;
     } else if (monthNum >= 3 && monthNum <= 5) {
-      return calendarBg2nd; // Apr, May, Jun (2nd Quarter)
+      return calendarBg2nd;
     } else if (monthNum >= 6 && monthNum <= 8) {
-      return calendarBg3rd; // Jul, Aug, Sep (3rd Quarter)
+      return calendarBg3rd;
     } else {
-      return calendarBg1st; // Oct, Nov, Dec (fallback to 1st for now)
+      return calendarBg1st;
     }
   };
 
@@ -150,7 +229,7 @@ const Dashboard = () => {
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(prev => prev.add(1, 'month'));
+    setCurrentMonth((prev) => prev.add(1, "month"));
   };
 
   return (
@@ -168,6 +247,30 @@ const Dashboard = () => {
               </h1>
             </div>
             <p className="text-xs sm:text-sm text-gray-500 mt-2">Learn Philippine Children's Law</p>
+      <div className="bg-white p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-primary">
+              {translate(language, {
+                en: "Welcome to",
+                tl: "Maligayang pagdating sa",
+                bis: "Maayong pag-abot sa",
+              })}
+            </h1>
+            <h1 className="text-2xl font-bold tracking-tight">
+              <span className="text-[hsl(175,100%,33%)]">S</span>
+              <span className="text-[hsl(33,93%,54%)]">A</span>
+              <span className="text-[hsl(175,100%,33%)]">F</span>
+              <span className="text-[hsl(45,100%,51%)]">E</span>
+              <span className="text-[hsl(175,100%,33%)]"> !</span>
+            </h1>
+            <p className="text-sm text-secondary mt-1">
+              {translate(language, {
+                en: "Learn Philippine Children's Law",
+                tl: "Alamin ang Batas para sa mga Bata sa Pilipinas",
+                bis: "Pagtuon sa Balaod sa mga Bata sa Pilipinas",
+              })}
+            </p>
           </div>
 
           <div className="profile-rect cursor-pointer hover:scale-105 transition-transform duration-300 active:scale-95" onClick={() => navigate('/profile')} role="button" tabIndex={0}>
@@ -187,6 +290,16 @@ const Dashboard = () => {
                 <div className="text-gray-700 text-[11px] font-medium">{stats.completed}/31</div>
                 <div className="text-gray-500 text-[11px] font-medium">Lessons</div>
               </div>
+              <div className="text-xs font-semibold text-gray-600">
+                {stats.completed}/31
+              </div>
+              <div className="text-[10px] text-secondary">
+                {translate(language, {
+                  en: "Lessons",
+                  tl: "Mga Aralin",
+                  bis: "Mga Leksyon",
+                })}
+              </div>
             </div>
           </div>
         </div>
@@ -202,13 +315,21 @@ const Dashboard = () => {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3 calendar-controls">
             <h2 className="text-2xl sm:text-3xl font-bold text-orange-500">{currentMonth.format('MMMM YYYY')}</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xl font-bold text-secondary">
+              {currentMonth.format("MMMM YYYY")}
+            </h2>
             <div className="flex items-center gap-2">
-              <button 
+              <button
                 onClick={() => setCurrentMonth(dayjs())}
                 className="today-btn px-3 py-1 rounded-md text-sm font-medium shadow-sm focus:outline-none"
                 aria-label="Today"
               >
-                Today
+                {translate(language, {
+                  en: "Today",
+                  tl: "Ngayon",
+                  bis: "Karon",
+                })}
               </button>
 
               <button 
@@ -228,6 +349,15 @@ const Dashboard = () => {
             className="rounded-2xl shadow-lg relative overflow-hidden border border-gray-200 bg-white"
             style={{
               minHeight: '300px'
+            className="rounded-2xl shadow-[var(--shadow-card)] relative overflow-hidden"
+            // Background image removed as requested
+            style={{
+              // backgroundImage: `url(${getCalendarBackground(currentMonth)})`,
+              // backgroundSize: 'cover',
+              // backgroundPosition: 'right',
+              // backgroundRepeat: 'no-repeat',
+              minHeight: '300px',
+              backgroundColor: 'white' // Adding white background to maintain contrast
             }}
           >
           <Card className="mt-5 rounded-2xl shadow-sm border border-gray-200 bg-transparent">
@@ -246,19 +376,43 @@ const Dashboard = () => {
 
           {/* Challenge Type Legend */}
           <Card className="rounded-2xl shadow-[var(--shadow-card)] mt-5 mb-3 p-4 bg-white/95 backdrop-blur-sm border border-gray-200">
-            <div className="text-sm font-bold mb-3 text-center text-gray-800">Types of Challenges</div>
+            <div className="text-sm font-bold mb-3 text-center text-gray-800">
+              {translate(language, {
+                en: "Types of Challenges",
+                tl: "Mga Uri ng Hamon",
+                bis: "Mga Klase sa Hagit",
+              })}
+            </div>
             {/* <div className="flex flex-wrap items-center justify-center gap-4"> */}
               <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
                 <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FFD700' }}></div>
-                <span className="text-sm font-medium text-gray-800">Individual</span>
+                <span className="text-sm font-medium text-gray-800">
+                  {translate(language, {
+                    en: "Individual",
+                    tl: "Indibidwal",
+                    bis: "Individual",
+                  })}
+                </span>
               </div>
               <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
                 <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#00BCD4' }}></div>
-                <span className="text-sm font-medium text-gray-800">Family</span>
+                <span className="text-sm font-medium text-gray-800">
+                  {translate(language, {
+                    en: "Family",
+                    tl: "Pamilya",
+                    bis: "Pamilya",
+                  })}
+                </span>
               </div>          
               <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
                 <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: '#FF9800' }}></div>
-                <span className="text-sm font-medium text-gray-800">Social Media</span>
+                <span className="text-sm font-medium text-gray-800">
+                  {translate(language, {
+                    en: "Social Media",
+                    tl: "Social Media",
+                    bis: "Social Media",
+                  })}
+                </span>
               </div>
             {/* </div> */}
           </Card>
@@ -284,6 +438,75 @@ const Dashboard = () => {
             <p className="text-2xl font-extrabold">{stats.level}</p>
             <p className="text-sm opacity-90">Level</p>
           </div>
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-6">
+          <Card className="rounded-2xl shadow-lg border border-gray-200 bg-white p-0 overflow-hidden h-full">
+            <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
+              <div className="flex justify-center mb-2">
+                <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+              </div>
+              <div className="flex-1 flex flex-col justify-center">
+                <p className="text-xl sm:text-2xl font-bold text-primary leading-tight">{stats.completed}</p>
+                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">
+                  {translate(language, {
+                    en: "Completed",
+                    tl: "Tapos",
+                    bis: "Humana",
+                  })}
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="rounded-2xl shadow-lg border border-gray-200 bg-white p-0 overflow-hidden h-full">
+            <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
+              <div className="flex justify-center mb-2">
+                <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
+              </div>
+              <div className="flex-1 flex flex-col justify-center">
+                <p className="text-xl sm:text-2xl font-bold text-secondary leading-tight">
+                  {stats.streak}
+                </p>
+                <p className="text-xs sm:text-sm font-bold text-secondary leading-tight">
+                  {stats.streak === 1
+                    ? translate(language, {
+                        en: "day",
+                        tl: "araw",
+                        bis: "adlaw",
+                      })
+                    : translate(language, {
+                        en: "days",
+                        tl: "araw",
+                        bis: "mga adlaw",
+                      })}
+                </p>
+                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">
+                  {translate(language, {
+                    en: "Streak",
+                    tl: "Sunod-sunod na Araw",
+                    bis: "Sunod-sunod nga Adlaw",
+                  })}
+                </p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="rounded-2xl shadow-lg border border-gray-200 bg-white p-0 overflow-hidden h-full">
+            <div className="text-center py-4 px-1 sm:px-2 flex flex-col justify-between h-full min-h-[120px]">
+              <div className="flex justify-center mb-2">
+                <Star className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500 fill-yellow-500" />
+              </div>
+              <div className="flex-1 flex flex-col justify-center">
+                <p className="text-xl sm:text-2xl font-bold text-yellow-500 leading-tight">{stats.level}</p>
+                <p className="text-[10px] sm:text-xs text-gray-600 mt-1">
+                  {translate(language, {
+                    en: "Level",
+                    tl: "Antas",
+                    bis: "Lebel",
+                  })}
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
       </div>

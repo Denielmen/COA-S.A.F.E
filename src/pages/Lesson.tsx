@@ -2,12 +2,19 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
 import confetti from "canvas-confetti";
+import Lottie from "lottie-react";
+import goldingGaunlet from "@/Lotties/goldingGaunlet.json";
+import goldencandy from "@/Lotties/goldencandy.json";
+import goldenFlame from "@/Lotties/goldenFlame.json";
+import { createRoot } from "react-dom/client";
 import successSfx from "../soundEffects/success.mp3";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, CheckCircle, Share2, HelpCircle } from "lucide-react";
 import { Button, Progress } from "antd";
-import { getArticleForDate, type DailyArticle } from "@/data/dailyArticles";
+import { getArticleForDate, isRewardDay as isRewardDate, type DailyArticle } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
+import { cancelTodayReminders } from "@/notifications/mobileScheduler";
+import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
@@ -17,8 +24,9 @@ const Lesson = () => {
   const navigate = useNavigate();
   const [article, setArticle] = useState<DailyArticle | null>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
-  const { markLessonCompleted, isLessonCompleted, getStats } = useUserProgress();
+  const { markLessonCompleted, isLessonCompleted, getStats, progress } = useUserProgress();
   const stats = getStats();
+  const language = getCurrentLanguage();
 
   useEffect(() => {
     // Read selected character from localStorage
@@ -41,16 +49,37 @@ const Lesson = () => {
     if (!date) return;
 
     const result = await Swal.fire({
-      title: "Mark as completed?",
-      text: "Confirm to mark today's lesson as completed.",
+      title: translate(language, {
+        en: "Mark as completed?",
+        tl: "Markahan bilang tapos?",
+        bis: "I-mark nga nahuman na?",
+      }),
+      text: translate(language, {
+        en: "Confirm to mark today's lesson as completed.",
+        tl: "Kumpirmahin para markahan ang lesson ngayon bilang tapos.",
+        bis: "Kumpirmaha nga nahuman na nimo ang karon nga leksiyon.",
+      }),
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Yes, mark it",
-      cancelButtonText: "Cancel",
+      confirmButtonText: translate(language, {
+        en: "Yes, mark it",
+        tl: "Oo, markahan",
+        bis: "Oo, i-mark",
+      }),
+      cancelButtonText: translate(language, {
+        en: "Cancel",
+        tl: "Kanselahin",
+        bis: "Kanselahon",
+      }),
       focusCancel: true,
     });
 
     if (result.isConfirmed) {
+      // Determine if this completion is a reward day from data (source of truth)
+      const [year, month, day] = date.split('-').map(Number);
+      const selectedDate = new Date(year, month - 1, day);
+      const isMilestone = Boolean(article?.isRewardDay ?? isRewardDate(selectedDate));
+
       try {
         const audio = new Audio(successSfx);
         const saved = localStorage.getItem("settings");
@@ -61,6 +90,8 @@ const Lesson = () => {
             const parsed = JSON.parse(saved);
             if (typeof parsed.successVolume === "number") {
               vol = Math.max(0, Math.min(1, parsed.successVolume / 100));
+            } else if (typeof parsed.soundVolume === "number") {
+              vol = Math.max(0, Math.min(1, parsed.soundVolume / 100));
             }
             if (typeof parsed.soundEffects === "boolean") {
               enabled = parsed.soundEffects;
@@ -74,25 +105,109 @@ const Lesson = () => {
           await audio.play();
         }
       } catch {}
-      // Celebrate with confetti
-      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-      setTimeout(() => {
-        confetti({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 } });
-        confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } });
-      }, 200);
+      // Celebrate with confetti (bigger for milestone)
+      if (isMilestone) {
+        confetti({ particleCount: 150, spread: 100, startVelocity: 45, origin: { y: 0.6 } });
+        setTimeout(() => {
+          confetti({ particleCount: 120, angle: 60, spread: 75, origin: { x: 0, y: 0.6 } });
+          confetti({ particleCount: 120, angle: 120, spread: 75, origin: { x: 1, y: 0.6 } });
+        }, 250);
+      } else {
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+        setTimeout(() => {
+          confetti({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 } });
+          confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } });
+        }, 200);
+      }
 
       // Parse date string manually to avoid timezone issues
-      const [year, month, day] = date.split('-').map(Number);
-      const selectedDate = new Date(year, month - 1, day);
       markLessonCompleted(selectedDate);
+      // Cancel today's native reminders since user completed the module
+      try { await cancelTodayReminders(); } catch {}
 
-      await Swal.fire({
-        title: "Completed!",
-        text: "Lesson marked as completed.",
-        icon: "success",
-        timer: 1800,
-        showConfirmButton: false,
-      });
+      if (isMilestone) {
+        // Determine which Lottie to use based on the nth 30th-day completion
+        const priorThirtyCompletions = progress.completedLessons.reduce((count, ds) => {
+          const [yy, mm, dd] = ds.split('-').map(Number);
+          return count + (dd === 30 ? 1 : 0);
+        }, 0);
+        const currentThirtyIndex = priorThirtyCompletions + 1; // this milestone is the next one
+        let selectedAnimation = goldenFlame; // default for 3rd and onward
+        if (currentThirtyIndex === 1) {
+          selectedAnimation = goldingGaunlet;
+        } else if (currentThirtyIndex === 2) {
+          selectedAnimation = goldencandy;
+        } // 3rd, 4th, 5th... use goldenFlame
+
+        const rewardTitle =
+          article?.reward?.title ??
+          translate(language, {
+            en: "Reward Day! 🎉",
+            tl: "Reward Day! 🎉",
+            bis: "Adlaw sa Ganti! 🎉",
+          });
+        const rewardMessage =
+          article?.reward?.message ??
+          translate(language, {
+            en: "Fantastic job — you completed 30 days of learning!",
+            tl: "Ang galing — natapos mo ang 30 araw ng pag-aaral!",
+            bis: "Nindot kaayo — nahuman nimo ang 30 ka adlaw sa pagtuon!",
+          });
+
+        // Mount Lottie into SweetAlert content
+        let lottieRoot: ReturnType<typeof createRoot> | null = null;
+        await Swal.fire({
+          title: rewardTitle,
+          html: `
+            <div class="reward-content" style="display:flex;flex-direction:column;align-items:center;">
+          <div id="reward-lottie" class="reward-lottie-pulse" style="width:min(90vw, 780px);height:min(90vw, 780px);margin:0 auto"></div>
+              <p style="margin-top:8px;text-align:center;">${rewardMessage}</p>
+              <div class="badge">Day ${displayDay}</div>
+            </div>
+          `,
+          showConfirmButton: true,
+          confirmButtonText: "Claim Reward 🎁",
+          customClass: {
+            popup: "reward-modal",
+            title: "reward-title",
+            htmlContainer: "reward-content",
+            confirmButton: "reward-confirm",
+          },
+          showClass: { popup: "reward-popup-enter" },
+          hideClass: { popup: "reward-popup-exit" },
+          didOpen: () => {
+            const container = document.getElementById("reward-lottie");
+            if (container) {
+              lottieRoot = createRoot(container);
+              lottieRoot.render(
+                <Lottie animationData={selectedAnimation} loop={true} autoplay={true} style={{ width: "100%", height: "100%" }} />
+              );
+            }
+          },
+          willClose: () => {
+            if (lottieRoot) {
+              lottieRoot.unmount();
+              lottieRoot = null;
+            }
+          }
+        });
+      } else {
+        await Swal.fire({
+          title: translate(language, {
+            en: "Completed!",
+            tl: "Tapos na!",
+            bis: "Nahuman na!",
+          }),
+          text: translate(language, {
+            en: "Lesson marked as completed.",
+            tl: "Naka-mark na ang lesson bilang tapos.",
+            bis: "Na-mark na ang leksiyon nga nahuman na.",
+          }),
+          icon: "success",
+          timer: 1800,
+          showConfirmButton: false,
+        });
+      }
     }
   };
 
@@ -114,15 +229,25 @@ const Lesson = () => {
 
   if (!article || !date) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-600">Lesson not found</h2>
+          <h2 className="text-xl font-bold text-muted-foreground">
+            {translate(language, {
+              en: "Lesson not found",
+              tl: "Walang nahanap na lesson",
+              bis: "Wala nakit-an nga leksiyon",
+            })}
+          </h2>
           <Button 
             onClick={() => navigate("/dashboard")} 
             className="mt-4"
             type="primary"
           >
-            Back to Dashboard
+            {translate(language, {
+              en: "Back to Dashboard",
+              tl: "Bumalik sa Dashboard",
+              bis: "Balik sa Dashboard",
+            })}
           </Button>
         </div>
       </div>
@@ -134,22 +259,33 @@ const Lesson = () => {
     return isLessonCompleted(new Date(year, month - 1, day));
   })() : false;
   const progressPercentage = Math.round((stats.completed / 31) * 100);
+  // Safer day parsing to avoid timezone issues in display
+  const displayDay = (() => {
+    const [y, m, d] = date.split('-').map(Number);
+    return d;
+  })();
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
+      <div className="bg-card border-b border-border px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button 
               onClick={() => navigate("/dashboard")}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-muted rounded-full transition-colors"
             >
               <ArrowLeft className="w-5 h-5 text-primary" />
             </button>
-            <h1 className="text-lg font-semibold text-primary">Daily Lesson</h1>
+            <h1 className="text-lg font-semibold text-primary">
+              {translate(language, {
+                en: "Daily Lesson",
+                tl: "Araw-araw na Lesson",
+                bis: "Adlaw-adlaw nga Leksyon",
+              })}
+            </h1>
           </div>
-          <div className="w-10 h-10 rounded-full bg-white border-2 border-gray-200 flex items-center justify-center overflow-hidden">
+          <div className="w-10 h-10 rounded-full bg-card border-2 border-border flex items-center justify-center overflow-hidden">
             <img 
               src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
               alt={`${selectedCharacter} character`}
@@ -164,9 +300,9 @@ const Lesson = () => {
         {/* Day and Title */}
         <div className="mb-6">
           <div className="text-sm text-primary font-medium mb-2">
-            Day {new Date(date).getDate()}
+            Day {displayDay}
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 leading-tight">
+          <h2 className="text-2xl font-bold text-foreground leading-tight">
             {article.title}
           </h2>
         </div>
@@ -174,7 +310,13 @@ const Lesson = () => {
         {/* Reading Progress */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-600">Reading Progress:</span>
+            <span className="text-sm text-muted-foreground">
+              {translate(language, {
+                en: "Reading Progress:",
+                tl: "Pag-usad sa Pagbabasa:",
+                bis: "Pag-uswag sa Pagbasa:",
+              })}
+            </span>
             <span className="text-sm font-medium text-primary">{progressPercentage}%</span>
           </div>
           <Progress 
@@ -187,24 +329,42 @@ const Lesson = () => {
         </div>
 
         {/* Article Content */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-6">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border mb-6">
           {/* Show full content if available, otherwise show description */}
           {article.fullContent && (
             <div className="mb-4">
-              <h4 className="font-semibold text-gray-900 mb-3">Content:</h4>
-              <p className="text-gray-800 leading-relaxed">
+              <h4 className="font-semibold text-foreground mb-3">
+                {translate(language, {
+                  en: "Content:",
+                  tl: "Nilalaman:",
+                  bis: "Sulod:",
+                })}
+              </h4>
+              <p className="text-foreground leading-relaxed">
                 {article.fullContent}
               </p>
             </div>
           )}
           
           {!article.fullContent && (
-            <p className="text-gray-800 leading-relaxed mb-4">
+            <p className="text-foreground leading-relaxed mb-4">
               {article.description}
             </p>
           )}
+        </div>
 
-          {/* Show external link if available */}
+          {/* Image placeholder - you can add actual images here */}
+        <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
+          <div className="text-center text-muted-foreground">
+            <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
+              <div className="w-8 h-8 bg-muted rounded"></div>
+            </div>
+            <p className="text-sm">Lesson illustration</p>
+          </div>
+        </div>
+
+        {/* Show external link if available */}
+        <div>
           {article.externalLink && (
             <div className="mt-4 p-4 bg-green-50 rounded-xl border-l-4 border-green-500">
               <div className="flex items-start gap-3">
@@ -212,7 +372,13 @@ const Lesson = () => {
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Learn More:</h4>
+                  <h4 className="font-medium text-foreground mb-2">
+                    {translate(language, {
+                      en: "Learn More:",
+                      tl: "Matuto Pa:",
+                      bis: "Dugangi ang Kahibalo:",
+                    })}
+                  </h4>
                   <a 
                     href={article.externalLink}
                     target="_blank"
@@ -228,12 +394,18 @@ const Lesson = () => {
         </div>
 
         {/* Image placeholder - you can add actual images here */}
-        <div className="bg-gray-50 rounded-2xl h-48 mb-6 flex items-center justify-center border border-gray-200">
-          <div className="text-center text-gray-500">
-            <div className="w-16 h-16 bg-gray-200 rounded-full mx-auto mb-2 flex items-center justify-center">
-              <div className="w-8 h-8 bg-gray-300 rounded"></div>
+        <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
+          <div className="text-center text-muted-foreground">
+            <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
+              <div className="w-8 h-8 bg-muted rounded"></div>
             </div>
-            <p className="text-sm">Lesson illustration</p>
+            <p className="text-sm">
+              {translate(language, {
+                en: "Lesson illustration",
+                tl: "Ilustrasyon ng lesson",
+                bis: "Hulagway sa leksiyon",
+              })}
+            </p>
           </div>
         </div>
 
@@ -243,7 +415,13 @@ const Lesson = () => {
           {isCompleted ? (
             <div className="flex items-center justify-center gap-2 py-3 bg-primary/10 rounded-xl border border-primary/20">
               <CheckCircle className="w-5 h-5 text-primary" />
-              <span className="text-primary font-medium">Lesson Completed!</span>
+              <span className="text-primary font-medium">
+                {translate(language, {
+                  en: "Lesson Completed!",
+                  tl: "Tapos na ang lesson!",
+                  bis: "Nahuman na ang leksiyon!",
+                })}
+              </span>
             </div>
           ) : (
             <Button
@@ -254,7 +432,11 @@ const Lesson = () => {
               className="h-12 rounded-xl font-medium shadow-sm"
               icon={<CheckCircle className="w-5 h-5" />}
             >
-              Mark as Complete
+              {translate(language, {
+                en: "Mark as Complete",
+                tl: "Markahan bilang Tapos",
+                bis: "I-mark nga Nahuman",
+              })}
             </Button>
           )}
 
@@ -266,7 +448,11 @@ const Lesson = () => {
             className="h-12 rounded-xl font-medium border-2 border-primary text-primary hover:bg-primary hover:text-white"
             icon={<HelpCircle className="w-5 h-5" />}
           >
-            Quiz
+            {translate(language, {
+              en: "Quiz",
+              tl: "Quiz",
+              bis: "Quiz",
+            })}
           </Button>
 
           {/* Share Button */}
@@ -274,10 +460,14 @@ const Lesson = () => {
             size="large"
             block
             onClick={handleShareWithFamily}
-            className="h-12 rounded-xl font-medium bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 shadow-sm"
+            className="h-12 rounded-xl font-medium bg-card border-2 border-border text-foreground hover:bg-muted shadow-sm"
             icon={<Share2 className="w-5 h-5" />}
           >
-            Share with Family
+            {translate(language, {
+              en: "Share with Family",
+              tl: "Ibahagi sa Pamilya",
+              bis: "I-share sa Pamilya",
+            })}
           </Button>
         </div>
       </div>
