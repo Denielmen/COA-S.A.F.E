@@ -37,8 +37,11 @@ const Dashboard = () => {
     }
   }, []);
 
-  // Background looped audio while user is idle on dashboard
   useEffect(() => {
+    const dashboardMusicEnabled = false;
+    if (!dashboardMusicEnabled) {
+      return;
+    }
     mainAudioRef.current = new Audio(mainLoopSfx);
     mainAudioRef.current.loop = true;
     // Read saved settings to set initial music volume
@@ -293,6 +296,7 @@ const Dashboard = () => {
               <button
                 onClick={() => setCurrentMonth(dayjs())}
                 className="px-3 py-1 bg-primary/20 text-primary rounded-lg text-sm font-medium hover:bg-primary/30 transition-colors"
+                data-onboarding="calendar-today"
               >
                 {translate(language, {
                   en: "Today",
@@ -314,6 +318,7 @@ const Dashboard = () => {
 
           <div 
             className="rounded-2xl shadow-[var(--shadow-card)] relative overflow-hidden"
+            data-onboarding="calendar-main"
             // Background image removed as requested
             style={{
               // backgroundImage: `url(${getCalendarBackground(currentMonth)})`,

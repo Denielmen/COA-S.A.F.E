@@ -11,11 +11,17 @@ const Welcome = () => {
   const language = getCurrentLanguage();
 
   useEffect(() => {
+    const onboardingCompleted = localStorage.getItem("onboardingCompleted");
+    const selectedCharacter = localStorage.getItem("selectedCharacter");
+    if (onboardingCompleted === "true" && selectedCharacter) {
+      navigate("/dashboard");
+      return;
+    }
+
     const audio = new Audio(welcomeSound);
     audioRef.current = audio;
     let handler: (() => void) | null = null;
 
-    // Try to play immediately; if blocked by browser autoplay policy, play on first user interaction.
     audio.play().catch(() => {
       handler = () => {
         audio.play().catch(() => {});
@@ -36,7 +42,7 @@ const Welcome = () => {
       audio.pause();
       audio.currentTime = 0;
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted flex flex-col items-center justify-center p-6">

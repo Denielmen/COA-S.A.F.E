@@ -468,6 +468,24 @@ const Profile = () => {
                     bis: "Pagtuon sa Balaod sa mga Bata sa Pilipinas",
                   })}
                 </p>
+                <button
+                  type="button"
+                  className="mt-3 inline-flex items-center text-xs text-primary underline"
+                  onClick={() => {
+                    try {
+                      localStorage.removeItem("safe-onboarding-tour");
+                      window.dispatchEvent(new Event("restart-onboarding-tour"));
+                    } catch (error) {
+                      console.error(error);
+                    }
+                  }}
+                >
+                  {translate(language, {
+                    en: "Restart walkthrough",
+                    tl: "I-restart ang walkthrough",
+                    bis: "I-restart ang walkthrough",
+                  })}
+                </button>
               </div>
             </Card>
           </div>

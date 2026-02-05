@@ -7,6 +7,7 @@ import { ConfigProvider } from "antd";
 import { useEffect, useRef } from "react";
 import mainSound from "@/soundEffects/main.mp3";
 import { useReminderNotifications } from "@/hooks/useReminderNotifications";
+import { OnboardingProvider } from "@/components/OnboardingOverlay";
 import Welcome from "./pages/Welcome";
 import Onboarding from "./pages/Onboarding";
 import CharacterSelect from "./pages/CharacterSelect";
@@ -230,22 +231,21 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          {/* Global audio persists across route changes */}
-          <GlobalAudio />
-          <Routes>
-            <Route path="/" element={<Welcome />} />
-            <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/character-select" element={<CharacterSelect />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/lessons" element={<Lessons />} />
-            <Route path="/lesson/:date" element={<Lesson />} />
-            <Route path="/quizzes" element={<Quizzes />} />
-            <Route path="/quiz/:month" element={<Quiz />} />
-            <Route path="/progress" element={<Progress />} />
-            <Route path="/profile" element={<Profile />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <OnboardingProvider>
+            <Routes>
+              <Route path="/" element={<Welcome />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/character-select" element={<CharacterSelect />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/lessons" element={<Lessons />} />
+              <Route path="/lesson/:date" element={<Lesson />} />
+              <Route path="/quizzes" element={<Quizzes />} />
+              <Route path="/quiz/:month" element={<Quiz />} />
+              <Route path="/progress" element={<Progress />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </OnboardingProvider>
         </BrowserRouter>
       </TooltipProvider>
     </ConfigProvider>

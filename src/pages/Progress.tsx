@@ -264,7 +264,7 @@ const Progress = () => {
           </div>
 
           {/* Overall Progress Bar */}
-          <Card className="rounded-2xl shadow-sm border border-border mb-4 bg-card">
+          <Card className="rounded-2xl shadow-sm border border-border mb-4 bg-card" data-onboarding="progress-overview">
             <h3 className="font-semibold text-foreground mb-3">
               {translate(language, {
                 en: "Overall Completion",

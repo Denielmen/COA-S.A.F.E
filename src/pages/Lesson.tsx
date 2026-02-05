@@ -19,6 +19,13 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
 
+const getMonthlyPrizeImage = (month: number): string | null => {
+  if (month === 1 || month === 2) {
+    return "/images/Project SAFE Calendar Elements-20251115T064626Z-1-001/Project SAFE Calendar Elements/Helmet of Growth.png";
+  }
+  return null;
+};
+
 const Lesson = () => {
   const { date } = useParams<{ date: string }>();
   const navigate = useNavigate();
@@ -75,10 +82,11 @@ const Lesson = () => {
     });
 
     if (result.isConfirmed) {
-      // Determine if this completion is a reward day from data (source of truth)
-      const [year, month, day] = date.split('-').map(Number);
+      const [year, month, day] = date.split("-").map(Number);
       const selectedDate = new Date(year, month - 1, day);
-      const isMilestone = Boolean(article?.isRewardDay ?? isRewardDate(selectedDate));
+      const isTestPrizeDay = month === 2 && day >= 1 && day <= 19;
+      const isRewardMilestone = Boolean(article?.isRewardDay ?? isRewardDate(selectedDate));
+      const isMilestone = isTestPrizeDay || isRewardMilestone;
 
       try {
         const audio = new Audio(successSfx);
@@ -102,95 +110,166 @@ const Lesson = () => {
         }
         if (enabled && vol > 0) {
           audio.volume = vol;
-          await audio.play();
+          audio.play().catch(() => {});
         }
       } catch {}
-      // Celebrate with confetti (bigger for milestone)
       if (isMilestone) {
-        confetti({ particleCount: 150, spread: 100, startVelocity: 45, origin: { y: 0.6 } });
+        confetti({ particleCount: 220, spread: 110, startVelocity: 55, origin: { y: 0.6 } });
         setTimeout(() => {
-          confetti({ particleCount: 120, angle: 60, spread: 75, origin: { x: 0, y: 0.6 } });
-          confetti({ particleCount: 120, angle: 120, spread: 75, origin: { x: 1, y: 0.6 } });
+          confetti({ particleCount: 160, angle: 60, spread: 80, origin: { x: 0, y: 0.6 } });
+          confetti({ particleCount: 160, angle: 120, spread: 80, origin: { x: 1, y: 0.6 } });
         }, 250);
-      } else {
-        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
         setTimeout(() => {
-          confetti({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 } });
-          confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } });
+          confetti({ particleCount: 140, spread: 90, origin: { x: 0.3, y: 0.2 } });
+          confetti({ particleCount: 140, spread: 90, origin: { x: 0.7, y: 0.2 } });
+        }, 600);
+      } else {
+        confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+        setTimeout(() => {
+          confetti({ particleCount: 70, angle: 60, spread: 55, origin: { x: 0 } });
+          confetti({ particleCount: 70, angle: 120, spread: 55, origin: { x: 1 } });
         }, 200);
       }
 
-      // Parse date string manually to avoid timezone issues
       markLessonCompleted(selectedDate);
-      // Cancel today's native reminders since user completed the module
       try { await cancelTodayReminders(); } catch {}
 
       if (isMilestone) {
-        // Determine which Lottie to use based on the nth 30th-day completion
-        const priorThirtyCompletions = progress.completedLessons.reduce((count, ds) => {
-          const [yy, mm, dd] = ds.split('-').map(Number);
-          return count + (dd === 30 ? 1 : 0);
-        }, 0);
-        const currentThirtyIndex = priorThirtyCompletions + 1; // this milestone is the next one
-        let selectedAnimation = goldenFlame; // default for 3rd and onward
-        if (currentThirtyIndex === 1) {
-          selectedAnimation = goldingGaunlet;
-        } else if (currentThirtyIndex === 2) {
-          selectedAnimation = goldencandy;
-        } // 3rd, 4th, 5th... use goldenFlame
-
-        const rewardTitle =
-          article?.reward?.title ??
-          translate(language, {
-            en: "Reward Day! 🎉",
-            tl: "Reward Day! 🎉",
-            bis: "Adlaw sa Ganti! 🎉",
+        const monthlyPrizeImage = getMonthlyPrizeImage(month);
+        if (monthlyPrizeImage) {
+          const modalTitle = translate(language, {
+            en: "🎉 Congratulations! You’ve unlocked a prize!",
+            tl: "🎉 Binabati ka! May na-unlock kang prize!",
+            bis: "🎉 Congratulations! Nakadawat kag ganti!",
           });
-        const rewardMessage =
-          article?.reward?.message ??
-          translate(language, {
-            en: "Fantastic job — you completed 30 days of learning!",
-            tl: "Ang galing — natapos mo ang 30 araw ng pag-aaral!",
-            bis: "Nindot kaayo — nahuman nimo ang 30 ka adlaw sa pagtuon!",
+          const modalMessage = translate(language, {
+            en: "You’ve completed this month’s learning journey. Enjoy your special prize!",
+            tl: "Natapos mo ang pag-aaral para sa buwan na ito. I-enjoy ang iyong espesyal na prize!",
+            bis: "Nahuman nimo ang pagtuon karong buwana. Lingia ang espesyal nga ganti!",
           });
-
-        // Mount Lottie into SweetAlert content
-        let lottieRoot: ReturnType<typeof createRoot> | null = null;
-        await Swal.fire({
-          title: rewardTitle,
-          html: `
-            <div class="reward-content" style="display:flex;flex-direction:column;align-items:center;">
-          <div id="reward-lottie" class="reward-lottie-pulse" style="width:min(90vw, 780px);height:min(90vw, 780px);margin:0 auto"></div>
-              <p style="margin-top:8px;text-align:center;">${rewardMessage}</p>
-              <div class="badge">Day ${displayDay}</div>
-            </div>
-          `,
-          showConfirmButton: true,
-          confirmButtonText: "Claim Reward 🎁",
-          customClass: {
-            popup: "reward-modal",
-            title: "reward-title",
-            htmlContainer: "reward-content",
-            confirmButton: "reward-confirm",
-          },
-          showClass: { popup: "reward-popup-enter" },
-          hideClass: { popup: "reward-popup-exit" },
-          didOpen: () => {
-            const container = document.getElementById("reward-lottie");
-            if (container) {
-              lottieRoot = createRoot(container);
-              lottieRoot.render(
-                <Lottie animationData={selectedAnimation} loop={true} autoplay={true} style={{ width: "100%", height: "100%" }} />
-              );
-            }
-          },
-          willClose: () => {
-            if (lottieRoot) {
-              lottieRoot.unmount();
-              lottieRoot = null;
-            }
+          const confirmText = translate(language, {
+            en: "Got it!",
+            tl: "Sige!",
+            bis: "Nakuha!",
+          });
+          await Swal.fire({
+            title: "",
+            html: `
+              <div class="monthly-prize-backdrop">
+                <div class="monthly-prize-image-wrapper">
+                  <div class="monthly-prize-image-mask">
+                    <img
+                      src="${monthlyPrizeImage}"
+                      alt="Monthly prize"
+                      class="monthly-prize-image"
+                      style="width:220%;height:220%;object-fit:cover;"
+                    />
+                  </div>
+                </div>
+                <button type="button" class="monthly-prize-confirm monthly-prize-cta">
+                  ${confirmText}
+                </button>
+                <div class="monthly-prize-title" style="text-align:center;">
+                  ${modalTitle}
+                </div>
+                <p class="monthly-prize-message" style="text-align:center;max-width:80ch;">
+                  ${modalMessage}
+                </p>
+                <div class="monthly-prize-meta" style="text-align:center;">
+                  Day ${displayDay}
+                </div>
+              </div>
+            `,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            customClass: {
+              popup: "monthly-prize-popup",
+            },
+            showClass: {
+              popup: "monthly-prize-popup-enter",
+            },
+            hideClass: {
+              popup: "monthly-prize-popup-exit",
+            },
+            didOpen: (popup: HTMLElement) => {
+              const btn = popup.querySelector(".monthly-prize-cta") as HTMLButtonElement | null;
+              if (!btn) return;
+              btn.disabled = true;
+              setTimeout(() => {
+                btn.classList.add("monthly-prize-confirm-visible");
+                btn.disabled = false;
+              }, 2000);
+              btn.addEventListener("click", () => {
+                Swal.close();
+              });
+            },
+          });
+        } else {
+          const priorThirtyCompletions = progress.completedLessons.reduce((count, ds) => {
+            const [yy, mm, dd] = ds.split('-').map(Number);
+            return count + (dd === 30 ? 1 : 0);
+          }, 0);
+          const currentThirtyIndex = priorThirtyCompletions + 1;
+          let selectedAnimation = goldenFlame;
+          if (currentThirtyIndex === 1) {
+            selectedAnimation = goldingGaunlet;
+          } else if (currentThirtyIndex === 2) {
+            selectedAnimation = goldencandy;
           }
-        });
+
+          const rewardTitle =
+            article?.reward?.title ??
+            translate(language, {
+              en: "Reward Day! 🎉",
+              tl: "Reward Day! 🎉",
+              bis: "Adlaw sa Ganti! 🎉",
+            });
+          const rewardMessage =
+            article?.reward?.message ??
+            translate(language, {
+              en: "Fantastic job — you completed 30 days of learning!",
+              tl: "Ang galing — natapos mo ang 30 araw ng pag-aaral!",
+              bis: "Nindot kaayo — nahuman nimo ang 30 ka adlaw sa pagtuon!",
+            });
+
+          let lottieRoot: ReturnType<typeof createRoot> | null = null;
+          await Swal.fire({
+            title: rewardTitle,
+            html: `
+              <div class="reward-content" style="display:flex;flex-direction:column;align-items:center;">
+                <div id="reward-lottie" class="reward-lottie-pulse" style="width:min(90vw, 780px);height:min(90vw, 780px);margin:0 auto"></div>
+                <p style="margin-top:8px;text-align:center;">${rewardMessage}</p>
+                <div class="badge">Day ${displayDay}</div>
+              </div>
+            `,
+            showConfirmButton: true,
+            confirmButtonText: "Claim Reward 🎁",
+            customClass: {
+              popup: "reward-modal",
+              title: "reward-title",
+              htmlContainer: "reward-content",
+              confirmButton: "reward-confirm",
+            },
+            showClass: { popup: "reward-popup-enter" },
+            hideClass: { popup: "reward-popup-exit" },
+            didOpen: () => {
+              const container = document.getElementById("reward-lottie");
+              if (container) {
+                lottieRoot = createRoot(container);
+                lottieRoot.render(
+                  <Lottie animationData={selectedAnimation} loop={true} autoplay={true} style={{ width: "100%", height: "100%" }} />
+                );
+              }
+            },
+            willClose: () => {
+              if (lottieRoot) {
+                lottieRoot.unmount();
+                lottieRoot = null;
+              }
+            }
+          });
+        }
       } else {
         await Swal.fire({
           title: translate(language, {
@@ -329,7 +408,7 @@ const Lesson = () => {
         </div>
 
         {/* Article Content */}
-        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border mb-6">
+        <div className="bg-card rounded-2xl p-6 shadow-sm border border-border mb-6" data-onboarding="lesson-content">
           {/* Show full content if available, otherwise show description */}
           {article.fullContent && (
             <div className="mb-4">
@@ -431,6 +510,7 @@ const Lesson = () => {
               onClick={handleMarkComplete}
               className="h-12 rounded-xl font-medium shadow-sm"
               icon={<CheckCircle className="w-5 h-5" />}
+              data-onboarding="lesson-complete"
             >
               {translate(language, {
                 en: "Mark as Complete",
@@ -447,6 +527,7 @@ const Lesson = () => {
             onClick={handleQuiz}
             className="h-12 rounded-xl font-medium border-2 border-primary text-primary hover:bg-primary hover:text-white"
             icon={<HelpCircle className="w-5 h-5" />}
+            data-onboarding="lesson-quiz"
           >
             {translate(language, {
               en: "Quiz",

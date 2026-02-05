@@ -27,9 +27,8 @@ const CharacterSelect = () => {
   }, []);
 
   const handleContinue = () => {
-    // Save selected character to localStorage
     localStorage.setItem("selectedCharacter", selectedCharacter);
-    // Trigger full-screen blue transition, then show welcome modal after ~1.5s
+    localStorage.setItem("onboardingCompleted", "true");
     setTransitionStyle({ background: "#2563eb" });
     setShowTransition(true);
     // Play start sound at the moment the transition begins
