@@ -11,6 +11,10 @@ const BottomNavigation = ({ activeTab = "calendar" }: BottomNavigationProps) => 
   const language = getCurrentLanguage();
 
   const navItems = [
+    { id: 'calendar', icon: CalendarIcon, label: 'Calendar', path: '/dashboard' },
+    { id: 'lessons', icon: Book, label: 'Tasks', path: '/lessons' },
+    { id: 'quizzes', icon: FileQuestion, label: 'Challenges', path: '/quizzes' },
+    { id: 'progress', icon: BarChart3, label: 'Progress', path: '/progress' }
     {
       id: "calendar",
       icon: CalendarIcon,

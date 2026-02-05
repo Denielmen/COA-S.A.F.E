@@ -11,7 +11,8 @@ const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
 
 const CharacterSelect = () => {
-  const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
+  // start with no selection so Continue is disabled until user chooses
+  const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl" | null>(null);
   const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const language = getCurrentLanguage();
@@ -72,25 +73,29 @@ const CharacterSelect = () => {
           <Card
             hoverable
             onClick={() => setSelectedCharacter("boy")}
-            className={`rounded-2xl cursor-pointer transition-all ${
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelectedCharacter('boy'); }}
+            role="button"
+            tabIndex={0}
+            className={`character-card rounded-2xl cursor-pointer transition-all p-2 ${
               selectedCharacter === "boy"
-                ? "border-4 border-primary shadow-lg scale-105"
-                : "border-2 border-border"
+                ? "selected"
+                : ""
             }`}
-            bodyStyle={{ padding: "2rem 1rem" }}
+            bodyStyle={{ padding: "1.25rem" }}
           >
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-3">
               <div className="flex justify-center">
                 <img 
                   src={boyCharacterImg} 
                   alt="Boy character"
-                  className="w-32 h-32 object-contain"
+                  className="w-36 h-36 object-contain rounded-lg"
                   onError={(e) => {
                     console.error("Failed to load boy character image:", boyCharacterImg);
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
                 />
               </div>
+              <p className="text-lg font-bold text-teal-700 capitalize">Boy</p>
               <p className="text-lg font-bold text-accent">
                 {translate(language, {
                   en: "Boy",
@@ -104,25 +109,29 @@ const CharacterSelect = () => {
           <Card
             hoverable
             onClick={() => setSelectedCharacter("girl")}
-            className={`rounded-2xl cursor-pointer transition-all ${
+            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelectedCharacter('girl'); }}
+            role="button"
+            tabIndex={0}
+            className={`character-card rounded-2xl cursor-pointer transition-all p-2 ${
               selectedCharacter === "girl"
-                ? "border-4 border-primary shadow-lg scale-105"
-                : "border-2 border-border"
+                ? "selected"
+                : ""
             }`}
-            bodyStyle={{ padding: "2rem 1rem" }}
+            bodyStyle={{ padding: "1.25rem" }}
           >
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-3">
               <div className="flex justify-center">
                 <img 
                   src={girlCharacterImg} 
                   alt="Girl character"
-                  className="w-32 h-32 object-contain"
+                  className="w-36 h-36 object-contain rounded-lg"
                   onError={(e) => {
                     console.error("Failed to load girl character image:", girlCharacterImg);
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
                 />
               </div>
+              <p className="text-lg font-bold text-teal-700 capitalize">Girl</p>
               <p className="text-lg font-bold text-accent">
                 {translate(language, {
                   en: "Girl",
@@ -135,6 +144,9 @@ const CharacterSelect = () => {
         </div>
 
         <div className="text-center space-y-4">
+          <p className="text-teal-700 text-sm font-medium">Tap to select.</p>
+
+          <button
           <p className="text-primary text-sm font-medium">
             {translate(language, {
               en: "Let's Start!",
@@ -146,10 +158,20 @@ const CharacterSelect = () => {
             type="primary"
             size="large"
             onClick={handleContinue}
-            className="h-12 px-8 text-base font-semibold rounded-full shadow-lg hover:shadow-xl"
-            icon={<ArrowRight className="w-5 h-5" />}
-            iconPosition="end"
+            disabled={!selectedCharacter}
+            aria-disabled={!selectedCharacter}
+            className={`w-full h-12 rounded-full font-semibold shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-teal-200 ${
+              selectedCharacter
+                ? 'bg-teal-700 hover:bg-teal-600 text-white'
+                : 'bg-teal-200 text-teal-700 opacity-70 cursor-not-allowed'
+            }`}
           >
+            Continue
+          </button>
+
+          <div className="flex gap-2 justify-center pt-3">
+            {['boy','girl'].map((c, idx) => (
+              <div key={idx} className={`w-2 h-2 rounded-full ${selectedCharacter === (c as any) ? 'bg-amber-400' : 'bg-amber-200'}`} />
             {translate(language, {
               en: "Continue",
               tl: "Magpatuloy",

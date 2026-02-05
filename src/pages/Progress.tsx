@@ -74,7 +74,7 @@ const Progress = () => {
               onClick={() => navigate("/dashboard")}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <ArrowLeft className="w-5 h-5 text-primary" />
+              <ArrowLeft className="w-5 h-5 text-secondary" />
             </button>
             <h1 className="text-lg font-semibold text-primary">
               {translate(language, {
@@ -104,7 +104,7 @@ const Progress = () => {
             {/* Character Card */}
             <Card className="rounded-2xl shadow-sm border border-border bg-card">
               <div className="text-center">
-                <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-3 flex items-center justify-center border-4 border-primary">
+                <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-3 flex items-center justify-center border-5 border-primary">
                   <img 
                     src={getCharacterImage()}
                     alt="character"
@@ -136,6 +136,7 @@ const Progress = () => {
             </Card>
 
             {/* Statistics Card */}
+            <Card className="rounded-2xl shadow-2xl border-2 border-primary/100">
             <Card className="rounded-2xl shadow-sm border-2 border-primary/20 bg-card">
               <div className="text-center h-full flex flex-col justify-center">
                 <div className="w-24 h-24 mx-auto mb-2">
@@ -184,6 +185,7 @@ const Progress = () => {
             </Card>
 
             {/* Pass Score */}
+            <Card className="rounded-2xl shadow-sm border-2 border-secondary/20 bg-white">
             <Card className="rounded-2xl shadow-sm border border-border bg-card">
               <div className="text-center">
                 <div className="w-10 h-10 rounded-full bg-secondary/10 mx-auto mb-2 flex items-center justify-center">

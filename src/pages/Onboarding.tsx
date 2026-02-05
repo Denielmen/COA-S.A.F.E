@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Button } from "antd";
-import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import familyProtectionImg from "/images/image 1.jpg";
 import interactiveLearningImg from "/images/image 2.jpg";
@@ -56,23 +54,23 @@ const Onboarding = () => {
   return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-between p-6 py-8">
       <div className="max-w-md w-full flex-1 flex flex-col space-y-6">
-        {/* Illustration Container */}
-        <div className="w-full rounded-3xl bg-muted shadow-md overflow-hidden mb-4">
-          <div className="flex justify-center p-6">
-            <img 
-              src={currentData.illustration} 
+        {/* Illustration Card */}
+        <div key={currentStep} className="w-full rounded-2xl bg-white shadow-lg overflow-hidden mb-6 onboarding-illustration-card">
+          <div className="p-4 sm:p-6 flex justify-center">
+            <img
+              src={currentData.illustration}
               alt={currentData.title}
-              className="w-full max-w-sm h-auto object-contain"
+              className="w-full max-w-xs sm:max-w-sm h-auto object-cover rounded-xl"
             />
           </div>
         </div>
 
         {/* Title and Description */}
-        <div className="text-center space-y-4 px-4">
-          <h2 className="text-2xl font-bold text-primary">
+        <div className="text-center space-y-3 px-4 slide-fade-in" key={`text-${currentStep}`}>
+          <h2 className="text-xl sm:text-2xl font-extrabold text-teal-700">
             {currentData.title}
           </h2>
-          <p className="text-secondary text-base leading-relaxed">
+          <p className="text-orange-500 text-sm sm:text-base leading-relaxed px-2">
             {currentData.description}
           </p>
 
@@ -90,21 +88,24 @@ const Onboarding = () => {
           )}
         </div>
 
-        {/* Navigation Indicators */}
-        <div className="flex items-center justify-center gap-2 pt-4">
+        {/* Navigation Indicators (pills) */}
+        <div className="flex items-center justify-center gap-3 pt-2">
           {onboardingData.map((_, idx) => (
             <div
               key={idx}
-              className={`rounded-full transition-all ${
+              className={
                 idx === currentStep
-                  ? "w-3 h-3 bg-secondary"
-                  : "w-2 h-2 bg-gray-300"
-              }`}
+                  ? "w-8 h-2 rounded-full bg-amber-400 transition-all"
+                  : "w-2 h-2 rounded-full bg-amber-200 transition-all"
+              }
             />
           ))}
         </div>
       </div>
 
+      {/* Bottom Navigation Buttons - stacked for mobile */}
+      <div className="max-w-md w-full py-6">
+        <button
       {/* Bottom Navigation Buttons */}
       <div className="max-w-md w-full flex items-center justify-between pt-6 pb-4">
         <Button
@@ -123,10 +124,21 @@ const Onboarding = () => {
           type="primary"
           size="large"
           onClick={handleNext}
-          className="h-12 px-8 text-base font-semibold rounded-full shadow-md hover:shadow-lg"
-          icon={<ArrowRight className="w-5 h-5" />}
-          iconPosition="end"
+          className="w-full bg-teal-700 hover:bg-teal-600 text-white h-12 rounded-full font-semibold shadow-md"
+          aria-label={isLastStep ? "Get Started" : "Next"}
         >
+          {isLastStep ? "Get Started" : "Next"}
+        </button>
+
+        <div className="mt-3 text-center">
+          <button
+            onClick={handleSkip}
+            className="text-teal-700 text-sm font-medium"
+            aria-label="Skip onboarding"
+          >
+            Skip
+          </button>
+        </div>
           {isLastStep
             ? translate(language, {
                 en: "Get Started",

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
@@ -21,11 +22,17 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("profile");
 
   const [profileData, setProfileData] = useState({
-    name: "User",
-    email: "user@example.com",
+    name: (localStorage.getItem("username") as string) || "User",
+    email: (localStorage.getItem("email") as string) || "user@example.com",
   });
 
   const [settings, setSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem('settings');
+      return saved ? JSON.parse(saved) : { notifications: true, soundEffects: true, darkMode: false, language: 'en' };
+    } catch {
+      return { notifications: true, soundEffects: true, darkMode: false, language: 'en' };
+    }
     const saved = localStorage.getItem("settings");
     return saved
       ? JSON.parse(saved)
@@ -49,6 +56,15 @@ const Profile = () => {
     localStorage.setItem("settings", JSON.stringify(newSettings));
   };
 
+  useEffect(() => {
+    // Apply dark mode class to document when toggled
+    if (settings.darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [settings.darkMode]);
+
   const handleCharacterChange = (character: "boy" | "girl") => {
     setSelectedCharacter(character);
     localStorage.setItem("selectedCharacter", character);
@@ -56,12 +72,27 @@ const Profile = () => {
 
   const handleSaveProfile = () => {
     // Save profile data
+    localStorage.setItem("username", profileData.name);
+    localStorage.setItem("email", profileData.email);
+    // notify other components (Dashboard) about update
+    try {
+      window.dispatchEvent(new CustomEvent('profileUpdated', { detail: { name: profileData.name } }));
+    } catch {
+      // ignore
+    }
     console.log("Saving profile:", profileData);
   };
 
   const handleSaveSettings = async () => {
     // Persist settings and trigger side effects
     localStorage.setItem("settings", JSON.stringify(settings));
+    // apply immediately as well
+    if (settings.darkMode) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    try {
+      window.dispatchEvent(new CustomEvent('settingsUpdated', { detail: settings }));
+    } catch {}
+    console.log("Saving settings:", settings);
     setDirty(false);
     try {
       // Notify other pages to react (e.g., adjust music volume)
