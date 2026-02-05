@@ -116,7 +116,7 @@ const Lessons = () => {
             >
               <ArrowLeft className="w-5 h-5 text-secondary" />
             </button>
-            <h1 className="text-lg font-semibold text-primary">Lessons</h1>
+            <h1 className="text-lg font-semibold text-primary">Tasks</h1>
           </div>
           <div className="text-sm text-gray-600">
             {stats.completed} / {dailyArticles.length} completed

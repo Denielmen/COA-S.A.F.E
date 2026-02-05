@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Settings, Bell, Save, Edit2 } from "lucide-react";
 import { Card, Tabs, Button, Input, Switch, Select } from "antd";
@@ -17,16 +17,27 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("profile");
 
   const [profileData, setProfileData] = useState({
-    name: "User",
-    email: "user@example.com",
+    name: (localStorage.getItem("username") as string) || "User",
+    email: (localStorage.getItem("email") as string) || "user@example.com",
   });
 
-  const [settings, setSettings] = useState({
-    notifications: true,
-    soundEffects: true,
-    darkMode: false,
-    language: "en",
+  const [settings, setSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem('settings');
+      return saved ? JSON.parse(saved) : { notifications: true, soundEffects: true, darkMode: false, language: 'en' };
+    } catch {
+      return { notifications: true, soundEffects: true, darkMode: false, language: 'en' };
+    }
   });
+
+  useEffect(() => {
+    // Apply dark mode class to document when toggled
+    if (settings.darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [settings.darkMode]);
 
   const handleCharacterChange = (character: "boy" | "girl") => {
     setSelectedCharacter(character);
@@ -35,12 +46,26 @@ const Profile = () => {
 
   const handleSaveProfile = () => {
     // Save profile data
+    localStorage.setItem("username", profileData.name);
+    localStorage.setItem("email", profileData.email);
+    // notify other components (Dashboard) about update
+    try {
+      window.dispatchEvent(new CustomEvent('profileUpdated', { detail: { name: profileData.name } }));
+    } catch {
+      // ignore
+    }
     console.log("Saving profile:", profileData);
   };
 
   const handleSaveSettings = () => {
     // Save settings
     localStorage.setItem("settings", JSON.stringify(settings));
+    // apply immediately as well
+    if (settings.darkMode) document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    try {
+      window.dispatchEvent(new CustomEvent('settingsUpdated', { detail: settings }));
+    } catch {}
     console.log("Saving settings:", settings);
   };
 

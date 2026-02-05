@@ -40,3 +40,133 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Bounce-in animation for splash letters */
+@keyframes bounceIn {
+  0% {
+    transform: translateY(-36px) scale(0.98);
+    opacity: 0;
+  }
+  55% {
+    transform: translateY(12px) scale(1.08);
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(-6px) scale(0.99);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.bounce-letter {
+  display: inline-block;
+  animation: bounceIn 700ms cubic-bezier(.2,.8,.2,1) both;
+  animation-delay: var(--delay, 0ms);
+  will-change: transform, opacity;
+  cursor: default;
+  line-height: 1;
+}
+
+/* Tagline fade-in after letters */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.tagline {
+  opacity: 0;
+  animation: fadeInUp 320ms ease forwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Reduce motion settings */
+@media (prefers-reduced-motion: reduce) {
+  .bounce-letter,
+  .tagline {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Onboarding specific styles */
+.onboarding-illustration-card {
+  border: 1px solid rgba(15, 111, 104, 0.04); /* subtle teal tint */
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(250,251,251,1) 100%);
+  padding: 6px;
+}
+
+.onboarding-illustration-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Slide + Fade animation for page content */
+@keyframes slideFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.slide-fade-in {
+  animation: slideFadeIn 420ms ease;
+}
+
+/* Slight elevation for primary button on native tap */
+button:active {
+  transform: translateY(1px);
+}
+
+/* Character selection styles */
+.character-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 6px 18px rgba(15,111,104,0.06);
+  padding: 0.5rem;
+}
+
+.character-card .text-teal-700 {
+  color: #0f6f68;
+}
+
+.character-card.selected {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 14px 30px rgba(255,160,64,0.14), 0 6px 18px rgba(15,111,104,0.08);
+  border: 6px solid rgba(255,160,64,0.12); /* warm orange accent */
+}
+
+/* Disabled continue button styling for better affordance */
+button[disabled], button[aria-disabled="true"] {
+  pointer-events: none;
+}
+
+@media (max-width: 420px) {
+  .character-card img { width: 120px; height: 120px; }
+}
+
+/* Dashboard specific rules */
+.dashboard-header { padding-bottom: 0.25rem; }
+.logo-inline { line-height: 1; }
+
+/* Profile rect on header */
+.profile-rect { background: linear-gradient(180deg,#09b6a7,#07a39b); padding: 10px 12px; border-radius: 12px; color: white; }
+.avatar-frame { width: 56px; height: 56px; border-radius: 999px; display:inline-block; box-shadow: 0 6px 14px rgba(0,0,0,0.08); }
+.notification-badge { box-shadow: 0 6px 14px rgba(255,106,0,0.18); }
+.level-badge { border-radius: 6px; box-shadow: 0 6px 14px rgba(0,0,0,0.06); }
+.lessons-top { font-size: 0.95rem; }
+
+@media (max-width: 420px) {
+  .avatar-frame { width: 48px; height: 48px; }
+  .lessons-top { font-size: 0.9rem; }
+}
+/* Calendar styling reverted to baseline (handled in src/index.css and Ant Design defaults). */
+
+/* Stats cards */
+.stat-card { min-height: 120px; }
+
+@media (max-width: 420px) {
+  .calendar-controls h2 { font-size: 1.05rem; }
+}
+
+

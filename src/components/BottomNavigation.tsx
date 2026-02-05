@@ -10,8 +10,8 @@ const BottomNavigation = ({ activeTab = 'calendar' }: BottomNavigationProps) => 
   
   const navItems = [
     { id: 'calendar', icon: CalendarIcon, label: 'Calendar', path: '/dashboard' },
-    { id: 'lessons', icon: Book, label: 'Lessons', path: '/lessons' },
-    { id: 'quizzes', icon: FileQuestion, label: 'Activity', path: '/quizzes' },
+    { id: 'lessons', icon: Book, label: 'Tasks', path: '/lessons' },
+    { id: 'quizzes', icon: FileQuestion, label: 'Challenges', path: '/quizzes' },
     { id: 'progress', icon: BarChart3, label: 'Progress', path: '/progress' }
   ];
 

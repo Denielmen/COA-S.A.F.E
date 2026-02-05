@@ -80,7 +80,7 @@ const Quizzes = () => {
             >
               <ArrowLeft className="w-5 h-5 text-primary" />
             </button>
-            <h1 className="text-lg font-semibold text-primary">Monthly Quizzes</h1>
+            <h1 className="text-lg font-semibold text-primary">Challenges</h1>
           </div>
           <div className="text-sm text-gray-600">
             {availableQuizzes} / {monthlyQuizzes.length} available
