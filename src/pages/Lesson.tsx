@@ -20,10 +20,26 @@ const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
 
 const getMonthlyPrizeImage = (month: number): string | null => {
-  if (month === 1 || month === 2) {
-    return "/images/Project SAFE Calendar Elements-20251115T064626Z-1-001/Project SAFE Calendar Elements/Helmet of Growth.png";
+  switch (month) {
+    case 1:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Chestplate of Strength.1.png";
+    case 2:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Ecoheart Amulet.1.png";
+    case 3:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Gauntlets of Safety.1.png";
+    case 4:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Boots of Stability.1.png";
+    case 5:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Shield of Wise Choices.1.png";
+    case 6:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Sword of Courage.1.png";
+    case 7:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Shoulder Pads of Resilience.1.png";
+    case 9:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Belt of Endurance.1.png";
+    default:
+      return null;
   }
-  return null;
 };
 
 const Lesson = () => {
@@ -84,9 +100,9 @@ const Lesson = () => {
     if (result.isConfirmed) {
       const [year, month, day] = date.split("-").map(Number);
       const selectedDate = new Date(year, month - 1, day);
-      const isTestPrizeDay = month === 2 && day >= 1 && day <= 19;
       const isRewardMilestone = Boolean(article?.isRewardDay ?? isRewardDate(selectedDate));
-      const isMilestone = isTestPrizeDay || isRewardMilestone;
+      const isEndOfMonth = isRewardMilestone && day === 30;
+      const isMilestone = isRewardMilestone;
 
       try {
         const audio = new Audio(successSfx);
@@ -135,7 +151,7 @@ const Lesson = () => {
       try { await cancelTodayReminders(); } catch {}
 
       if (isMilestone) {
-        const monthlyPrizeImage = getMonthlyPrizeImage(month);
+        const monthlyPrizeImage = isEndOfMonth ? getMonthlyPrizeImage(month) : null;
         if (monthlyPrizeImage) {
           const modalTitle = translate(language, {
             en: "🎉 Congratulations! You’ve unlocked a prize!",
@@ -162,7 +178,7 @@ const Lesson = () => {
                       src="${monthlyPrizeImage}"
                       alt="Monthly prize"
                       class="monthly-prize-image"
-                      style="width:220%;height:220%;object-fit:cover;"
+                      style="width:100%;height:100%;object-fit:contain;"
                     />
                   </div>
                 </div>
