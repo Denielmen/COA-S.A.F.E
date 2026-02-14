@@ -239,23 +239,15 @@ const Dashboard = () => {
     <div className="min-h-screen bg-white pb-20 mt-4">
       <div className="dashboard-header bg-white p-4 pb-2 sticky top-0 z-10">
         <div className="bg-white p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-2">
             <div>
-              <h1 className="text-2xl font-bold text-primary">
-                {translate(language, {
-                  en: "Welcome to",
-                  tl: "Maligayang pagdating sa",
-                  bis: "Maayong pag-abot sa",
-                })}
+              <h1 className="text-4xl sm:text-7xl md:text-8xl leading-none font-extrabold tracking-tight flex items-end space-x-3 select-none">
+                          <span className="bounce-letter" style={{ color: "#2F92F3", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '0ms' } as React.CSSProperties}>S</span>
+                          <span className="bounce-letter" style={{ color: "#FF6A00", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '120ms' } as React.CSSProperties}>A</span>
+                          <span className="bounce-letter" style={{ color: "#00A695", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '240ms' } as React.CSSProperties}>F</span>
+                          <span className="bounce-letter" style={{ color: "#FFC048", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '360ms' } as React.CSSProperties}>E</span>
               </h1>
-              <h1 className="text-2xl font-bold tracking-tight">
-                <span className="text-[hsl(175,100%,33%)]">S</span>
-                <span className="text-[hsl(33,93%,54%)]">A</span>
-                <span className="text-[hsl(175,100%,33%)]">F</span>
-                <span className="text-[hsl(45,100%,51%)]">E</span>
-                <span className="text-[hsl(175,100%,33%)]"> !</span>
-              </h1>
-              <p className="text-sm text-secondary mt-1">
+              <p className="text-sm text-gray-500 mt-1">
                 {translate(language, {
                   en: "Learn Philippine Children's Law",
                   tl: "Alamin ang Batas para sa mga Bata sa Pilipinas",
@@ -295,28 +287,18 @@ const Dashboard = () => {
                   </div>
                   <div className="text-gray-500 text-[11px] font-medium">Lessons</div>
                 </div>
-                <div className="text-xs font-semibold text-gray-600">
-                  {stats.completed}/31
-                </div>
-                <div className="text-[10px] text-secondary">
-                  {translate(language, {
-                    en: "Lessons",
-                    tl: "Mga Aralin",
-                    bis: "Mga Leksyon",
-                  })}
-                </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-2 border-t border-teal-100" />
+          <div className="mt-2 border-t border-teal-200" />
         </div>
       </div>
 
       <div className="px-4 mt-2 space-y-6">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3 calendar-controls">
-            <h2 className="text-2xl sm:text-3xl font-bold text-orange-500">
+            <h2 className="text-2xl sm:text-3xl ml-3 font-bold text-orange-500">
               {currentMonth.format("MMMM YYYY")}
             </h2>
             <div className="flex items-center gap-2">
@@ -377,8 +359,8 @@ const Dashboard = () => {
               bis: "Mga Klase sa Hagit",
             })}
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
+          <div className="flex flex-col items-center justify-center gap-3">
+            <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm w-full">
               <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: "#FFD700" }} />
               <span className="text-sm font-medium text-gray-800">
                 {translate(language, {
@@ -388,7 +370,7 @@ const Dashboard = () => {
                 })}
               </span>
             </div>
-            <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
+            <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm w-full">
               <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: "#00BCD4" }} />
               <span className="text-sm font-medium text-gray-800">
                 {translate(language, {
@@ -398,7 +380,7 @@ const Dashboard = () => {
                 })}
               </span>
             </div>
-            <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm">
+            <div className="flex items-center gap-2 bg-white/80 px-3 py-2 rounded-lg shadow-sm w-full ">
               <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: "#FF9800" }} />
               <span className="text-sm font-medium text-gray-800">
                 {translate(language, {
