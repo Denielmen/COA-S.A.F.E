@@ -430,15 +430,48 @@ const Lesson = () => {
           )}
         </div>
 
-          {/* Image placeholder - you can add actual images here */}
-        <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
-          <div className="text-center text-muted-foreground">
-            <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
-              <div className="w-8 h-8 bg-muted rounded"></div>
-            </div>
-            <p className="text-sm">Lesson illustration</p>
+        {/* Lesson Illustration */}
+        {article.imagePath ? (
+          <div className="bg-muted rounded-2xl mb-6 overflow-hidden border border-border">
+            <img
+              src={article.imagePath}
+              alt={article.title}
+              className="w-full h-auto object-cover"
+              onError={(e) => {
+                // Fallback if image fails to load
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.innerHTML = `
+                    <div class="h-48 flex items-center justify-center">
+                      <div class="text-center text-muted-foreground">
+                        <div class="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
+                          <div class="w-8 h-8 bg-muted rounded"></div>
+                        </div>
+                        <p class="text-sm">Image not available</p>
+                      </div>
+                    </div>
+                  `;
+                }
+              }}
+            />
           </div>
-        </div>
+        ) : (
+          <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
+            <div className="text-center text-muted-foreground">
+              <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
+                <div className="w-8 h-8 bg-muted rounded"></div>
+              </div>
+              <p className="text-sm">
+                {translate(language, {
+                  en: "Lesson illustration",
+                  tl: "Ilustrasyon ng lesson",
+                  bis: "Hulagway sa leksiyon",
+                })}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Show external link if available */}
         <div>
