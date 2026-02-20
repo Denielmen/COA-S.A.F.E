@@ -8,6 +8,7 @@ interface ExcelRow {
   Description: string;
   FullContent?: string;
   ExternalLink?: string;
+  ImagePath?: string;
   ChallengeType: string;
   IsRewardDay: string;
   RewardTitle?: string;
@@ -58,6 +59,10 @@ export const loadArticlesFromExcel = async (filePath: string = '/dailyArticles.x
 
       if (row.ExternalLink && row.ExternalLink.trim()) {
         article.externalLink = row.ExternalLink;
+      }
+
+      if (row.ImagePath && row.ImagePath.trim()) {
+        article.imagePath = row.ImagePath;
       }
 
       if (row.IsRewardDay === 'TRUE') {
