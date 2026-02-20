@@ -522,7 +522,7 @@ const Lesson = () => {
         </div> */}
 
         {/* Action Buttons */}
-        <div className="space-5">
+        <div className="mt-4 space-5">
           {/* Mark as Complete Button */}
           {isCompleted ? (
             <div className="flex items-center justify-center gap-2 py-3 bg-primary/10 rounded-xl border border-primary/20">
