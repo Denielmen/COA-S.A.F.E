@@ -94,7 +94,6 @@ const CharacterSelect = () => {
                   }}
                 />
               </div>
-              <p className="text-lg font-bold text-teal-700 capitalize">Boy</p>
               <p className="text-lg font-bold text-accent">
                 {translate(language, {
                   en: "Boy",
@@ -130,7 +129,6 @@ const CharacterSelect = () => {
                   }}
                 />
               </div>
-              <p className="text-lg font-bold text-teal-700 capitalize">Girl</p>
               <p className="text-lg font-bold text-accent">
                 {translate(language, {
                   en: "Girl",
