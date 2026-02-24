@@ -28,6 +28,7 @@ public/
 | Description | Text | Short description |
 | FullContent | Text | Full article content (optional) |
 | ExternalLink | Text | External URL (optional) |
+| ImagePath | Text | Path to lesson illustration image (optional, e.g., '/images/lessons/month1-day1.jpg') |
 | ChallengeType | Text | 'individual', 'family', or 'social-media' |
 | IsRewardDay | Text | 'TRUE' or 'FALSE' |
 | RewardTitle | Text | Reward title (if reward day) |

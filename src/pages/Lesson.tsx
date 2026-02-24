@@ -102,7 +102,9 @@ const Lesson = () => {
       const [year, month, day] = date.split("-").map(Number);
       const selectedDate = new Date(year, month - 1, day);
       const isRewardMilestone = Boolean(article?.isRewardDay ?? isRewardDate(selectedDate));
-      const isEndOfMonth = isRewardMilestone && day === 30;
+      // Determine true last day of the month (handles Feb and 28/29/30/31 correctly)
+      const lastDayOfMonth = new Date(year, month, 0).getDate();
+      const isEndOfMonth = isRewardMilestone && day === lastDayOfMonth;
       const isMilestone = isRewardMilestone;
 
       try {
@@ -223,11 +225,12 @@ const Lesson = () => {
             },
           });
         } else {
-          const priorThirtyCompletions = progress.completedLessons.reduce((count, ds) => {
+          const priorEndOfMonthCompletions = progress.completedLessons.reduce((count, ds) => {
             const [yy, mm, dd] = ds.split('-').map(Number);
-            return count + (dd === 30 ? 1 : 0);
+            const lastDay = new Date(yy, mm, 0).getDate();
+            return count + (dd === lastDay ? 1 : 0);
           }, 0);
-          const currentThirtyIndex = priorThirtyCompletions + 1;
+          const currentThirtyIndex = priorEndOfMonthCompletions + 1;
           let selectedAnimation = goldenFlame;
           if (currentThirtyIndex === 1) {
             selectedAnimation = goldingGaunlet;
@@ -446,15 +449,48 @@ const Lesson = () => {
           )}
         </div>
 
-          {/* Image placeholder - you can add actual images here */}
-        <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
-          <div className="text-center text-muted-foreground">
-            <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
-              <div className="w-8 h-8 bg-muted rounded"></div>
-            </div>
-            <p className="text-sm">Lesson illustration</p>
+        {/* Lesson Illustration */}
+        {article.imagePath ? (
+          <div className="bg-muted rounded-2xl mb-6 overflow-hidden border border-border">
+            <img
+              src={article.imagePath}
+              alt={article.title}
+              className="w-full h-auto object-cover"
+              onError={(e) => {
+                // Fallback if image fails to load
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.innerHTML = `
+                    <div class="h-48 flex items-center justify-center">
+                      <div class="text-center text-muted-foreground">
+                        <div class="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
+                          <div class="w-8 h-8 bg-muted rounded"></div>
+                        </div>
+                        <p class="text-sm">Image not available</p>
+                      </div>
+                    </div>
+                  `;
+                }
+              }}
+            />
           </div>
-        </div>
+        ) : (
+          <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
+            <div className="text-center text-muted-foreground">
+              <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
+                <div className="w-8 h-8 bg-muted rounded"></div>
+              </div>
+              <p className="text-sm">
+                {translate(language, {
+                  en: "Lesson illustration",
+                  tl: "Ilustrasyon ng lesson",
+                  bis: "Hulagway sa leksiyon",
+                })}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Show external link if available */}
         <div>
@@ -505,7 +541,7 @@ const Lesson = () => {
         </div> */}
 
         {/* Action Buttons */}
-        <div className="space-5">
+        <div className="mt-4 space-5">
           {/* Mark as Complete Button */}
           {isCompleted ? (
             <div className="flex items-center justify-center gap-2 py-3 bg-primary/10 rounded-xl border border-primary/20">

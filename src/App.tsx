@@ -16,7 +16,7 @@ import Lesson from "./pages/Lesson";
 import Lessons from "./pages/Lessons";
 import Quizzes from "./pages/Quizzes";
 import Quiz from "./pages/Quiz";
-import Progress from "./pages/Progress";
+import Progress from "./pages/Progress";  
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 

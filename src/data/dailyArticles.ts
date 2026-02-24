@@ -7,6 +7,7 @@ export interface DailyArticle {
   description: string;
   fullContent?: string;
   externalLink?: string;
+  imagePath?: string;
   challengeType: ChallengeType;
   isRewardDay?: boolean;
   reward?: {
