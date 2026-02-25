@@ -12,7 +12,7 @@ const girlCharacterImg = "/images/girl.png";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { getStats } = useUserProgress();
+  const { getStats, resetProgress } = useUserProgress();
   const stats = getStats();
   const language = getCurrentLanguage();
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">(() => {
@@ -120,6 +120,48 @@ const Profile = () => {
       timer: 1500,
       showConfirmButton: false,
     });
+  };
+
+  const handleResetProgress = async () => {
+    const result = await Swal.fire({
+      title: translate(language, {
+        en: "Reset all progress?",
+        tl: "I-reset ang lahat ng progreso?",
+        bis: "I-reset ang tanang progreso?",
+      }),
+      text: translate(language, {
+        en: "This will clear completed lessons, rewards, streak, level, and quiz scores.",
+        tl: "Mawawala ang mga natapos na leksyon, rewards, streak, level, at quiz scores.",
+        bis: "Mawala ang nahuman nga leksiyon, rewards, streak, level, ug quiz scores.",
+      }),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: translate(language, {
+        en: "Reset",
+        tl: "I-reset",
+        bis: "I-reset",
+      }),
+      cancelButtonText: translate(language, {
+        en: "Cancel",
+        tl: "Kanselahin",
+        bis: "Kanselahon",
+      }),
+      focusCancel: true,
+    });
+
+    if (result.isConfirmed) {
+      resetProgress();
+      await Swal.fire({
+        title: translate(language, {
+          en: "Progress reset",
+          tl: "Na-reset ang progreso",
+          bis: "Na-reset ang progreso",
+        }),
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
   };
 
   const tabItems = [
@@ -517,6 +559,35 @@ const Profile = () => {
                   })}
                 </button>
               </div>
+            </Card>
+
+            <Card className="rounded-2xl shadow-sm border border-border bg-card">
+              <h3 className="font-semibold text-foreground mb-2">
+                {translate(language, {
+                  en: "Reset Progress",
+                  tl: "I-reset ang Progreso",
+                  bis: "I-reset ang Progreso",
+                })}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {translate(language, {
+                  en: "Clear all completed lessons, rewards, streaks, levels, and quiz scores.",
+                  tl: "Burahin ang lahat ng natapos na leksyon, rewards, streaks, levels, at quiz scores.",
+                  bis: "Papas-a ang tanang nahuman nga leksiyon, rewards, streaks, levels, ug quiz scores.",
+                })}
+              </p>
+              <Button
+                danger
+                type="primary"
+                onClick={handleResetProgress}
+                className="w-full h-12 rounded-xl font-medium"
+              >
+                {translate(language, {
+                  en: "Reset All Progress",
+                  tl: "I-reset ang Lahat ng Progreso",
+                  bis: "I-reset ang Tanan nga Progreso",
+                })}
+              </Button>
             </Card>
           </div>
         )}

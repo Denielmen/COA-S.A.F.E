@@ -3,11 +3,6 @@ import Swal from "sweetalert2";
 import { Space } from "antd";
 import "sweetalert2/dist/sweetalert2.min.css";
 import confetti from "canvas-confetti";
-import Lottie from "lottie-react";
-import goldingGaunlet from "@/Lotties/goldingGaunlet.json";
-import goldencandy from "@/Lotties/goldencandy.json";
-import goldenFlame from "@/Lotties/goldenFlame.json";
-import { createRoot } from "react-dom/client";
 import successSfx from "../soundEffects/success.mp3";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, CheckCircle, Share2 } from "lucide-react";
@@ -48,7 +43,7 @@ const Lesson = () => {
   const navigate = useNavigate();
   const [article, setArticle] = useState<DailyArticle | null>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
-  const { markLessonCompleted, isLessonCompleted, getStats, progress } = useUserProgress();
+  const { markLessonCompleted, isLessonCompleted, getStats } = useUserProgress();
   const stats = getStats();
   const language = getCurrentLanguage();
 
@@ -225,19 +220,6 @@ const Lesson = () => {
             },
           });
         } else {
-          const priorEndOfMonthCompletions = progress.completedLessons.reduce((count, ds) => {
-            const [yy, mm, dd] = ds.split('-').map(Number);
-            const lastDay = new Date(yy, mm, 0).getDate();
-            return count + (dd === lastDay ? 1 : 0);
-          }, 0);
-          const currentThirtyIndex = priorEndOfMonthCompletions + 1;
-          let selectedAnimation = goldenFlame;
-          if (currentThirtyIndex === 1) {
-            selectedAnimation = goldingGaunlet;
-          } else if (currentThirtyIndex === 2) {
-            selectedAnimation = goldencandy;
-          }
-
           const rewardTitle =
             article?.reward?.title ??
             translate(language, {
@@ -253,12 +235,10 @@ const Lesson = () => {
               bis: "Nindot kaayo — nahuman nimo ang 30 ka adlaw sa pagtuon!",
             });
 
-          let lottieRoot: ReturnType<typeof createRoot> | null = null;
           await Swal.fire({
             title: rewardTitle,
             html: `
               <div class="reward-content" style="display:flex;flex-direction:column;align-items:center;">
-                <div id="reward-lottie" class="reward-lottie-pulse" style="width:min(90vw, 780px);height:min(90vw, 780px);margin:0 auto"></div>
                 <p style="margin-top:8px;text-align:center;">${rewardMessage}</p>
                 <div class="badge">Day ${displayDay}</div>
               </div>
@@ -273,21 +253,6 @@ const Lesson = () => {
             },
             showClass: { popup: "reward-popup-enter" },
             hideClass: { popup: "reward-popup-exit" },
-            didOpen: () => {
-              const container = document.getElementById("reward-lottie");
-              if (container) {
-                lottieRoot = createRoot(container);
-                lottieRoot.render(
-                  <Lottie animationData={selectedAnimation} loop={true} autoplay={true} style={{ width: "100%", height: "100%" }} />
-                );
-              }
-            },
-            willClose: () => {
-              if (lottieRoot) {
-                lottieRoot.unmount();
-                lottieRoot = null;
-              }
-            }
           });
         }
       } else {

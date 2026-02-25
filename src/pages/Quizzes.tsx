@@ -87,12 +87,12 @@ const Quizzes = () => {
             >
               <ArrowLeft className="w-5 h-5 text-primary" />
             </button>
-            <h1 className="text-lg font-semibold text-primary">Challenges</h1>
+            {/* <h1 className="text-lg font-semibold text-primary">Challenges</h1> */}
             <h1 className="text-lg font-semibold text-primary">
               {translate(language, {
-                en: "Monthly Quizzes",
-                tl: "Mga Quiz Buwan-buwan",
-                bis: "Mga Quiz Matag Bulan",
+                en: "Challenges",
+                tl: "Mga Hamon",
+                bis: "Mga Hagit",
               })}
             </h1>
           </div>
