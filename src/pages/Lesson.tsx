@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import { Space } from "antd";
 import "sweetalert2/dist/sweetalert2.min.css";
 import confetti from "canvas-confetti";
 import Lottie from "lottie-react";
@@ -9,7 +10,7 @@ import goldenFlame from "@/Lotties/goldenFlame.json";
 import { createRoot } from "react-dom/client";
 import successSfx from "../soundEffects/success.mp3";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle, Share2, HelpCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, Share2 } from "lucide-react";
 import { Button, Progress } from "antd";
 import { getArticleForDate, isRewardDay as isRewardDate, type DailyArticle } from "@/data/dailyArticles";
 import { useUserProgress } from "@/hooks/useUserProgress";
@@ -317,10 +318,7 @@ const Lesson = () => {
     }
   };
 
-  const handleQuiz = () => {
-    // Navigate to quiz page (to be implemented)
-    console.log("Navigate to quiz");
-  };
+
 
   if (!article || !date) {
     return (
@@ -448,15 +446,48 @@ const Lesson = () => {
           )}
         </div>
 
-          {/* Image placeholder - you can add actual images here */}
-        <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
-          <div className="text-center text-muted-foreground">
-            <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
-              <div className="w-8 h-8 bg-muted rounded"></div>
-            </div>
-            <p className="text-sm">Lesson illustration</p>
+        {/* Lesson Illustration */}
+        {article.imagePath ? (
+          <div className="bg-muted rounded-2xl mb-6 overflow-hidden border border-border">
+            <img
+              src={article.imagePath}
+              alt={article.title}
+              className="w-full h-auto object-cover"
+              onError={(e) => {
+                // Fallback if image fails to load
+                e.currentTarget.style.display = 'none';
+                const parent = e.currentTarget.parentElement;
+                if (parent) {
+                  parent.innerHTML = `
+                    <div class="h-48 flex items-center justify-center">
+                      <div class="text-center text-muted-foreground">
+                        <div class="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
+                          <div class="w-8 h-8 bg-muted rounded"></div>
+                        </div>
+                        <p class="text-sm">Image not available</p>
+                      </div>
+                    </div>
+                  `;
+                }
+              }}
+            />
           </div>
-        </div>
+        ) : (
+          <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
+            <div className="text-center text-muted-foreground">
+              <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
+                <div className="w-8 h-8 bg-muted rounded"></div>
+              </div>
+              <p className="text-sm">
+                {translate(language, {
+                  en: "Lesson illustration",
+                  tl: "Ilustrasyon ng lesson",
+                  bis: "Hulagway sa leksiyon",
+                })}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Show external link if available */}
         <div>
@@ -467,6 +498,7 @@ const Lesson = () => {
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
                 </div>
                 <div>
+
                   <h4 className="font-medium text-foreground mb-2">
                     {translate(language, {
                       en: "Learn More:",
@@ -482,6 +514,7 @@ const Lesson = () => {
                   >
                     {article.externalLink}
                   </a>
+                  
                 </div>
               </div>
             </div>
@@ -489,7 +522,7 @@ const Lesson = () => {
         </div>
 
         {/* Image placeholder - you can add actual images here */}
-        <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
+        {/* <div className="bg-muted rounded-2xl h-48 mb-6 flex items-center justify-center border border-border">
           <div className="text-center text-muted-foreground">
             <div className="w-16 h-16 bg-muted rounded-full mx-auto mb-2 flex items-center justify-center">
               <div className="w-8 h-8 bg-muted rounded"></div>
@@ -502,10 +535,10 @@ const Lesson = () => {
               })}
             </p>
           </div>
-        </div>
+        </div> */}
 
         {/* Action Buttons */}
-        <div className="space-y-3">
+        <div className="mt-4 space-5">
           {/* Mark as Complete Button */}
           {isCompleted ? (
             <div className="flex items-center justify-center gap-2 py-3 bg-primary/10 rounded-xl border border-primary/20">
@@ -536,24 +569,8 @@ const Lesson = () => {
             </Button>
           )}
 
-          {/* Quiz Button */}
-          <Button
-            size="large"
-            block
-            onClick={handleQuiz}
-            className="h-12 rounded-xl font-medium border-2 border-primary text-primary hover:bg-primary hover:text-white"
-            icon={<HelpCircle className="w-5 h-5" />}
-            data-onboarding="lesson-quiz"
-          >
-            {translate(language, {
-              en: "Quiz",
-              tl: "Quiz",
-              bis: "Quiz",
-            })}
-          </Button>
-
           {/* Share Button */}
-          <Button
+          {/* <Button
             size="large"
             block
             onClick={handleShareWithFamily}
@@ -565,7 +582,7 @@ const Lesson = () => {
               tl: "Ibahagi sa Pamilya",
               bis: "I-share sa Pamilya",
             })}
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

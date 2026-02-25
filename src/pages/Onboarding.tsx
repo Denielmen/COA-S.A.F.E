@@ -104,38 +104,36 @@ const Onboarding = () => {
       </div>
 
       {/* Bottom Navigation Buttons */}
-      <div className="max-w-md w-full pt-6 pb-4">
-        <div className="flex items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={handleSkip}
-            className="text-primary font-semibold"
-          >
-            {translate(language, {
-              en: "Skip",
-              tl: "Laktawan",
-              bis: "Lakta",
-            })}
-          </button>
-          <button
-            type="button"
-            onClick={handleNext}
-            className="flex-1 bg-teal-700 hover:bg-teal-600 text-white h-12 rounded-full font-semibold shadow-md flex items-center justify-center"
-            aria-label={isLastStep ? "Get Started" : "Next"}
-          >
-            {isLastStep
-              ? translate(language, {
-                  en: "Get Started",
-                  tl: "Magsimula",
-                  bis: "Sugdi na",
-                })
-              : translate(language, {
-                  en: "Next",
-                  tl: "Susunod",
-                  bis: "Sunod",
-                })}
-          </button>
-        </div>
+      <div className="max-w-md w-full pt-6 pb-4 flex flex-col gap-4">
+        <button
+          type="button"
+          onClick={handleNext}
+          className="w-full bg-teal-600 hover:bg-teal-700 text-white h-12 rounded-lg font-semibold shadow-md flex items-center justify-center transition-colors"
+          aria-label={isLastStep ? "Get Started" : "Next"}
+        >
+          {isLastStep
+            ? translate(language, {
+                en: "Get Started",
+                tl: "Magsimula",
+                bis: "Sugdi na",
+              })
+            : translate(language, {
+                en: "Next",
+                tl: "Susunod",
+                bis: "Sunod",
+              })}
+        </button>
+        <button
+          type="button"
+          onClick={handleSkip}
+          className="w-full text-teal-600 hover:text-teal-700 font-semibold h-10 flex items-center justify-center transition-colors"
+        >
+          {translate(language, {
+            en: "Skip",
+            tl: "Laktawan",
+            bis: "Lakta",
+          })}
+        </button>
       </div>
     </div>
   );
