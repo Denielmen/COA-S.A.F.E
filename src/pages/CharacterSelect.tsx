@@ -2,12 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "antd";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Lottie from "lottie-react";
-import starAnimation from "@/Lotties/Star.json";
 import startSfx from "@/soundEffects/start.mp3";
 import { getCurrentLanguage, translate } from "@/lib/utils";
 
-const boyCharacterImg = "/images/boy.png";
+const boyCharacterImg = "/images/Project SAFE Calendar/Project SAFE Calendar Elements/boy.png";
 const girlCharacterImg = "/images/girl.png";
 
 const CharacterSelect = () => {
@@ -19,7 +17,6 @@ const CharacterSelect = () => {
 
   const [showTransition, setShowTransition] = useState(false);
   const [transitionStyle, setTransitionStyle] = useState<React.CSSProperties | undefined>(undefined);
-  const [showStar, setShowStar] = useState(false);
 
   useEffect(() => {
     audioRef.current = new Audio(startSfx);
@@ -37,14 +34,9 @@ const CharacterSelect = () => {
       audioRef.current.currentTime = 0;
       void audioRef.current.play();
     }
-    // After the swallow animation, show star Lottie for 1.5s, then navigate
     setTimeout(() => {
       setShowTransition(false);
-      setShowStar(true);
-      setTimeout(() => {
-        setShowStar(false);
-        navigate("/dashboard");
-      }, 1500);
+      navigate("/dashboard");
     }, 1500);
   };
 
@@ -94,6 +86,7 @@ const CharacterSelect = () => {
                   }}
                 />
               </div>
+              <p className="text-lg font-bold text-teal-700 capitalize">Boy</p>
               <p className="text-lg font-bold text-accent">
                 {translate(language, {
                   en: "Boy",
@@ -129,6 +122,7 @@ const CharacterSelect = () => {
                   }}
                 />
               </div>
+              <p className="text-lg font-bold text-teal-700 capitalize">Girl</p>
               <p className="text-lg font-bold text-accent">
                 {translate(language, {
                   en: "Girl",
@@ -202,20 +196,6 @@ const CharacterSelect = () => {
             <span className="text-[hsl(45,100%,51%)]">E</span>
             <span className="text-[hsl(187,100%,42%)]"> !</span>
           </h1>
-        </div>
-      )}
-
-      {showStar && (
-        <div
-          className="screen-overlay"
-          style={transitionStyle}
-          aria-hidden="true"
-        >
-          <Lottie
-            animationData={starAnimation}
-            loop={false}
-            style={{ width: 220, height: 220 }}
-          />
         </div>
       )}
 

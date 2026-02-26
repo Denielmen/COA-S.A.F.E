@@ -9,7 +9,7 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const Lessons = () => {
   const navigate = useNavigate();
-  const [selectedMonth, setSelectedMonth] = useState<number>(1);
+  const [selectedMonth, setSelectedMonth] = useState<number>(() => new Date().getMonth() + 1);
   const [isLoading, setIsLoading] = useState(true);
   const { isLessonCompleted, getStats } = useUserProgress();
   const stats = getStats();
