@@ -10,6 +10,7 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 const girlCharacterImg = "/images/girl.png";
 const boyCharacterImg = "/images/Project SAFE Calendar/Project SAFE Calendar Elements/boy.png";
 const januaryAchievementImg = "/images/imagesPerWeek/January Achievement.png";
+const februaryAchievementImg = "/images/Project SAFE Calendar/Project SAFE Calendar Elements/February Achievement.png";
 
 const Progress = () => {
   const navigate = useNavigate();
@@ -25,6 +26,10 @@ const Progress = () => {
 
   const hasEarnedRewards = progress.earnedRewards.length > 0;
   const hasJanuary30Reward = progress.earnedRewards.some((ds) => ds.slice(5) === "01-30");
+  const hasFebruaryEndReward = progress.earnedRewards.some((ds) => {
+    const dayPart = ds.slice(5);
+    return dayPart === "02-28" || dayPart === "02-29";
+  });
 
   const getCharacterImage = () => {
     return selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg;
@@ -128,7 +133,15 @@ const Progress = () => {
               <div className="text-center h-full flex flex-col justify-center">
                 <div className="w-32 h-40 mx-auto mb-2">
                   <img 
-                    src={selectedCharacter === "boy" && hasJanuary30Reward ? januaryAchievementImg : getCharacterImage()}
+                    src={
+                      selectedCharacter === "boy" && hasJanuary30Reward && hasFebruaryEndReward
+                        ? februaryAchievementImg
+                        : selectedCharacter === "boy" && hasJanuary30Reward
+                          ? januaryAchievementImg
+                          : selectedCharacter === "boy" && hasFebruaryEndReward
+                            ? februaryAchievementImg
+                            : getCharacterImage()
+                    }
                     alt="character"
                     className="w-auto h-full object-contain"
                   />

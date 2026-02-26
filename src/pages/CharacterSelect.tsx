@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Card } from "antd";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Lottie from "lottie-react";
 import startSfx from "@/soundEffects/start.mp3";
 import { getCurrentLanguage, translate } from "@/lib/utils";
+import starAnimation from "@/Lotties/Star.json";
 
 const boyCharacterImg = "/images/Project SAFE Calendar/Project SAFE Calendar Elements/boy.png";
 const girlCharacterImg = "/images/girl.png";
@@ -17,6 +19,7 @@ const CharacterSelect = () => {
 
   const [showTransition, setShowTransition] = useState(false);
   const [transitionStyle, setTransitionStyle] = useState<React.CSSProperties | undefined>(undefined);
+  const [showStar, setShowStar] = useState(false);
 
   useEffect(() => {
     audioRef.current = new Audio(startSfx);
@@ -29,15 +32,19 @@ const CharacterSelect = () => {
     localStorage.setItem("onboardingCompleted", "true");
     setTransitionStyle({ background: "#2563eb" });
     setShowTransition(true);
-    // Play start sound at the moment the transition begins
+    setShowStar(false);
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
       void audioRef.current.play();
     }
     setTimeout(() => {
-      setShowTransition(false);
-      navigate("/dashboard");
+      setShowStar(true);
     }, 1500);
+    setTimeout(() => {
+      setShowTransition(false);
+      setShowStar(false);
+      navigate("/dashboard");
+    }, 2600);
   };
 
   return (
@@ -189,13 +196,19 @@ const CharacterSelect = () => {
           style={transitionStyle}
           aria-hidden="true"
         >
-          <h1 className="text-6xl font-bold tracking-tight safe-zoom-out">
-            <span className="text-[hsl(187,100%,42%)]">S</span>
-            <span className="text-[hsl(33,100%,50%)]">A</span>
-            <span className="text-[hsl(187,100%,42%)]">F</span>
-            <span className="text-[hsl(45,100%,51%)]">E</span>
-            <span className="text-[hsl(187,100%,42%)]"> !</span>
-          </h1>
+          {showStar ? (
+            <div style={{ width: 220, height: 220 }}>
+              <Lottie animationData={starAnimation} loop={false} />
+            </div>
+          ) : (
+            <h1 className="text-6xl font-bold tracking-tight safe-zoom-out">
+              <span className="text-[hsl(187,100%,42%)]">S</span>
+              <span className="text-[hsl(33,100%,50%)]">A</span>
+              <span className="text-[hsl(187,100%,42%)]">F</span>
+              <span className="text-[hsl(45,100%,51%)]">E</span>
+              <span className="text-[hsl(187,100%,42%)]"> !</span>
+            </h1>
+          )}
         </div>
       )}
 

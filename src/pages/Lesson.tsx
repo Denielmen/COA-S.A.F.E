@@ -15,11 +15,20 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
 
-const getWeeklyPrizeImage = (month: number, day: number): string | null => {
-  if (month !== 1) return null;
-  if (day === 7) return "/images/imagesPerWeek/Gauntlets01.png";
-  if (day === 14) return "/images/imagesPerWeek/Gauntlets03.png";
-  if (day === 21) return "/images/imagesPerWeek/Gauntlets05.png";
+const getWeeklyPrizeImage = (month: number, day: number, lastDayOfMonth: number): string | null => {
+  if (month === 1) {
+    if (day === 7) return "/images/imagesPerWeek/Gauntlets01.png";
+    if (day === 14) return "/images/imagesPerWeek/Gauntlets03.png";
+    if (day === 21) return "/images/imagesPerWeek/Gauntlets05.png";
+    return null;
+  }
+  if (month === 2) {
+    if (day === 7) return "/images/imagesPerWeek/Chestplate01.png";
+    if (day === 14) return "/images/imagesPerWeek/Chestplate03.png";
+    if (day === 21) return "/images/imagesPerWeek/Chestplate04.png";
+    if (day === lastDayOfMonth) return "/images/imagesPerWeek/Chestplate06.png";
+    return null;
+  }
   return null;
 };
 
@@ -105,8 +114,11 @@ const Lesson = () => {
       const [year, month, day] = date.split("-").map(Number);
       const selectedDate = new Date(year, month - 1, day);
       const isRewardMilestone = Boolean(article?.isRewardDay ?? isRewardDate(selectedDate));
-      const isWeeklyJanMilestone = month === 1 && (day === 7 || day === 14 || day === 21);
-      const isMilestone = isRewardMilestone || isWeeklyJanMilestone;
+      const lastDayOfMonth = new Date(year, month, 0).getDate();
+      const isWeeklySpecial =
+        (month === 1 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 2 && (day === 7 || day === 14 || day === 21 || day === lastDayOfMonth));
+      const isMilestone = isRewardMilestone || isWeeklySpecial;
 
       try {
         const audio = new Audio(successSfx);
@@ -155,7 +167,7 @@ const Lesson = () => {
       try { await cancelTodayReminders(); } catch {}
 
       if (isMilestone) {
-        const weeklyPrizeImage = getWeeklyPrizeImage(month, day);
+        const weeklyPrizeImage = getWeeklyPrizeImage(month, day, lastDayOfMonth);
         const monthlyPrizeImage = isRewardMilestone
           ? month === 1
             ? "/images/imagesPerWeek/Gauntlets06.png"

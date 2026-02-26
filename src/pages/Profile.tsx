@@ -69,17 +69,23 @@ const Profile = () => {
     localStorage.setItem("selectedCharacter", character);
   };
 
-  const handleSaveProfile = () => {
-    // Save profile data
+  const handleSaveProfile = async () => {
     localStorage.setItem("username", profileData.name);
     localStorage.setItem("email", profileData.email);
-    // notify other components (Dashboard) about update
     try {
-      window.dispatchEvent(new CustomEvent('profileUpdated', { detail: { name: profileData.name } }));
-    } catch {
-      // ignore
-    }
+      window.dispatchEvent(new CustomEvent("profileUpdated", { detail: { name: profileData.name } }));
+    } catch {}
     console.log("Saving profile:", profileData);
+    await Swal.fire({
+      title: translate(language, {
+        en: "Profile saved",
+        tl: "Na-save ang profile",
+        bis: "Nasave na ang profile",
+      }),
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
   };
 
   const handleSaveSettings = async () => {
