@@ -60,7 +60,8 @@ const Lesson = () => {
   const navigate = useNavigate();
   const [article, setArticle] = useState<DailyArticle | null>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
-  const { markLessonCompleted, isLessonCompleted, getStats } = useUserProgress();
+  const [showFullContent, setShowFullContent] = useState(false);
+  const { markLessonCompleted, isLessonCompleted, getStats, progress } = useUserProgress();
   const stats = getStats();
   const language = getCurrentLanguage();
 
@@ -481,16 +482,15 @@ const Lesson = () => {
           </div>
         )}
 
-        {/* Show external link if available */}
+        {/* Show full content if available */}
         <div>
-          {article.externalLink && (
+          {article.fullContent && (
             <div className="mt-4 p-4 bg-green-50 rounded-xl border-l-4 border-green-500">
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
                 </div>
-                <div>
-
+                <div className="flex-1">
                   <h4 className="font-medium text-foreground mb-2">
                     {translate(language, {
                       en: "Learn More:",
@@ -498,14 +498,37 @@ const Lesson = () => {
                       bis: "Dugangi ang Kahibalo:",
                     })}
                   </h4>
-                  <a 
-                    href={article.externalLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-green-700 hover:text-green-800 underline break-all"
-                  >
-                    {article.externalLink}
-                  </a>
+                  
+                  {!showFullContent && (
+                    <button
+                      onClick={() => setShowFullContent(true)}
+                      className="text-sm text-green-700 hover:text-green-800 underline font-medium"
+                    >
+                      {translate(language, {
+                        en: "Click to read more",
+                        tl: "Mag-click para magbasa pa",
+                        bis: "I-click aron magbasa pa",
+                      })}
+                    </button>
+                  )}
+                  
+                  {showFullContent && (
+                    <div className="mt-3 p-3 bg-white rounded-lg border border-green-200">
+                      <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                        {article.fullContent}
+                      </p>
+                      <button
+                        onClick={() => setShowFullContent(false)}
+                        className="mt-3 text-xs text-green-600 hover:text-green-700 underline"
+                      >
+                        {translate(language, {
+                          en: "Show less",
+                          tl: "Ipakita ang mas kaunti",
+                          bis: "Ipakita ang gamay",
+                        })}
+                      </button>
+                    </div>
+                  )}
                   
                 </div>
               </div>
