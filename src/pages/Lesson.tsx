@@ -15,6 +15,23 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
 
+const getWeeklyPrizeImage = (month: number, day: number, lastDayOfMonth: number): string | null => {
+  if (month === 1) {
+    if (day === 7) return "/images/imagesPerWeek/Gauntlets01.png";
+    if (day === 14) return "/images/imagesPerWeek/Gauntlets03.png";
+    if (day === 21) return "/images/imagesPerWeek/Gauntlets05.png";
+    return null;
+  }
+  if (month === 2) {
+    if (day === 7) return "/images/imagesPerWeek/Chestplate01.png";
+    if (day === 14) return "/images/imagesPerWeek/Chestplate03.png";
+    if (day === 21) return "/images/imagesPerWeek/Chestplate04.png";
+    if (day === lastDayOfMonth) return "/images/imagesPerWeek/Chestplate06.png";
+    return null;
+  }
+  return null;
+};
+
 const getMonthlyPrizeImage = (month: number): string | null => {
   switch (month) {
     case 1:
@@ -97,10 +114,11 @@ const Lesson = () => {
       const [year, month, day] = date.split("-").map(Number);
       const selectedDate = new Date(year, month - 1, day);
       const isRewardMilestone = Boolean(article?.isRewardDay ?? isRewardDate(selectedDate));
-      // Determine true last day of the month (handles Feb and 28/29/30/31 correctly)
       const lastDayOfMonth = new Date(year, month, 0).getDate();
-      const isEndOfMonth = isRewardMilestone && day === lastDayOfMonth;
-      const isMilestone = isRewardMilestone;
+      const isWeeklySpecial =
+        (month === 1 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 2 && (day === 7 || day === 14 || day === 21 || day === lastDayOfMonth));
+      const isMilestone = isRewardMilestone || isWeeklySpecial;
 
       try {
         const audio = new Audio(successSfx);
@@ -149,17 +167,23 @@ const Lesson = () => {
       try { await cancelTodayReminders(); } catch {}
 
       if (isMilestone) {
-        const monthlyPrizeImage = isEndOfMonth ? getMonthlyPrizeImage(month) : null;
-        if (monthlyPrizeImage) {
+        const weeklyPrizeImage = getWeeklyPrizeImage(month, day, lastDayOfMonth);
+        const monthlyPrizeImage = isRewardMilestone
+          ? month === 1
+            ? "/images/imagesPerWeek/Gauntlets06.png"
+            : getMonthlyPrizeImage(month)
+          : null;
+        const prizeImage = weeklyPrizeImage ?? monthlyPrizeImage;
+        if (prizeImage) {
           const modalTitle = translate(language, {
             en: "🎉 Congratulations! You’ve unlocked a prize!",
             tl: "🎉 Binabati ka! May na-unlock kang prize!",
             bis: "🎉 Congratulations! Nakadawat kag ganti!",
           });
           const modalMessage = translate(language, {
-            en: "You’ve completed this month’s learning journey. Enjoy your special prize!",
-            tl: "Natapos mo ang pag-aaral para sa buwan na ito. I-enjoy ang iyong espesyal na prize!",
-            bis: "Nahuman nimo ang pagtuon karong buwana. Lingia ang espesyal nga ganti!",
+            en: "You’ve earned this month’s reward. Enjoy your special prize!",
+            tl: "Nakakuha ka ng reward para sa buwang ito. I-enjoy ang iyong espesyal na prize!",
+            bis: "Nakakuha ka og reward para ning buwana. Lingia ang espesyal nga ganti!",
           });
           const confirmText = translate(language, {
             en: "Got it!",
@@ -173,7 +197,7 @@ const Lesson = () => {
                 <div class="monthly-prize-image-wrapper">
                   <div class="monthly-prize-image-mask">
                     <img
-                      src="${monthlyPrizeImage}"
+                      src="${prizeImage}"
                       alt="Monthly prize"
                       class="monthly-prize-image"
                       style="width:100%;height:100%;object-fit:contain;"

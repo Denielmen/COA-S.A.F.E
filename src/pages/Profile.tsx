@@ -7,7 +7,7 @@ import { Card, Tabs, Button, Input, Switch, Select, Slider } from "antd";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { getCurrentLanguage, translate } from "@/lib/utils";
 
-const boyCharacterImg = "/images/boy.png";
+const boyCharacterImg = "/images/Project SAFE Calendar/Project SAFE Calendar Elements/boy.png";
 const girlCharacterImg = "/images/girl.png";
 
 const Profile = () => {
@@ -69,17 +69,23 @@ const Profile = () => {
     localStorage.setItem("selectedCharacter", character);
   };
 
-  const handleSaveProfile = () => {
-    // Save profile data
+  const handleSaveProfile = async () => {
     localStorage.setItem("username", profileData.name);
     localStorage.setItem("email", profileData.email);
-    // notify other components (Dashboard) about update
     try {
-      window.dispatchEvent(new CustomEvent('profileUpdated', { detail: { name: profileData.name } }));
-    } catch {
-      // ignore
-    }
+      window.dispatchEvent(new CustomEvent("profileUpdated", { detail: { name: profileData.name } }));
+    } catch {}
     console.log("Saving profile:", profileData);
+    await Swal.fire({
+      title: translate(language, {
+        en: "Profile saved",
+        tl: "Na-save ang profile",
+        bis: "Nasave na ang profile",
+      }),
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
   };
 
   const handleSaveSettings = async () => {
@@ -262,11 +268,11 @@ const Profile = () => {
                   }`}
                 >
                   <div className="text-center space-y-2">
-                    <div className="w-16 h-16 rounded-full bg-card mx-auto flex items-center justify-center overflow-hidden border-2 border-border">
+                    <div className="w-20 h-24 bg-card mx-auto flex items-center justify-center overflow-hidden rounded-xl">
                       <img 
                         src={boyCharacterImg}
                         alt="Boy character"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     </div>
                     <p className="text-sm font-medium text-muted-foreground">
@@ -288,11 +294,11 @@ const Profile = () => {
                   }`}
                 >
                   <div className="text-center space-y-2">
-                    <div className="w-16 h-16 rounded-full bg-card mx-auto flex items-center justify-center overflow-hidden border-2 border-border">
+                    <div className="w-20 h-24 bg-card mx-auto flex items-center justify-center overflow-hidden rounded-xl">
                       <img 
                         src={girlCharacterImg}
                         alt="Girl character"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     </div>
                     <p className="text-sm font-medium text-muted-foreground">

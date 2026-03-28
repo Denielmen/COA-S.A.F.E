@@ -7,9 +7,10 @@ import { dailyArticles } from "@/data/dailyArticles";
 import BottomNavigation from "@/components/BottomNavigation";
 import { getCurrentLanguage, translate } from "@/lib/utils";
 
-const characterImg = "/images/pfp!!.jpeg";
-const rewardCharacterImg1 = "/images/_ (1).jpeg";
-const rewardCharacterImg2 = "/images/_ (2).jpeg";
+const girlCharacterImg = "/images/girl.png";
+const boyCharacterImg = "/images/Project SAFE Calendar/Project SAFE Calendar Elements/boy.png";
+const januaryAchievementImg = "/images/imagesPerWeek/January Achievement.png";
+const februaryAchievementImg = "/images/Project SAFE Calendar/Project SAFE Calendar Elements/February Achievement.png";
 
 const Progress = () => {
   const navigate = useNavigate();
@@ -23,23 +24,15 @@ const Progress = () => {
   const completionPercentage = Math.round((stats.completed / totalLessons) * 100);
   const passScore = 85.5; // Example pass score
 
-  // Check if user has earned any rewards
   const hasEarnedRewards = progress.earnedRewards.length > 0;
-  
-  // Determine which image to show based on current month and rewards
+  const hasJanuary30Reward = progress.earnedRewards.some((ds) => ds.slice(5) === "01-30");
+  const hasFebruaryEndReward = progress.earnedRewards.some((ds) => {
+    const dayPart = ds.slice(5);
+    return dayPart === "02-28" || dayPart === "02-29";
+  });
+
   const getCharacterImage = () => {
-    const currentMonth = new Date().getMonth() + 1; // 1-12 for Jan-Dec
-    
-    switch(currentMonth) {
-      case 1: // January
-        return characterImg; // pfp!!.jpeg
-      case 2: // February
-        return rewardCharacterImg1; // _ (1).jpeg
-      case 3: // March
-        return rewardCharacterImg2; // _ (2).jpeg
-      default:
-        return characterImg; // Default to base image for other months
-    }
+    return selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg;
   };
 
   const [activeTab, setActiveTab] = useState("overview");
@@ -104,11 +97,11 @@ const Progress = () => {
             {/* Character Card */}
             <Card className="rounded-2xl shadow-sm border border-border bg-card">
               <div className="text-center">
-                <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-3 flex items-center justify-center border-5 border-primary">
+                <div className="w-20 h-20 rounded-full bg-primary/10 mx-auto mb-3 flex items-center justify-center border-5 border-primary overflow-hidden">
                   <img 
-                    src={getCharacterImage()}
+                    src={selectedCharacter === "boy" && hasJanuary30Reward ? januaryAchievementImg : getCharacterImage()}
                     alt="character"
-                    className="w-16 h-16 object-contain"
+                    className="w-full h-full object-contain"
                   />
               </div>
               <div className="bg-primary text-white px-3 py-1 rounded-full inline-block">
@@ -138,11 +131,19 @@ const Progress = () => {
             {/* Statistics Card */}
             <Card className="rounded-2xl shadow-sm border-2 border-primary/20 bg-card">
               <div className="text-center h-full flex flex-col justify-center">
-                <div className="w-24 h-24 mx-auto mb-2">
+                <div className="w-32 h-40 mx-auto mb-2">
                   <img 
-                    src={getCharacterImage()}
+                    src={
+                      selectedCharacter === "boy" && hasJanuary30Reward && hasFebruaryEndReward
+                        ? februaryAchievementImg
+                        : selectedCharacter === "boy" && hasJanuary30Reward
+                          ? januaryAchievementImg
+                          : selectedCharacter === "boy" && hasFebruaryEndReward
+                            ? februaryAchievementImg
+                            : getCharacterImage()
+                    }
                     alt="character"
-                    className="w-full h-full object-contain"
+                    className="w-auto h-full object-contain"
                   />
                 </div>
                 {hasEarnedRewards && (
