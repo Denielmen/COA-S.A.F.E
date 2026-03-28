@@ -930,3 +930,12 @@ All colors MUST be HSL.
     transform: translate(-50%, -50%) translateX(0);
   }
 }
+
+/* Hide default calendar headers to prevent duplication */
+.custom-calendar .ant-picker-panel .ant-picker-header {
+  display: none !important;
+}
+
+.custom-calendar .ant-picker-content thead {
+  display: none !important;
+}
