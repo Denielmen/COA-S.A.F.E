@@ -138,13 +138,17 @@ const Lesson = () => {
             } else if (typeof parsed.soundVolume === "number") {
               enabled = parsed.soundVolume > 0;
             }
-          } catch { }
+          } catch (e) {
+            console.error("Error parsing settings:", e);
+          }
         }
         if (enabled && vol > 0) {
           audio.volume = vol;
           audio.play().catch(() => { });
         }
-      } catch { }
+      } catch (e) {
+        console.error("Error playing success sound:", e);
+      }
       if (isMilestone) {
         confetti({ particleCount: 220, spread: 110, startVelocity: 55, origin: { y: 0.6 } });
         setTimeout(() => {
@@ -164,7 +168,9 @@ const Lesson = () => {
       }
 
       markLessonCompleted(selectedDate);
-      try { await cancelTodayReminders(); } catch { }
+      try { await cancelTodayReminders(); } catch (e) {
+        console.error("Error canceling reminders:", e);
+      }
 
       if (isMilestone) {
         const weeklyPrizeImage = getWeeklyPrizeImage(month, day, lastDayOfMonth);
