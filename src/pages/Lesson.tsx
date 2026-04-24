@@ -421,9 +421,18 @@ const Lesson = () => {
 
         {/* Article Content */}
         <div className="bg-card rounded-2xl p-6 shadow-sm border border-border mb-6" data-onboarding="lesson-content">
-          {/* Show full content if available, otherwise show description */}
-          {article.fullContent && (
+          {/* Always show description if available */}
+          {article.description && (
             <div className="mb-4">
+              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                {article.description}
+              </p>
+            </div>
+          )}
+
+          {/* Show full content if available */}
+          {article.fullContent && (
+            <div>
               <h4 className="font-semibold text-foreground mb-3">
                 {translate(language, {
                   en: "Content:",
@@ -431,16 +440,10 @@ const Lesson = () => {
                   bis: "Sulod:",
                 })}
               </h4>
-              <p className="text-foreground leading-relaxed">
+              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
                 {article.fullContent}
               </p>
             </div>
-          )}
-
-          {!article.fullContent && (
-            <p className="text-foreground leading-relaxed mb-4">
-              {article.description}
-            </p>
           )}
         </div>
 
@@ -489,7 +492,7 @@ const Lesson = () => {
 
         {/* Show full content if available */}
         <div>
-          {article.fullContent && (
+          {(article.additionalContent || article.externalLink) && (
             <div className="mt-4 p-4 bg-green-50 rounded-xl border-l-4 border-green-500">
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -503,15 +506,41 @@ const Lesson = () => {
                       bis: "Dugangi ang Kahibalo:",
                     })}
                   </h4>
-                  <a
-                    href={article.externalLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-green-700 hover:text-green-800 underline break-all"
-                  >
-                    {article.externalLink}
-                  </a>
-
+                  {article.additionalContent ? (
+                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                      {article.additionalContent}
+                    </p>
+                  ) : article.externalLink && !article.externalLink.trim().startsWith('http') ? (
+                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                      {article.externalLink}
+                    </p>
+                  ) : null}
+                  
+                  {article.externalLink && (
+                    <div className="mt-2">
+                      {article.externalLink.split('\n').map((line, i) => {
+                        const linkMatch = line.match(/https?:\/\/[^\s]+/);
+                        if (linkMatch) {
+                          return (
+                            <a
+                              key={i}
+                              href={linkMatch[0]}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-green-700 hover:text-green-800 underline break-all inline-block mr-2"
+                            >
+                              {line.trim() || linkMatch[0]}
+                            </a>
+                          );
+                        }
+                        if (article.additionalContent) {
+                           // If we have separate additionalContent, don't show externalLink text here again if it was already shown above
+                           return null;
+                        }
+                        return null;
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
