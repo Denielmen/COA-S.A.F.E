@@ -3,11 +3,11 @@ import { Button, Card } from "antd";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
-import starAnimation from "@/Lotties/Star.json";
 import startSfx from "@/soundEffects/start.mp3";
 import { getCurrentLanguage, translate } from "@/lib/utils";
+import starAnimation from "@/Lotties/Star.json";
 
-const boyCharacterImg = "/images/boy.png";
+const boyCharacterImg = "/images/Project SAFE Calendar/Project SAFE Calendar Elements/boy.png";
 const girlCharacterImg = "/images/girl.png";
 
 const CharacterSelect = () => {
@@ -32,20 +32,19 @@ const CharacterSelect = () => {
     localStorage.setItem("onboardingCompleted", "true");
     setTransitionStyle({ background: "#2563eb" });
     setShowTransition(true);
-    // Play start sound at the moment the transition begins
+    setShowStar(false);
     if (audioRef.current) {
       audioRef.current.currentTime = 0;
       void audioRef.current.play();
     }
-    // After the swallow animation, show star Lottie for 1.5s, then navigate
+    setTimeout(() => {
+      setShowStar(true);
+    }, 1500);
     setTimeout(() => {
       setShowTransition(false);
-      setShowStar(true);
-      setTimeout(() => {
-        setShowStar(false);
-        navigate("/dashboard");
-      }, 1500);
-    }, 1500);
+      setShowStar(false);
+      navigate("/dashboard");
+    }, 2600);
   };
 
   return (
@@ -94,6 +93,7 @@ const CharacterSelect = () => {
                   }}
                 />
               </div>
+              <p className="text-lg font-bold text-teal-700 capitalize">Boy</p>
               <p className="text-lg font-bold text-accent">
                 {translate(language, {
                   en: "Boy",
@@ -129,6 +129,7 @@ const CharacterSelect = () => {
                   }}
                 />
               </div>
+              <p className="text-lg font-bold text-teal-700 capitalize">Girl</p>
               <p className="text-lg font-bold text-accent">
                 {translate(language, {
                   en: "Girl",
@@ -195,27 +196,19 @@ const CharacterSelect = () => {
           style={transitionStyle}
           aria-hidden="true"
         >
-          <h1 className="text-6xl font-bold tracking-tight safe-zoom-out">
-            <span className="text-[hsl(187,100%,42%)]">S</span>
-            <span className="text-[hsl(33,100%,50%)]">A</span>
-            <span className="text-[hsl(187,100%,42%)]">F</span>
-            <span className="text-[hsl(45,100%,51%)]">E</span>
-            <span className="text-[hsl(187,100%,42%)]"> !</span>
-          </h1>
-        </div>
-      )}
-
-      {showStar && (
-        <div
-          className="screen-overlay"
-          style={transitionStyle}
-          aria-hidden="true"
-        >
-          <Lottie
-            animationData={starAnimation}
-            loop={false}
-            style={{ width: 220, height: 220 }}
-          />
+          {showStar ? (
+            <div style={{ width: 220, height: 220 }}>
+              <Lottie animationData={starAnimation} loop={false} />
+            </div>
+          ) : (
+            <h1 className="text-6xl font-bold tracking-tight safe-zoom-out">
+              <span className="text-[hsl(187,100%,42%)]">S</span>
+              <span className="text-[hsl(33,100%,50%)]">A</span>
+              <span className="text-[hsl(187,100%,42%)]">F</span>
+              <span className="text-[hsl(45,100%,51%)]">E</span>
+              <span className="text-[hsl(187,100%,42%)]"> !</span>
+            </h1>
+          )}
         </div>
       )}
 

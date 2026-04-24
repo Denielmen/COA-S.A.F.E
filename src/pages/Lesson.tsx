@@ -3,11 +3,6 @@ import Swal from "sweetalert2";
 import { Space } from "antd";
 import "sweetalert2/dist/sweetalert2.min.css";
 import confetti from "canvas-confetti";
-import Lottie from "lottie-react";
-import goldingGaunlet from "@/Lotties/goldingGaunlet.json";
-import goldencandy from "@/Lotties/goldencandy.json";
-import goldenFlame from "@/Lotties/goldenFlame.json";
-import { createRoot } from "react-dom/client";
 import successSfx from "../soundEffects/success.mp3";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, CheckCircle, Share2 } from "lucide-react";
@@ -20,11 +15,44 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 const boyCharacterImg = "/images/boy.png";
 const girlCharacterImg = "/images/girl.png";
 
-const getMonthlyPrizeImage = (month: number): string | null => {
-  if (month === 1 || month === 2) {
-    return "/images/Project SAFE Calendar Elements-20251115T064626Z-1-001/Project SAFE Calendar Elements/Helmet of Growth.png";
+const getWeeklyPrizeImage = (month: number, day: number, lastDayOfMonth: number): string | null => {
+  if (month === 1) {
+    if (day === 7) return "/images/imagesPerWeek/Gauntlets01.png";
+    if (day === 14) return "/images/imagesPerWeek/Gauntlets03.png";
+    if (day === 21) return "/images/imagesPerWeek/Gauntlets05.png";
+    return null;
+  }
+  if (month === 2) {
+    if (day === 7) return "/images/imagesPerWeek/Chestplate01.png";
+    if (day === 14) return "/images/imagesPerWeek/Chestplate03.png";
+    if (day === 21) return "/images/imagesPerWeek/Chestplate04.png";
+    if (day === lastDayOfMonth) return "/images/imagesPerWeek/Chestplate06.png";
+    return null;
   }
   return null;
+};
+
+const getMonthlyPrizeImage = (month: number): string | null => {
+  switch (month) {
+    case 1:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Chestplate of Strength.1.png";
+    case 2:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Ecoheart Amulet.1.png";
+    case 3:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Gauntlets of Safety.1.png";
+    case 4:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Boots of Stability.1.png";
+    case 5:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Shield of Wise Choices.1.png";
+    case 6:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Sword of Courage.1.png";
+    case 7:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Shoulder Pads of Resilience.1.png";
+    case 9:
+      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Belt of Endurance.1.png";
+    default:
+      return null;
+  }
 };
 
 const Lesson = () => {
@@ -32,8 +60,7 @@ const Lesson = () => {
   const navigate = useNavigate();
   const [article, setArticle] = useState<DailyArticle | null>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
-  const [showFullContent, setShowFullContent] = useState(false);
-  const { markLessonCompleted, isLessonCompleted, getStats, progress } = useUserProgress();
+  const { markLessonCompleted, isLessonCompleted, getStats } = useUserProgress();
   const stats = getStats();
   const language = getCurrentLanguage();
 
@@ -86,9 +113,12 @@ const Lesson = () => {
     if (result.isConfirmed) {
       const [year, month, day] = date.split("-").map(Number);
       const selectedDate = new Date(year, month - 1, day);
-      const isTestPrizeDay = month === 2 && day >= 1 && day <= 19;
       const isRewardMilestone = Boolean(article?.isRewardDay ?? isRewardDate(selectedDate));
-      const isMilestone = isTestPrizeDay || isRewardMilestone;
+      const lastDayOfMonth = new Date(year, month, 0).getDate();
+      const isWeeklySpecial =
+        (month === 1 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 2 && (day === 7 || day === 14 || day === 21 || day === lastDayOfMonth));
+      const isMilestone = isRewardMilestone || isWeeklySpecial;
 
       try {
         const audio = new Audio(successSfx);
@@ -108,13 +138,13 @@ const Lesson = () => {
             } else if (typeof parsed.soundVolume === "number") {
               enabled = parsed.soundVolume > 0;
             }
-          } catch {}
+          } catch { }
         }
         if (enabled && vol > 0) {
           audio.volume = vol;
-          audio.play().catch(() => {});
+          audio.play().catch(() => { });
         }
-      } catch {}
+      } catch { }
       if (isMilestone) {
         confetti({ particleCount: 220, spread: 110, startVelocity: 55, origin: { y: 0.6 } });
         setTimeout(() => {
@@ -134,20 +164,26 @@ const Lesson = () => {
       }
 
       markLessonCompleted(selectedDate);
-      try { await cancelTodayReminders(); } catch {}
+      try { await cancelTodayReminders(); } catch { }
 
       if (isMilestone) {
-        const monthlyPrizeImage = getMonthlyPrizeImage(month);
-        if (monthlyPrizeImage) {
+        const weeklyPrizeImage = getWeeklyPrizeImage(month, day, lastDayOfMonth);
+        const monthlyPrizeImage = isRewardMilestone
+          ? month === 1
+            ? "/images/imagesPerWeek/Gauntlets06.png"
+            : getMonthlyPrizeImage(month)
+          : null;
+        const prizeImage = weeklyPrizeImage ?? monthlyPrizeImage;
+        if (prizeImage) {
           const modalTitle = translate(language, {
             en: "🎉 Congratulations! You’ve unlocked a prize!",
             tl: "🎉 Binabati ka! May na-unlock kang prize!",
             bis: "🎉 Congratulations! Nakadawat kag ganti!",
           });
           const modalMessage = translate(language, {
-            en: "You’ve completed this month’s learning journey. Enjoy your special prize!",
-            tl: "Natapos mo ang pag-aaral para sa buwan na ito. I-enjoy ang iyong espesyal na prize!",
-            bis: "Nahuman nimo ang pagtuon karong buwana. Lingia ang espesyal nga ganti!",
+            en: "You’ve earned this month’s reward. Enjoy your special prize!",
+            tl: "Nakakuha ka ng reward para sa buwang ito. I-enjoy ang iyong espesyal na prize!",
+            bis: "Nakakuha ka og reward para ning buwana. Lingia ang espesyal nga ganti!",
           });
           const confirmText = translate(language, {
             en: "Got it!",
@@ -161,10 +197,10 @@ const Lesson = () => {
                 <div class="monthly-prize-image-wrapper">
                   <div class="monthly-prize-image-mask">
                     <img
-                      src="${monthlyPrizeImage}"
+                      src="${prizeImage}"
                       alt="Monthly prize"
                       class="monthly-prize-image"
-                      style="width:220%;height:220%;object-fit:cover;"
+                      style="width:100%;height:100%;object-fit:contain;"
                     />
                   </div>
                 </div>
@@ -208,18 +244,6 @@ const Lesson = () => {
             },
           });
         } else {
-          const priorThirtyCompletions = progress.completedLessons.reduce((count, ds) => {
-            const [yy, mm, dd] = ds.split('-').map(Number);
-            return count + (dd === 30 ? 1 : 0);
-          }, 0);
-          const currentThirtyIndex = priorThirtyCompletions + 1;
-          let selectedAnimation = goldenFlame;
-          if (currentThirtyIndex === 1) {
-            selectedAnimation = goldingGaunlet;
-          } else if (currentThirtyIndex === 2) {
-            selectedAnimation = goldencandy;
-          }
-
           const rewardTitle =
             article?.reward?.title ??
             translate(language, {
@@ -235,12 +259,10 @@ const Lesson = () => {
               bis: "Nindot kaayo — nahuman nimo ang 30 ka adlaw sa pagtuon!",
             });
 
-          let lottieRoot: ReturnType<typeof createRoot> | null = null;
           await Swal.fire({
             title: rewardTitle,
             html: `
               <div class="reward-content" style="display:flex;flex-direction:column;align-items:center;">
-                <div id="reward-lottie" class="reward-lottie-pulse" style="width:min(90vw, 780px);height:min(90vw, 780px);margin:0 auto"></div>
                 <p style="margin-top:8px;text-align:center;">${rewardMessage}</p>
                 <div class="badge">Day ${displayDay}</div>
               </div>
@@ -255,21 +277,6 @@ const Lesson = () => {
             },
             showClass: { popup: "reward-popup-enter" },
             hideClass: { popup: "reward-popup-exit" },
-            didOpen: () => {
-              const container = document.getElementById("reward-lottie");
-              if (container) {
-                lottieRoot = createRoot(container);
-                lottieRoot.render(
-                  <Lottie animationData={selectedAnimation} loop={true} autoplay={true} style={{ width: "100%", height: "100%" }} />
-                );
-              }
-            },
-            willClose: () => {
-              if (lottieRoot) {
-                lottieRoot.unmount();
-                lottieRoot = null;
-              }
-            }
           });
         }
       } else {
@@ -316,8 +323,8 @@ const Lesson = () => {
               bis: "Wala nakit-an nga leksiyon",
             })}
           </h2>
-          <Button 
-            onClick={() => navigate("/dashboard")} 
+          <Button
+            onClick={() => navigate("/dashboard")}
             className="mt-4"
             type="primary"
           >
@@ -349,7 +356,7 @@ const Lesson = () => {
       <div className="bg-card border-b border-border px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => navigate("/dashboard")}
               className="p-2 hover:bg-muted rounded-full transition-colors"
             >
@@ -364,7 +371,7 @@ const Lesson = () => {
             </h1>
           </div>
           <div className="w-10 h-10 rounded-full bg-card border-2 border-border flex items-center justify-center overflow-hidden">
-            <img 
+            <img
               src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
               alt={`${selectedCharacter} character`}
               className="w-full h-full object-cover"
@@ -397,8 +404,8 @@ const Lesson = () => {
             </span>
             <span className="text-sm font-medium text-primary">{progressPercentage}%</span>
           </div>
-          <Progress 
-            percent={progressPercentage} 
+          <Progress
+            percent={progressPercentage}
             strokeColor="#00A99D"
             trailColor="#f0f0f0"
             strokeWidth={8}
@@ -423,7 +430,7 @@ const Lesson = () => {
               </p>
             </div>
           )}
-          
+
           {!article.fullContent && (
             <p className="text-foreground leading-relaxed mb-4">
               {article.description}
@@ -490,38 +497,15 @@ const Lesson = () => {
                       bis: "Dugangi ang Kahibalo:",
                     })}
                   </h4>
-                  
-                  {!showFullContent && (
-                    <button
-                      onClick={() => setShowFullContent(true)}
-                      className="text-sm text-green-700 hover:text-green-800 underline font-medium"
-                    >
-                      {translate(language, {
-                        en: "Click to read more",
-                        tl: "Mag-click para magbasa pa",
-                        bis: "I-click aron magbasa pa",
-                      })}
-                    </button>
-                  )}
-                  
-                  {showFullContent && (
-                    <div className="mt-3 p-3 bg-white rounded-lg border border-green-200">
-                      <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-                        {article.fullContent}
-                      </p>
-                      <button
-                        onClick={() => setShowFullContent(false)}
-                        className="mt-3 text-xs text-green-600 hover:text-green-700 underline"
-                      >
-                        {translate(language, {
-                          en: "Show less",
-                          tl: "Ipakita ang mas kaunti",
-                          bis: "Ipakita ang gamay",
-                        })}
-                      </button>
-                    </div>
-                  )}
-                  
+                  <a
+                    href={article.externalLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-green-700 hover:text-green-800 underline break-all"
+                  >
+                    {article.externalLink}
+                  </a>
+
                 </div>
               </div>
             </div>
