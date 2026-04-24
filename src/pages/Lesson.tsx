@@ -396,6 +396,11 @@ const Lesson = () => {
           <h2 className="text-2xl font-bold text-foreground leading-tight">
             {article.title}
           </h2>
+          {article.description && (
+            <p className="mt-2 text-muted-foreground leading-relaxed whitespace-pre-wrap font-normal">
+              {article.description}
+            </p>
+          )}
         </div>
 
         {/* Reading Progress */}
@@ -421,9 +426,10 @@ const Lesson = () => {
 
         {/* Article Content */}
         <div className="bg-card rounded-2xl p-6 shadow-sm border border-border mb-6" data-onboarding="lesson-content">
-          {/* Show full content if available, otherwise show description */}
+
+          {/* Show full content if available */}
           {article.fullContent && (
-            <div className="mb-4">
+            <div>
               <h4 className="font-semibold text-foreground mb-3">
                 {translate(language, {
                   en: "Content:",
@@ -431,16 +437,10 @@ const Lesson = () => {
                   bis: "Sulod:",
                 })}
               </h4>
-              <p className="text-foreground leading-relaxed">
+              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
                 {article.fullContent}
               </p>
             </div>
-          )}
-
-          {!article.fullContent && (
-            <p className="text-foreground leading-relaxed mb-4">
-              {article.description}
-            </p>
           )}
         </div>
 
@@ -489,7 +489,7 @@ const Lesson = () => {
 
         {/* Show full content if available */}
         <div>
-          {article.fullContent && (
+          {(article.externalLink || article.additionalContent) && (
             <div className="mt-4 p-4 bg-green-50 rounded-xl border-l-4 border-green-500">
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -503,14 +503,25 @@ const Lesson = () => {
                       bis: "Dugangi ang Kahibalo:",
                     })}
                   </h4>
-                  <a
-                    href={article.externalLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-green-700 hover:text-green-800 underline break-all"
-                  >
-                    {article.externalLink}
-                  </a>
+                  <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                    {/* Render text with automatic link detection */}
+                    {(article.additionalContent || article.externalLink || "").split(/(https?:\/\/[^\s]+)/g).map((part, index) => {
+                      if (part.match(/^https?:\/\/[^\s]+$/)) {
+                        return (
+                          <a
+                            key={index}
+                            href={part}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-green-700 hover:text-green-800 underline break-all"
+                          >
+                            {part}
+                          </a>
+                        );
+                      }
+                      return part;
+                    })}
+                  </div>
 
                 </div>
               </div>
