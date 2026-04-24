@@ -7,6 +7,7 @@ interface ExcelRow {
   Title: string;
   Description: string;
   FullContent?: string;
+  AdditionalContent?: string;
   ExternalLink?: string;
   ImagePath?: string;
   ChallengeType: string;
@@ -55,6 +56,10 @@ export const loadArticlesFromExcel = async (filePath: string = '/dailyArticles.x
       // Add optional fields if they exist
       if (row.FullContent && row.FullContent.trim()) {
         article.fullContent = row.FullContent;
+      }
+
+      if (row.AdditionalContent && row.AdditionalContent.trim()) {
+        article.additionalContent = row.AdditionalContent;
       }
 
       if (row.ExternalLink && row.ExternalLink.trim()) {

@@ -6,6 +6,7 @@ export interface DailyArticle {
   title: string;
   description: string;
   fullContent?: string;
+  additionalContent?: string;
   externalLink?: string;
   imagePath?: string;
   challengeType: ChallengeType;

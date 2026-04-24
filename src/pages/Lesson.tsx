@@ -138,13 +138,13 @@ const Lesson = () => {
             } else if (typeof parsed.soundVolume === "number") {
               enabled = parsed.soundVolume > 0;
             }
-          } catch {}
+          } catch { }
         }
         if (enabled && vol > 0) {
           audio.volume = vol;
-          audio.play().catch(() => {});
+          audio.play().catch(() => { });
         }
-      } catch {}
+      } catch { }
       if (isMilestone) {
         confetti({ particleCount: 220, spread: 110, startVelocity: 55, origin: { y: 0.6 } });
         setTimeout(() => {
@@ -164,7 +164,7 @@ const Lesson = () => {
       }
 
       markLessonCompleted(selectedDate);
-      try { await cancelTodayReminders(); } catch {}
+      try { await cancelTodayReminders(); } catch { }
 
       if (isMilestone) {
         const weeklyPrizeImage = getWeeklyPrizeImage(month, day, lastDayOfMonth);
@@ -323,8 +323,8 @@ const Lesson = () => {
               bis: "Wala nakit-an nga leksiyon",
             })}
           </h2>
-          <Button 
-            onClick={() => navigate("/dashboard")} 
+          <Button
+            onClick={() => navigate("/dashboard")}
             className="mt-4"
             type="primary"
           >
@@ -356,7 +356,7 @@ const Lesson = () => {
       <div className="bg-card border-b border-border px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => navigate("/dashboard")}
               className="p-2 hover:bg-muted rounded-full transition-colors"
             >
@@ -371,7 +371,7 @@ const Lesson = () => {
             </h1>
           </div>
           <div className="w-10 h-10 rounded-full bg-card border-2 border-border flex items-center justify-center overflow-hidden">
-            <img 
+            <img
               src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
               alt={`${selectedCharacter} character`}
               className="w-full h-full object-cover"
@@ -404,8 +404,8 @@ const Lesson = () => {
             </span>
             <span className="text-sm font-medium text-primary">{progressPercentage}%</span>
           </div>
-          <Progress 
-            percent={progressPercentage} 
+          <Progress
+            percent={progressPercentage}
             strokeColor="#00A99D"
             trailColor="#f0f0f0"
             strokeWidth={8}
@@ -430,7 +430,7 @@ const Lesson = () => {
               </p>
             </div>
           )}
-          
+
           {!article.fullContent && (
             <p className="text-foreground leading-relaxed mb-4">
               {article.description}
@@ -481,16 +481,15 @@ const Lesson = () => {
           </div>
         )}
 
-        {/* Show external link if available */}
+        {/* Show full content if available */}
         <div>
-          {article.externalLink && (
+          {article.fullContent && (
             <div className="mt-4 p-4 bg-green-50 rounded-xl border-l-4 border-green-500">
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
                 </div>
-                <div>
-
+                <div className="flex-1">
                   <h4 className="font-medium text-foreground mb-2">
                     {translate(language, {
                       en: "Learn More:",
@@ -498,7 +497,7 @@ const Lesson = () => {
                       bis: "Dugangi ang Kahibalo:",
                     })}
                   </h4>
-                  <a 
+                  <a
                     href={article.externalLink}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -506,7 +505,7 @@ const Lesson = () => {
                   >
                     {article.externalLink}
                   </a>
-                  
+
                 </div>
               </div>
             </div>
