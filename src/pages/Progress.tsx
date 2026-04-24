@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Trophy, Flame, Target, TrendingUp } from "lucide-react";
-import { Card, Progress as AntProgress, Tabs } from "antd";
+import { ArrowLeft, Trophy, Flame, Target, TrendingUp, Trash2 } from "lucide-react";
+import { Card, Progress as AntProgress, Tabs, Modal } from "antd";
+import Swal from "sweetalert2";
 import { useUserProgress } from "@/hooks/useUserProgress";
 import { dailyArticles } from "@/data/dailyArticles";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -12,13 +13,89 @@ const boyCharacterImg = "/images/Project SAFE Calendar/Project SAFE Calendar Ele
 const januaryAchievementImg = "/images/imagesPerWeek/January Achievement.png";
 const februaryAchievementImg = "/images/Project SAFE Calendar/Project SAFE Calendar Elements/February Achievement.png";
 
+const getMonthlyRewardImage = (month: number, character: "boy" | "girl"): string | null => {
+  if (character === "girl") {
+    switch (month) {
+      case 1: return "/images/imagesPerWeek/January Girl.png";
+      case 2: return "/images/imagesPerWeek/February Girl.png";
+      case 3: return "/images/imagesPerWeek/March Girl.png";
+      case 4: return "/images/imagesPerWeek/April Girl.png";
+      case 5: return "/images/imagesPerWeek/May girl.png";
+      case 6: return "/images/imagesPerWeek/June Girl.png";
+      case 7: return "/images/imagesPerWeek/July Girl.png";
+      case 8: return "/images/imagesPerWeek/August Girl.png";
+      case 9: return "/images/imagesPerWeek/September Girl.png";
+      case 10: return "/images/imagesPerWeek/October Girl.png";
+      case 11: return "/images/imagesPerWeek/November Girl.png";
+      case 12: return "/images/imagesPerWeek/December Girl.png";
+      default: return null;
+    }
+  }
+
+  switch (month) {
+    case 1: return "/images/imagesPerWeek/January Achievement.A.png";
+    case 2: return "/images/imagesPerWeek/February Achievement.A.png";
+    case 3: return "/images/imagesPerWeek/March Achievement.A.png";
+    case 4: return "/images/imagesPerWeek/April Achievement.A.png";
+    case 5: return "/images/imagesPerWeek/May Achievement.A.png";
+    case 6: return "/images/imagesPerWeek/June Achievement.A.png";
+    case 7: return "/images/imagesPerWeek/July Achievment.A.png";
+    case 8: return "/images/imagesPerWeek/August Achievement.A.png";
+    case 9: return "/images/imagesPerWeek/September Achievement.A.png";
+    case 10: return "/images/imagesPerWeek/October Achievement.A.png";
+    case 11: return "/images/imagesPerWeek/November Achievement.A.png";
+    case 12: return "/images/imagesPerWeek/December Achievement.A.png";
+    default: return null;
+  }
+};
+
 const Progress = () => {
   const navigate = useNavigate();
   const [selectedCharacter] = useState<"boy" | "girl">(() => {
     return (localStorage.getItem("selectedCharacter") as "boy" | "girl") || "girl";
   });
-  const { getStats, progress } = useUserProgress();
+  const { getStats, progress, resetProgress } = useUserProgress();
   const stats = getStats();
+
+  const handleReset = () => {
+    Swal.fire({
+      title: translate(language, {
+        en: "Reset All Progress?",
+        tl: "I-reset ang lahat ng progreso?",
+        bis: "I-reset ang tanan nga progreso?",
+      }),
+      text: translate(language, {
+        en: "This will permanently delete all your completed lessons, streaks, and rewards. This action cannot be undone!",
+        tl: "Buburahin nito nang permanente ang lahat ng iyong natapos na lesson, streak, at rewards. Hindi na ito mababawi!",
+        bis: "Mapapas ang tanan nimo nga nahuman nga leksiyon, streak, ug rewards. Dili na kini mabalik!",
+      }),
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: translate(language, {
+        en: "Yes, reset everything",
+        tl: "Oo, i-reset ang lahat",
+        bis: "Oo, i-reset tanan",
+      }),
+      cancelButtonText: translate(language, {
+        en: "Cancel",
+        tl: "Kanselahin",
+        bis: "Kanselahon",
+      }),
+    }).then((result) => {
+      if (result.isConfirmed) {
+        resetProgress();
+        Swal.fire({
+          title: "Reset!",
+          text: "Your progress has been cleared.",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    });
+  };
 
   const totalLessons = dailyArticles.length;
   const completionPercentage = Math.round((stats.completed / totalLessons) * 100);
@@ -30,6 +107,33 @@ const Progress = () => {
     const dayPart = ds.slice(5);
     return dayPart === "02-28" || dayPart === "02-29";
   });
+
+  const getEvolvedImage = () => {
+    const activeGender = selectedCharacter;
+    
+    // Combine earnedRewards with any lessons completed on the 30th (or Feb end)
+    const allRewardDates = Array.from(new Set([
+      ...progress.earnedRewards,
+      ...progress.completedLessons.filter(ds => {
+        const day = parseInt(ds.slice(8, 10));
+        const month = parseInt(ds.slice(5, 7));
+        if (day === 30) return true;
+        if (month === 2 && (day === 28 || day === 29)) return true;
+        return false;
+      })
+    ]));
+
+    const earnedMonths = allRewardDates
+      .map(ds => parseInt(ds.slice(5, 7)))
+      .filter(m => !isNaN(m))
+      .sort((a, b) => b - a);
+
+    if (earnedMonths.length > 0) {
+      return getMonthlyRewardImage(earnedMonths[0], activeGender) || getCharacterImage();
+    }
+
+    return getCharacterImage();
+  };
 
   const getCharacterImage = () => {
     return selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg;
@@ -133,15 +237,7 @@ const Progress = () => {
               <div className="text-center h-full flex flex-col justify-center">
                 <div className="w-32 h-40 mx-auto mb-2">
                   <img 
-                    src={
-                      selectedCharacter === "boy" && hasJanuary30Reward && hasFebruaryEndReward
-                        ? februaryAchievementImg
-                        : selectedCharacter === "boy" && hasJanuary30Reward
-                          ? januaryAchievementImg
-                          : selectedCharacter === "boy" && hasFebruaryEndReward
-                            ? februaryAchievementImg
-                            : getCharacterImage()
-                    }
+                    src={getEvolvedImage()}
                     alt="character"
                     className="w-auto h-full object-contain"
                   />
@@ -264,7 +360,9 @@ const Progress = () => {
             </Card>
           </div>
 
-          {/* Overall Progress Bar */}
+
+
+          {/* Progress Overview Section */}
           <Card className="rounded-2xl shadow-sm border border-border mb-4 bg-card" data-onboarding="progress-overview">
             <h3 className="font-semibold text-foreground mb-3">
               {translate(language, {
@@ -444,6 +542,21 @@ const Progress = () => {
           </Card>
         </div>
       )}
+
+      {/* Reset Progress Area */}
+      <div className="pb-24 px-4 flex justify-center">
+        <button
+          onClick={handleReset}
+          className="flex items-center gap-2 px-4 py-2 text-[10px] font-medium text-destructive hover:text-white border border-destructive/30 hover:bg-destructive rounded-lg transition-all opacity-60 hover:opacity-100"
+        >
+          <Trash2 className="w-3 h-3" />
+          {translate(language, {
+            en: "Reset Journey Statistics",
+            tl: "I-reset ang mga Estadistika ng Paglalakbay",
+            bis: "I-reset ang mga Estadistika sa Paglawig",
+          })}
+        </button>
+      </div>
 
       <BottomNavigation activeTab="progress" />
     </div>

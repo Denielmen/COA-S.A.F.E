@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
-import { getArticleForDate } from '@/data/dailyArticles';
+import { getArticleForDate, isRewardDay } from '@/data/dailyArticles';
 
 interface UserProgress {
   completedLessons: string[]; // Array of completed lesson dates (YYYY-MM-DD format)
@@ -105,7 +105,8 @@ export const useUserProgress = () => {
       let newLevel = prev.currentLevel;
 
       // Check if this is a reward day and add to earned rewards
-      if (article?.isRewardDay && !newEarnedRewards.includes(dateStr)) {
+      const isReward = article?.isRewardDay || isRewardDay(date);
+      if (isReward && !newEarnedRewards.includes(dateStr)) {
         newEarnedRewards.push(dateStr);
       }
 
