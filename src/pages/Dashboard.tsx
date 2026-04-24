@@ -241,12 +241,12 @@ const Dashboard = () => {
         <div className="bg-white p-6">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h1 className="text-4xl sm:text-7xl md:text-8xl leading-none font-extrabold tracking-tight flex items-end space-x-3 select-none">
-                          <span className="bounce-letter" style={{ color: "#2F92F3", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '0ms' } as React.CSSProperties}>S</span>
-                          <span className="bounce-letter" style={{ color: "#FF6A00", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '120ms' } as React.CSSProperties}>A</span>
-                          <span className="bounce-letter" style={{ color: "#00A695", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '240ms' } as React.CSSProperties}>F</span>
-                          <span className="bounce-letter" style={{ color: "#FFC048", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '360ms' } as React.CSSProperties}>E</span>
-              </h1>
+                <h1 className="text-4xl sm:text-7xl md:text-8xl leading-none font-extrabold tracking-tight flex items-end space-x-3 select-none">
+                          <span className="bounce-letter" style={{ color: "#2F92F3", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '0ms' } as React.CSSProperties}>S</span>
+                          <span className="bounce-letter" style={{ color: "#FF6A00", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '120ms' } as React.CSSProperties}>A</span>
+                          <span className="bounce-letter" style={{ color: "#00A695", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '240ms' } as React.CSSProperties}>F</span>
+                          <span className="bounce-letter" style={{ color: "#FFC048", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '360ms' } as React.CSSProperties}>E</span>
+                </h1>
               <p className="text-sm text-gray-500 mt-1">
                 {translate(language, {
                   en: "Learn Philippine Children's Law",

@@ -66,17 +66,17 @@ const Welcome = () => {
             })}
           </h2>
           <h1 className="text-6xl sm:text-7xl md:text-8xl leading-none font-extrabold tracking-tight flex justify-center items-end space-x-3 select-none">
-            <span className="bounce-letter" style={{ color: "#2F92F3", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '0ms' } as React.CSSProperties}>S</span>
-            <span className="bounce-letter" style={{ color: "#FF6A00", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '120ms' } as React.CSSProperties}>A</span>
-            <span className="bounce-letter" style={{ color: "#00A695", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '240ms' } as React.CSSProperties}>F</span>
-            <span className="bounce-letter" style={{ color: "#FFC048", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '360ms' } as React.CSSProperties}>E</span>
+            <span className="bounce-letter" style={{ color: "#2F92F3", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '0ms' } as React.CSSProperties}>S</span>
+            <span className="bounce-letter" style={{ color: "#FF6A00", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '120ms' } as React.CSSProperties}>A</span>
+            <span className="bounce-letter" style={{ color: "#00A695", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '240ms' } as React.CSSProperties}>F</span>
+            <span className="bounce-letter" style={{ color: "#FFC048", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '360ms' } as React.CSSProperties}>E</span>
           </h1>
         </div>
 
         <div className="pt-6">
           <p
             className="text-black text-sm font-medium tagline"
-            style={{ ["--delay" as any]: "880ms" } as React.CSSProperties}
+            style={{ "--delay": "880ms" } as React.CSSProperties}
           >
             {translate(language, {
               en: "Learn Philippine Children's Law",
