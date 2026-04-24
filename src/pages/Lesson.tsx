@@ -29,6 +29,60 @@ const getWeeklyPrizeImage = (month: number, day: number, lastDayOfMonth: number)
     if (day === lastDayOfMonth) return "/images/imagesPerWeek/Chestplate06.png";
     return null;
   }
+  if (month === 3) {
+    if (day === 7) return "/images/imagesPerWeek/Helmet01.png";
+    if (day === 14) return "/images/imagesPerWeek/Helmet03.png";
+    if (day === 21) return "/images/imagesPerWeek/Helmet04.png";
+    return null;
+  }
+  if (month === 4) {
+    if (day === 7) return "/images/imagesPerWeek/Sword01.png";
+    if (day === 14) return "/images/imagesPerWeek/Sword03.png";
+    if (day === 21) return "/images/imagesPerWeek/Sword04.png";
+    return null;
+  }
+  if (month === 5) {
+    if (day === 7) return "/images/imagesPerWeek/Shield01.png";
+    if (day === 14) return "/images/imagesPerWeek/Shield03.png";
+    if (day === 21) return "/images/imagesPerWeek/Shield05.png";
+    return null;
+  }
+  if (month === 6) {
+    if (day === 7) return "/images/imagesPerWeek/Boots01.png";
+    if (day === 14) return "/images/imagesPerWeek/Boots03.png";
+    if (day === 21) return "/images/imagesPerWeek/Boots05.png";
+    return null;
+  }
+  if (month === 7) {
+    if (day === 7) return "/images/imagesPerWeek/Shoulder01.png";
+    if (day === 14) return "/images/imagesPerWeek/Shoulder03.png";
+    if (day === 21) return "/images/imagesPerWeek/Shoulder05.png";
+    return null;
+  }
+  if (month === 8) {
+    if (day === 7) return "/images/imagesPerWeek/Amulet01.png";
+    if (day === 14) return "/images/imagesPerWeek/Amulet03.png";
+    if (day === 21) return "/images/imagesPerWeek/Amulet05.png";
+    return null;
+  }
+  if (month === 9) {
+    if (day === 7) return "/images/imagesPerWeek/Belt01.png";
+    if (day === 14) return "/images/imagesPerWeek/Belt03.png";
+    if (day === 21) return "/images/imagesPerWeek/Belt05.png";
+    return null;
+  }
+  if (month === 10) {
+    if (day === 7 || day === 14 || day === 21) return "/images/imagesPerWeek/Legs of Armor.png";
+    return null;
+  }
+  if (month === 11) {
+    if (day === 7 || day === 14 || day === 21) return "/images/imagesPerWeek/Lumina_s Cloak.png";
+    return null;
+  }
+  if (month === 12) {
+    if (day === 7 || day === 14 || day === 21) return "/images/imagesPerWeek/Ring of Heaven_s Voice.png";
+    return null;
+  }
   return null;
 };
 
@@ -39,17 +93,25 @@ const getMonthlyPrizeImage = (month: number): string | null => {
     case 2:
       return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Ecoheart Amulet.1.png";
     case 3:
-      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Gauntlets of Safety.1.png";
+      return "/images/imagesPerWeek/Helmet of Growth.22.png";
     case 4:
-      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Boots of Stability.1.png";
+      return "/images/imagesPerWeek/Sword of Courage.11.png";
     case 5:
-      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Shield of Wise Choices.1.png";
+      return "/images/imagesPerWeek/Shield of Wise Choices.30.png";
     case 6:
-      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Sword of Courage.1.png";
+      return "/images/imagesPerWeek/Boots of Stability.30.png";
     case 7:
-      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Shoulder Pads of Resilience.1.png";
+      return "/images/imagesPerWeek/Shoulder Pads of Resilience.30.png";
+    case 8:
+      return "/images/imagesPerWeek/Amulet06.30.png";
     case 9:
-      return "/images/Project SAFE Calendar/Project SAFE Calendar Elements/Belt of Endurance.1.png";
+      return "/images/imagesPerWeek/Belt06.30.png";
+    case 10:
+      return "/images/imagesPerWeek/Legs of Armor.30.png";
+    case 11:
+      return "/images/imagesPerWeek/Lumina_s Cloak.30.png";
+    case 12:
+      return "/images/imagesPerWeek/Ring of Heaven_s Voice.30.png";
     default:
       return null;
   }
@@ -84,40 +146,52 @@ const Lesson = () => {
   const handleMarkComplete = async () => {
     if (!date) return;
 
+    let confirmed = false;
     const result = await Swal.fire({
-      title: translate(language, {
-        en: "Mark as completed?",
-        tl: "Markahan bilang tapos?",
-        bis: "I-mark nga nahuman na?",
-      }),
-      text: translate(language, {
-        en: "Confirm to mark today's lesson as completed.",
-        tl: "Kumpirmahin para markahan ang lesson ngayon bilang tapos.",
-        bis: "Kumpirmaha nga nahuman na nimo ang karon nga leksiyon.",
-      }),
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: translate(language, {
-        en: "Yes, mark it",
-        tl: "Oo, markahan",
-        bis: "Oo, i-mark",
-      }),
-      cancelButtonText: translate(language, {
-        en: "Cancel",
-        tl: "Kanselahin",
-        bis: "Kanselahon",
-      }),
-      focusCancel: true,
-    });
+        title: translate(language, {
+          en: "Mark as completed?",
+          tl: "Markahan bilang tapos?",
+          bis: "I-mark nga nahuman na?",
+        }),
+        text: translate(language, {
+          en: "Confirm to mark today's lesson as completed.",
+          tl: "Kumpirmahin para markahan ang lesson ngayon bilang tapos.",
+          bis: "Kumpirmaha nga nahuman na nimo ang karon nga leksiyon.",
+        }),
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: translate(language, {
+          en: "Yes, mark it",
+          tl: "Oo, markahan",
+          bis: "Oo, i-mark",
+        }),
+        cancelButtonText: translate(language, {
+          en: "Cancel",
+          tl: "Kanselahin",
+          bis: "Kanselahon",
+        }),
+        focusCancel: true,
+      });
+      confirmed = result.isConfirmed;
 
-    if (result.isConfirmed) {
+    if (confirmed) {
       const [year, month, day] = date.split("-").map(Number);
       const selectedDate = new Date(year, month - 1, day);
       const isRewardMilestone = Boolean(article?.isRewardDay ?? isRewardDate(selectedDate));
       const lastDayOfMonth = new Date(year, month, 0).getDate();
       const isWeeklySpecial =
         (month === 1 && (day === 7 || day === 14 || day === 21)) ||
-        (month === 2 && (day === 7 || day === 14 || day === 21 || day === lastDayOfMonth));
+        (month === 2 && (day === 7 || day === 14 || day === 21 || day === lastDayOfMonth)) ||
+        (month === 3 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 4 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 5 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 6 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 7 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 8 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 9 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 10 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 11 && (day === 7 || day === 14 || day === 21)) ||
+        (month === 12 && (day === 7 || day === 14 || day === 21));
       const isMilestone = isRewardMilestone || isWeeklySpecial;
 
       try {
