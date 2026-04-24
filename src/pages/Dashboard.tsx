@@ -20,7 +20,7 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 // const girlCharacterImg = "/images/girl.png";
 
 const Dashboard = () => {
-  const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs());
+  const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs().startOf('year'));
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
   const [username, setUsername] = useState<string>(() => localStorage.getItem('username') || '');
   const { isLessonCompleted, getStats, progress } = useUserProgress();
