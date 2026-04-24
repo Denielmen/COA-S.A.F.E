@@ -676,35 +676,6 @@ All colors MUST be HSL.
   font-weight: bold;
 }
 
-/* Custom Calendar Styling */
-.custom-calendar .ant-picker-calendar-date {
-  padding: 4px;
-}
-
-.custom-calendar .ant-picker-calendar-date-content {
-  height: 100%;
-}
-
-/* Weekend days styling - Saturday and Sunday in orange */
-.custom-calendar .ant-picker-cell-weekend .ant-picker-calendar-date {
-  color: hsl(var(--secondary));
-}
-
-.custom-calendar .ant-picker-cell-weekend .ant-picker-calendar-date-value {
-  color: hsl(var(--secondary));
-}
-
-/* Current date highlighting */
-.custom-calendar .ant-picker-cell-selected .ant-picker-calendar-date {
-  background-color: hsl(var(--secondary));
-  border-radius: 8px;
-}
-
-.custom-calendar .ant-picker-cell-selected .ant-picker-calendar-date-value {
-  color: white;
-  font-weight: bold;
-}
-
 /* Utility overrides to make existing light classes adapt in dark mode */
 @layer base {
   .theme-dark .bg-white { background-color: hsl(var(--card)) !important; }
@@ -929,4 +900,13 @@ All colors MUST be HSL.
   100% {
     transform: translate(-50%, -50%) translateX(0);
   }
+}
+
+/* Hide default calendar headers to prevent duplication */
+.custom-calendar .ant-picker-panel .ant-picker-header {
+  display: none !important;
+}
+
+.custom-calendar .ant-picker-content thead {
+  display: none !important;
 }

@@ -60,8 +60,7 @@ const Lesson = () => {
   const navigate = useNavigate();
   const [article, setArticle] = useState<DailyArticle | null>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
-  const [showFullContent, setShowFullContent] = useState(false);
-  const { markLessonCompleted, isLessonCompleted, getStats, progress } = useUserProgress();
+  const { markLessonCompleted, isLessonCompleted, getStats } = useUserProgress();
   const stats = getStats();
   const language = getCurrentLanguage();
 
@@ -139,13 +138,17 @@ const Lesson = () => {
             } else if (typeof parsed.soundVolume === "number") {
               enabled = parsed.soundVolume > 0;
             }
-          } catch {}
+          } catch (e) {
+            console.error("Error parsing settings:", e);
+          }
         }
         if (enabled && vol > 0) {
           audio.volume = vol;
-          audio.play().catch(() => {});
+          audio.play().catch(() => { });
         }
-      } catch {}
+      } catch (e) {
+        console.error("Error playing success sound:", e);
+      }
       if (isMilestone) {
         confetti({ particleCount: 220, spread: 110, startVelocity: 55, origin: { y: 0.6 } });
         setTimeout(() => {
@@ -165,7 +168,9 @@ const Lesson = () => {
       }
 
       markLessonCompleted(selectedDate);
-      try { await cancelTodayReminders(); } catch {}
+      try { await cancelTodayReminders(); } catch (e) {
+        console.error("Error canceling reminders:", e);
+      }
 
       if (isMilestone) {
         const weeklyPrizeImage = getWeeklyPrizeImage(month, day, lastDayOfMonth);
@@ -324,8 +329,8 @@ const Lesson = () => {
               bis: "Wala nakit-an nga leksiyon",
             })}
           </h2>
-          <Button 
-            onClick={() => navigate("/dashboard")} 
+          <Button
+            onClick={() => navigate("/dashboard")}
             className="mt-4"
             type="primary"
           >
@@ -357,7 +362,7 @@ const Lesson = () => {
       <div className="bg-card border-b border-border px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => navigate("/dashboard")}
               className="p-2 hover:bg-muted rounded-full transition-colors"
             >
@@ -372,7 +377,7 @@ const Lesson = () => {
             </h1>
           </div>
           <div className="w-10 h-10 rounded-full bg-card border-2 border-border flex items-center justify-center overflow-hidden">
-            <img 
+            <img
               src={selectedCharacter === "boy" ? boyCharacterImg : girlCharacterImg}
               alt={`${selectedCharacter} character`}
               className="w-full h-full object-cover"
@@ -391,6 +396,11 @@ const Lesson = () => {
           <h2 className="text-2xl font-bold text-foreground leading-tight">
             {article.title}
           </h2>
+          {article.description && (
+            <p className="mt-2 text-muted-foreground leading-relaxed whitespace-pre-wrap font-normal">
+              {article.description}
+            </p>
+          )}
         </div>
 
         {/* Reading Progress */}
@@ -405,8 +415,8 @@ const Lesson = () => {
             </span>
             <span className="text-sm font-medium text-primary">{progressPercentage}%</span>
           </div>
-          <Progress 
-            percent={progressPercentage} 
+          <Progress
+            percent={progressPercentage}
             strokeColor="#00A99D"
             trailColor="#f0f0f0"
             strokeWidth={8}
@@ -416,9 +426,10 @@ const Lesson = () => {
 
         {/* Article Content */}
         <div className="bg-card rounded-2xl p-6 shadow-sm border border-border mb-6" data-onboarding="lesson-content">
-          {/* Show full content if available, otherwise show description */}
+
+          {/* Show full content if available */}
           {article.fullContent && (
-            <div className="mb-4">
+            <div>
               <h4 className="font-semibold text-foreground mb-3">
                 {translate(language, {
                   en: "Content:",
@@ -426,16 +437,10 @@ const Lesson = () => {
                   bis: "Sulod:",
                 })}
               </h4>
-              <p className="text-foreground leading-relaxed">
+              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
                 {article.fullContent}
               </p>
             </div>
-          )}
-          
-          {!article.fullContent && (
-            <p className="text-foreground leading-relaxed mb-4">
-              {article.description}
-            </p>
           )}
         </div>
 
@@ -484,7 +489,7 @@ const Lesson = () => {
 
         {/* Show full content if available */}
         <div>
-          {article.fullContent && (
+          {(article.externalLink || article.additionalContent) && (
             <div className="mt-4 p-4 bg-green-50 rounded-xl border-l-4 border-green-500">
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -498,38 +503,26 @@ const Lesson = () => {
                       bis: "Dugangi ang Kahibalo:",
                     })}
                   </h4>
-                  
-                  {!showFullContent && (
-                    <button
-                      onClick={() => setShowFullContent(true)}
-                      className="text-sm text-green-700 hover:text-green-800 underline font-medium"
-                    >
-                      {translate(language, {
-                        en: "Click to read more",
-                        tl: "Mag-click para magbasa pa",
-                        bis: "I-click aron magbasa pa",
-                      })}
-                    </button>
-                  )}
-                  
-                  {showFullContent && (
-                    <div className="mt-3 p-3 bg-white rounded-lg border border-green-200">
-                      <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-                        {article.fullContent}
-                      </p>
-                      <button
-                        onClick={() => setShowFullContent(false)}
-                        className="mt-3 text-xs text-green-600 hover:text-green-700 underline"
-                      >
-                        {translate(language, {
-                          en: "Show less",
-                          tl: "Ipakita ang mas kaunti",
-                          bis: "Ipakita ang gamay",
-                        })}
-                      </button>
-                    </div>
-                  )}
-                  
+                  <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                    {/* Render text with automatic link detection */}
+                    {(article.additionalContent || article.externalLink || "").split(/(https?:\/\/[^\s]+)/g).map((part, index) => {
+                      if (part.match(/^https?:\/\/[^\s]+$/)) {
+                        return (
+                          <a
+                            key={index}
+                            href={part}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-green-700 hover:text-green-800 underline break-all"
+                          >
+                            {part}
+                          </a>
+                        );
+                      }
+                      return part;
+                    })}
+                  </div>
+
                 </div>
               </div>
             </div>

@@ -105,22 +105,11 @@ const Onboarding = () => {
 
       {/* Bottom Navigation Buttons */}
       <div className="max-w-md w-full pt-6 pb-4">
-        <div className="flex items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={handleSkip}
-            className="text-primary font-semibold"
-          >
-            {translate(language, {
-              en: "Skip",
-              tl: "Laktawan",
-              bis: "Lakta",
-            })}
-          </button>
+        <div className="flex flex-col items-center gap-3">
           <button
             type="button"
             onClick={handleNext}
-            className="flex-1 bg-teal-700 hover:bg-teal-600 text-white h-12 rounded-full font-semibold shadow-md flex items-center justify-center"
+            className="w-full bg-teal-700 hover:bg-teal-600 text-white h-12 rounded-full font-semibold shadow-md flex items-center justify-center"
             aria-label={isLastStep ? "Get Started" : "Next"}
           >
             {isLastStep
@@ -134,6 +123,17 @@ const Onboarding = () => {
                   tl: "Susunod",
                   bis: "Sunod",
                 })}
+          </button>
+          <button
+            type="button"
+            onClick={handleSkip}
+            className="text-primary font-semibold"
+          >
+            {translate(language, {
+              en: "Skip",
+              tl: "Laktawan",
+              bis: "Lakta",
+            })}
           </button>
         </div>
       </div>

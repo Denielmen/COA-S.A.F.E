@@ -9,7 +9,7 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 
 const Lessons = () => {
   const navigate = useNavigate();
-  const [selectedMonth, setSelectedMonth] = useState<number>(() => new Date().getMonth() + 1);
+  const [selectedMonth, setSelectedMonth] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(true);
   const { isLessonCompleted, getStats } = useUserProgress();
   const stats = getStats();
@@ -52,8 +52,8 @@ const Lessons = () => {
   }, {} as Record<number, DailyArticle[]>);
 
   const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6",
+    "Month 7", "Month 8", "Month 9", "Month 10", "Month 11", "Month 12"
   ];
 
   const getChallengeIcon = (type: ChallengeType) => {

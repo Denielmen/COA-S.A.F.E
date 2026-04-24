@@ -1,0 +1,29 @@
+{
+  "name": "SAFE - Learn Philippine Children's Law",
+  "short_name": "SAFE",
+  "description": "Learn Philippine Laws for Children through bite-sized daily lessons. Build legal awareness in just 5 minutes a day with interactive quizzes and progress tracking.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#00A99D",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

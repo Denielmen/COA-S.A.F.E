@@ -20,7 +20,7 @@ import { getCurrentLanguage, translate } from "@/lib/utils";
 // const girlCharacterImg = "/images/girl.png";
 
 const Dashboard = () => {
-  const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs());
+  const [currentMonth, setCurrentMonth] = useState<Dayjs>(dayjs().startOf('year'));
   const [selectedCharacter, setSelectedCharacter] = useState<"boy" | "girl">("girl");
   const [username, setUsername] = useState<string>(() => localStorage.getItem('username') || '');
   const { isLessonCompleted, getStats, progress } = useUserProgress();
@@ -241,12 +241,12 @@ const Dashboard = () => {
         <div className="bg-white p-6">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h1 className="text-4xl sm:text-7xl md:text-8xl leading-none font-extrabold tracking-tight flex items-end space-x-3 select-none">
-                          <span className="bounce-letter" style={{ color: "#2F92F3", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '0ms' } as React.CSSProperties}>S</span>
-                          <span className="bounce-letter" style={{ color: "#FF6A00", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '120ms' } as React.CSSProperties}>A</span>
-                          <span className="bounce-letter" style={{ color: "#00A695", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '240ms' } as React.CSSProperties}>F</span>
-                          <span className="bounce-letter" style={{ color: "#FFC048", textShadow: "0 6px 10px rgba(0,0,0,0.12)", ['--delay' as any]: '360ms' } as React.CSSProperties}>E</span>
-              </h1>
+                <h1 className="text-4xl sm:text-7xl md:text-8xl leading-none font-extrabold tracking-tight flex items-end space-x-3 select-none">
+                          <span className="bounce-letter" style={{ color: "#2F92F3", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '0ms' } as React.CSSProperties}>S</span>
+                          <span className="bounce-letter" style={{ color: "#FF6A00", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '120ms' } as React.CSSProperties}>A</span>
+                          <span className="bounce-letter" style={{ color: "#00A695", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '240ms' } as React.CSSProperties}>F</span>
+                          <span className="bounce-letter" style={{ color: "#FFC048", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '360ms' } as React.CSSProperties}>E</span>
+                </h1>
               <p className="text-sm text-gray-500 mt-1">
                 {translate(language, {
                   en: "Learn Philippine Children's Law",
@@ -299,7 +299,7 @@ const Dashboard = () => {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3 calendar-controls">
             <h2 className="text-2xl sm:text-3xl ml-3 font-bold text-orange-500">
-              {currentMonth.format("MMMM YYYY")}
+              Month {currentMonth.format("M YYYY")}
             </h2>
             <div className="flex items-center gap-2">
               <button
@@ -336,7 +336,7 @@ const Dashboard = () => {
             style={{ minHeight: "300px" }}
             data-onboarding="calendar-main"
           >
-            <Card className="mt-5 rounded-2xl shadow-sm border border-gray-200 bg-transparent">
+            <Card>
               <Calendar
                 key={progress.completedLessons.length}
                 fullscreen={false}
@@ -344,8 +344,25 @@ const Dashboard = () => {
                 onPanelChange={onPanelChange}
                 onSelect={onDateSelect}
                 cellRender={dateCellRender}
-                className="custom-calendar bg-transparent"
-                headerRender={() => null}
+                headerRender={({ value, type, onChange, onTypeChange }) => {
+                  const daysOfWeek = [
+                    { day: 'Sun', color: '#2F92F3' },  // Blue
+                    { day: 'Mon', color: '#FF6A00' },  // Orange
+                    { day: 'Tue', color: '#00A695' },  // Teal
+                    { day: 'Wed', color: '#FFC048' },  // Yellow
+                    { day: 'Thu', color: '#2F92F3' },  // Blue
+                    { day: 'Fri', color: '#FF6A00' },  // Orange
+                    { day: 'Sat', color: '#00A695' }   // Teal
+                  ];
+                  return (
+                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                      {daysOfWeek.map(({ day, color }) => (
+                        <div key={day} style={{ fontWeight: 'bold', color }}>{day}</div>
+                      ))}
+                    </div>
+                  );
+                }}
+                className="custom-calendar"
               />
             </Card>
           </div>

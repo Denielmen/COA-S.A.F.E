@@ -78,7 +78,7 @@ const steps: OnboardingStep[] = [
     ctaLabel: "Next step",
     secondaryCtaLabel: "Skip tour",
     targetSelector: '[data-onboarding="lesson-complete"]',
-    arrowSide: "top",
+    arrowSide: "bottom",
   },
   {
     id: "lesson-quiz",
