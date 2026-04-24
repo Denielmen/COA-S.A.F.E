@@ -396,6 +396,11 @@ const Lesson = () => {
           <h2 className="text-2xl font-bold text-foreground leading-tight">
             {article.title}
           </h2>
+          {article.description && (
+            <p className="mt-2 text-muted-foreground leading-relaxed whitespace-pre-wrap font-normal">
+              {article.description}
+            </p>
+          )}
         </div>
 
         {/* Reading Progress */}
@@ -421,14 +426,6 @@ const Lesson = () => {
 
         {/* Article Content */}
         <div className="bg-card rounded-2xl p-6 shadow-sm border border-border mb-6" data-onboarding="lesson-content">
-          {/* Always show description if available */}
-          {article.description && (
-            <div className="mb-4">
-              <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                {article.description}
-              </p>
-            </div>
-          )}
 
           {/* Show full content if available */}
           {article.fullContent && (
@@ -492,7 +489,7 @@ const Lesson = () => {
 
         {/* Show full content if available */}
         <div>
-          {(article.additionalContent || article.externalLink) && (
+          {(article.externalLink || article.additionalContent) && (
             <div className="mt-4 p-4 bg-green-50 rounded-xl border-l-4 border-green-500">
               <div className="flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -506,41 +503,26 @@ const Lesson = () => {
                       bis: "Dugangi ang Kahibalo:",
                     })}
                   </h4>
-                  {article.additionalContent ? (
-                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-                      {article.additionalContent}
-                    </p>
-                  ) : article.externalLink && !article.externalLink.trim().startsWith('http') ? (
-                    <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-                      {article.externalLink}
-                    </p>
-                  ) : null}
-                  
-                  {article.externalLink && (
-                    <div className="mt-2">
-                      {article.externalLink.split('\n').map((line, i) => {
-                        const linkMatch = line.match(/https?:\/\/[^\s]+/);
-                        if (linkMatch) {
-                          return (
-                            <a
-                              key={i}
-                              href={linkMatch[0]}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-green-700 hover:text-green-800 underline break-all inline-block mr-2"
-                            >
-                              {line.trim() || linkMatch[0]}
-                            </a>
-                          );
-                        }
-                        if (article.additionalContent) {
-                           // If we have separate additionalContent, don't show externalLink text here again if it was already shown above
-                           return null;
-                        }
-                        return null;
-                      })}
-                    </div>
-                  )}
+                  <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                    {/* Render text with automatic link detection */}
+                    {(article.additionalContent || article.externalLink || "").split(/(https?:\/\/[^\s]+)/g).map((part, index) => {
+                      if (part.match(/^https?:\/\/[^\s]+$/)) {
+                        return (
+                          <a
+                            key={index}
+                            href={part}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-green-700 hover:text-green-800 underline break-all"
+                          >
+                            {part}
+                          </a>
+                        );
+                      }
+                      return part;
+                    })}
+                  </div>
+
                 </div>
               </div>
             </div>
