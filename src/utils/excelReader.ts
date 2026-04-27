@@ -5,15 +5,27 @@ interface ExcelRow {
   Day: number;
   Month: number;
   Title: string;
+  Title_TL?: string;
+  Title_BIS?: string;
   Description: string;
+  Description_TL?: string;
+  Description_BIS?: string;
   FullContent?: string;
+  FullContent_TL?: string;
+  FullContent_BIS?: string;
   AdditionalContent?: string;
+  AdditionalContent_TL?: string;
+  AdditionalContent_BIS?: string;
   ExternalLink?: string;
   ImagePath?: string;
   ChallengeType: string;
   IsRewardDay: string;
   RewardTitle?: string;
+  RewardTitle_TL?: string;
+  RewardTitle_BIS?: string;
   RewardMessage?: string;
+  RewardMessage_TL?: string;
+  RewardMessage_BIS?: string;
 }
 
 // Cache for loaded data to avoid repeated file reads
@@ -49,17 +61,25 @@ export const loadArticlesFromExcel = async (filePath: string = '/dailyArticles.x
         day: row.Day,
         month: row.Month,
         title: row.Title,
+        title_tl: row.Title_TL,
+        title_bis: row.Title_BIS,
         description: row.Description,
+        description_tl: row.Description_TL,
+        description_bis: row.Description_BIS,
         challengeType: row.ChallengeType as ChallengeType
       };
 
       // Add optional fields if they exist
       if (row.FullContent && row.FullContent.trim()) {
         article.fullContent = row.FullContent;
+        article.fullContent_tl = row.FullContent_TL;
+        article.fullContent_bis = row.FullContent_BIS;
       }
 
       if (row.AdditionalContent && row.AdditionalContent.trim()) {
         article.additionalContent = row.AdditionalContent;
+        article.additionalContent_tl = row.AdditionalContent_TL;
+        article.additionalContent_bis = row.AdditionalContent_BIS;
       }
 
       if (row.ExternalLink && row.ExternalLink.trim()) {
@@ -76,7 +96,11 @@ export const loadArticlesFromExcel = async (filePath: string = '/dailyArticles.x
         if (row.RewardTitle || row.RewardMessage) {
           article.reward = {
             title: row.RewardTitle || '',
-            message: row.RewardMessage || ''
+            title_tl: row.RewardTitle_TL,
+            title_bis: row.RewardTitle_BIS,
+            message: row.RewardMessage || '',
+            message_tl: row.RewardMessage_TL,
+            message_bis: row.RewardMessage_BIS
           };
         }
       }

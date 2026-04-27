@@ -28,13 +28,13 @@ const Lessons = () => {
           clearInterval(checkInterval);
         }
       }, 100);
-      
+
       // Timeout after 5 seconds
       const timeout = setTimeout(() => {
         clearInterval(checkInterval);
         setIsLoading(false);
       }, 5000);
-      
+
       return () => {
         clearInterval(checkInterval);
         clearTimeout(timeout);
@@ -112,7 +112,7 @@ const Lessons = () => {
       <div className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => navigate("/dashboard")}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
@@ -144,18 +144,17 @@ const Lessons = () => {
           {months.map((month, index) => {
             const monthNumber = index + 1;
             const hasArticles = articlesByMonth[monthNumber]?.length > 0;
-            
+
             if (!hasArticles) return null;
-            
+
             return (
               <button
                 key={monthNumber}
                 onClick={() => setSelectedMonth(monthNumber)}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  selectedMonth === monthNumber
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedMonth === monthNumber
                     ? 'bg-primary text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                  }`}
               >
                 {month}
               </button>
@@ -202,7 +201,7 @@ const Lessons = () => {
             const currentYear = new Date().getFullYear();
             const date = new Date(currentYear, article.month - 1, article.day);
             const isCompleted = isLessonCompleted(date);
-            
+
             return (
               <div
                 key={`${article.month}-${article.day}`}
@@ -210,13 +209,12 @@ const Lessons = () => {
               >
                 <div className="flex items-start gap-3">
                   {/* Day Number */}
-                  <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm ${
-                    isCompleted 
-                      ? 'bg-primary/10 text-primary border-2 border-primary/20' 
+                  <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center font-bold text-sm ${isCompleted
+                      ? 'bg-primary/10 text-primary border-2 border-primary/20'
                       : article.isRewardDay
                         ? 'bg-yellow-100 text-yellow-700 border-2 border-yellow-200'
                         : 'bg-gray-50 text-gray-700 border-2 border-gray-200'
-                  }`}>
+                    }`}>
                     {article.isRewardDay ? '🏆' : article.day}
                   </div>
 
@@ -224,26 +222,34 @@ const Lessons = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <h3 className="font-semibold text-gray-900 leading-tight">
-                        {article.title}
+                        {translate(language, {
+                          en: article.title,
+                          tl: article.title_tl,
+                          bis: article.title_bis
+                        })}
                       </h3>
                       {isCompleted && (
-                        <Badge 
-                          count="✓" 
+                        <Badge
+                          count="✓"
                           style={{ backgroundColor: '#00A99D', color: 'white' }}
                         />
                       )}
                     </div>
-                    
+
                     <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                      {article.description}
+                      {translate(language, {
+                        en: article.description,
+                        tl: article.description_tl,
+                        bis: article.description_bis
+                      })}
                     </p>
 
                     <div className="flex items-center justify-between">
                       {/* Challenge Type Badge */}
                       <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${getChallengeColor(article.challengeType)}`}>
                         {getChallengeIcon(article.challengeType)}
-                        {article.challengeType === 'social-media' ? 'Social Media' : 
-                         article.challengeType ? article.challengeType.charAt(0).toUpperCase() + article.challengeType.slice(1) : 'Challenge'}
+                        {article.challengeType === 'social-media' ? 'Social Media' :
+                          article.challengeType ? article.challengeType.charAt(0).toUpperCase() + article.challengeType.slice(1) : 'Challenge'}
                       </div>
 
                       {/* Action Button */}
@@ -261,10 +267,18 @@ const Lessons = () => {
                     {article.isRewardDay && article.reward && (
                       <div className="mt-3 p-3 bg-yellow-50 rounded-xl border border-yellow-200">
                         <div className="text-sm font-medium text-yellow-800">
-                          {article.reward.title}
+                          {translate(language, {
+                            en: article.reward.title,
+                            tl: article.reward.title_tl,
+                            bis: article.reward.title_bis
+                          })}
                         </div>
                         <div className="text-xs text-yellow-700 mt-1">
-                          {article.reward.message}
+                          {translate(language, {
+                            en: article.reward.message,
+                            tl: article.reward.message_tl,
+                            bis: article.reward.message_bis
+                          })}
                         </div>
                       </div>
                     )}

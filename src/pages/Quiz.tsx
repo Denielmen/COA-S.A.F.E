@@ -57,13 +57,13 @@ const Quiz = () => {
 
     const percentage = Math.round((correctAnswers / quiz.questions.length) * 100);
     setScore(percentage);
-    
+
     // Save quiz score if passed
     if (month && percentage >= 70) {
       const monthNumber = parseInt(month);
       setQuizScore(monthNumber, percentage);
     }
-    
+
     setShowResults(true);
   };
 
@@ -87,8 +87,8 @@ const Quiz = () => {
               bis: "Wala nakit-an nga quiz",
             })}
           </h2>
-          <Button 
-            onClick={() => navigate("/quizzes")} 
+          <Button
+            onClick={() => navigate("/quizzes")}
             className="mt-4"
             type="primary"
           >
@@ -109,7 +109,7 @@ const Quiz = () => {
         {/* Header */}
         <div className="bg-white border-b border-gray-200 px-4 py-3">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => navigate("/quizzes")}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
@@ -128,44 +128,42 @@ const Quiz = () => {
         {/* Results */}
         <div className="px-4 py-6">
           <div className="text-center mb-6">
-            <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${
-              isPassed ? 'bg-green-100' : 'bg-red-100'
-            }`}>
+            <div className={`w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center ${isPassed ? 'bg-green-100' : 'bg-red-100'
+              }`}>
               {isPassed ? (
                 <Trophy className="w-10 h-10 text-green-600" />
               ) : (
                 <XCircle className="w-10 h-10 text-red-600" />
               )}
             </div>
-            
-            <h2 className={`text-2xl font-bold mb-2 ${
-              isPassed ? 'text-green-700' : 'text-red-700'
-            }`}>
+
+            <h2 className={`text-2xl font-bold mb-2 ${isPassed ? 'text-green-700' : 'text-red-700'
+              }`}>
               {isPassed
                 ? translate(language, {
-                    en: "Congratulations!",
-                    tl: "Binabati ka namin!",
-                    bis: "Congratulations!",
-                  })
+                  en: "Congratulations!",
+                  tl: "Binabati ka namin!",
+                  bis: "Congratulations!",
+                })
                 : translate(language, {
-                    en: "Keep Learning!",
-                    tl: "Magpatuloy sa pag-aaral!",
-                    bis: "Padayon sa pagtuon!",
-                  })}
+                  en: "Keep Learning!",
+                  tl: "Magpatuloy sa pag-aaral!",
+                  bis: "Padayon sa pagtuon!",
+                })}
             </h2>
-            
+
             <p className="text-gray-600 mb-4">
               {isPassed
                 ? translate(language, {
-                    en: "You passed the quiz! Great job learning about children's rights.",
-                    tl: "Nakapasa ka sa quiz! Ang galing sa pag-aaral tungkol sa karapatan ng mga bata.",
-                    bis: "Nakapasa ka sa quiz! Maayo kaayo sa pagkat-on sa katungod sa mga bata.",
-                  })
+                  en: "You passed the quiz! Great job learning about children's rights.",
+                  tl: "Nakapasa ka sa quiz! Ang galing sa pag-aaral tungkol sa karapatan ng mga bata.",
+                  bis: "Nakapasa ka sa quiz! Maayo kaayo sa pagkat-on sa katungod sa mga bata.",
+                })
                 : translate(language, {
-                    en: `You need ${quiz.passingScore}% to pass. Review the lessons and try again!`,
-                    tl: `Kailangan mo ng ${quiz.passingScore}% para pumasa. Balikan ang mga lesson at subukan ulit!`,
-                    bis: `Kinahanglan nimo og ${quiz.passingScore}% para makapasar. Balika ang mga leksiyon ug sulayi pag-usab!`,
-                  })}
+                  en: `You need ${quiz.passingScore}% to pass. Review the lessons and try again!`,
+                  tl: `Kailangan mo ng ${quiz.passingScore}% para pumasa. Balikan ang mga lesson at subukan ulit!`,
+                  bis: `Kinahanglan nimo og ${quiz.passingScore}% para makapasar. Balika ang mga leksiyon ug sulayi pag-usab!`,
+                })}
             </p>
 
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
@@ -178,8 +176,8 @@ const Quiz = () => {
                 })}
               </div>
               <div className="mt-4">
-                <Progress 
-                  percent={score} 
+                <Progress
+                  percent={score}
                   strokeColor={isPassed ? '#10b981' : '#ef4444'}
                   trailColor="#f0f0f0"
                   strokeWidth={12}
@@ -217,7 +215,7 @@ const Quiz = () => {
               {quiz.questions.map((question, index) => {
                 const userAnswer = selectedAnswers[index];
                 const isCorrect = userAnswer === question.correctAnswer;
-                
+
                 return (
                   <div key={question.id} className="border-b border-gray-100 pb-4 last:border-b-0">
                     <div className="flex items-start gap-2 mb-2">
@@ -228,18 +226,25 @@ const Quiz = () => {
                       )}
                       <div className="flex-1">
                         <p className="font-medium text-gray-900 mb-2">
-                          {index + 1}. {question.question}
+                          {index + 1}. {translate(language, {
+                            en: question.question,
+                            tl: question.question_tl,
+                            bis: question.question_bis
+                          })}
                         </p>
                         <div className="space-y-1">
-                          <div className={`text-sm px-2 py-1 rounded ${
-                            isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
+                          <div className={`text-sm px-2 py-1 rounded ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
                             {translate(language, {
                               en: "Your answer:",
                               tl: "Iyong sagot:",
                               bis: "Imong tubag:",
                             })}{" "}
-                            {question.options[userAnswer]}
+                            {translate(language, {
+                              en: question.options[userAnswer],
+                              tl: question.options_tl?.[userAnswer],
+                              bis: question.options_bis?.[userAnswer]
+                            }) || question.options[userAnswer]}
                           </div>
                           {!isCorrect && (
                             <div className="text-sm px-2 py-1 rounded bg-green-100 text-green-800">
@@ -248,12 +253,20 @@ const Quiz = () => {
                                 tl: "Tamang sagot:",
                                 bis: "Hustong tubag:",
                               })}{" "}
-                              {question.options[question.correctAnswer]}
+                              {translate(language, {
+                                en: question.options[question.correctAnswer],
+                                tl: question.options_tl?.[question.correctAnswer],
+                                bis: question.options_bis?.[question.correctAnswer]
+                              }) || question.options[question.correctAnswer]}
                             </div>
                           )}
                           {question.explanation && (
                             <div className="text-sm text-gray-600 mt-2 italic">
-                              {question.explanation}
+                              {translate(language, {
+                                en: question.explanation,
+                                tl: question.explanation_tl,
+                                bis: question.explanation_bis
+                              })}
                             </div>
                           )}
                         </div>
@@ -281,7 +294,7 @@ const Quiz = () => {
                 bis: "Sulayi Pag-usab",
               })}
             </Button>
-            
+
             <Button
               size="large"
               block
@@ -310,14 +323,20 @@ const Quiz = () => {
       <div className="bg-white border-b border-gray-200 px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => navigate("/quizzes")}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <ArrowLeft className="w-5 h-5 text-primary" />
             </button>
             <div>
-              <h1 className="text-lg font-semibold text-primary">{quiz.title}</h1>
+              <h1 className="text-lg font-semibold text-primary">
+                {translate(language, {
+                  en: quiz.title,
+                  tl: quiz.title_tl,
+                  bis: quiz.title_bis
+                })}
+              </h1>
               <p className="text-sm text-gray-600">
                 {translate(language, {
                   en: "Question",
@@ -339,8 +358,8 @@ const Quiz = () => {
 
       {/* Progress */}
       <div className="px-4 py-4 bg-white border-b border-gray-100">
-        <Progress 
-          percent={progress} 
+        <Progress
+          percent={progress}
           strokeColor="#00A99D"
           trailColor="#f0f0f0"
           strokeWidth={8}
@@ -370,7 +389,11 @@ const Quiz = () => {
       <div className="px-4 py-6">
         <Card className="rounded-2xl shadow-sm border border-gray-100 mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-6 leading-relaxed">
-            {currentQuestion.question}
+            {translate(language, {
+              en: currentQuestion.question,
+              tl: currentQuestion.question_tl,
+              bis: currentQuestion.question_bis
+            })}
           </h2>
 
           <div className="space-y-3">
@@ -378,23 +401,27 @@ const Quiz = () => {
               <button
                 key={index}
                 onClick={() => handleAnswerSelect(index)}
-                className={`w-full p-4 text-left rounded-xl border-2 transition-all ${
-                  selectedAnswers[currentQuestionIndex] === index
+                className={`w-full p-4 text-left rounded-xl border-2 transition-all ${selectedAnswers[currentQuestionIndex] === index
                     ? 'border-primary bg-primary/5 text-primary'
                     : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                    selectedAnswers[currentQuestionIndex] === index
+                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selectedAnswers[currentQuestionIndex] === index
                       ? 'border-primary bg-primary text-white'
                       : 'border-gray-300'
-                  }`}>
+                    }`}>
                     {selectedAnswers[currentQuestionIndex] === index && (
                       <CheckCircle className="w-4 h-4" />
                     )}
                   </div>
-                  <span className="font-medium">{option}</span>
+                  <span className="font-medium">
+                    {translate(language, {
+                      en: option,
+                      tl: currentQuestion.options_tl?.[index],
+                      bis: currentQuestion.options_bis?.[index]
+                    }) || option}
+                  </span>
                 </div>
               </button>
             ))}
@@ -416,7 +443,7 @@ const Quiz = () => {
               })}
             </Button>
           )}
-          
+
           <Button
             type="primary"
             size="large"
@@ -426,15 +453,15 @@ const Quiz = () => {
           >
             {currentQuestionIndex === quiz.questions.length - 1
               ? translate(language, {
-                  en: "Finish Quiz",
-                  tl: "Tapusin ang Quiz",
-                  bis: "Humanon ang Quiz",
-                })
+                en: "Finish Quiz",
+                tl: "Tapusin ang Quiz",
+                bis: "Humanon ang Quiz",
+              })
               : translate(language, {
-                  en: "Next",
-                  tl: "Susunod",
-                  bis: "Sunod",
-                })}
+                en: "Next",
+                tl: "Susunod",
+                bis: "Sunod",
+              })}
           </Button>
         </div>
       </div>

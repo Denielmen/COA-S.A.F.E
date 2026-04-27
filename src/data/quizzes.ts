@@ -1,15 +1,25 @@
 export interface QuizQuestion {
   id: number;
   question: string;
+  question_tl?: string;
+  question_bis?: string;
   options: string[];
+  options_tl?: string[];
+  options_bis?: string[];
   correctAnswer: number; // Index of correct answer (0-based)
   explanation?: string;
+  explanation_tl?: string;
+  explanation_bis?: string;
 }
 
 export interface MonthlyQuiz {
   month: number;
   title: string;
+  title_tl?: string;
+  title_bis?: string;
   description: string;
+  description_tl?: string;
+  description_bis?: string;
   questions: QuizQuestion[];
   passingScore: number; // Percentage needed to pass
 }

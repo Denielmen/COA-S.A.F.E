@@ -22,19 +22,19 @@ const Quizzes = () => {
     const monthCompleted = isMonthCompleted(month);
     const hasQuiz = hasQuizForMonth(month);
     const quizPassed = isQuizPassed(month);
-    
+
     if (!hasQuiz) {
       return { status: 'coming-soon', canTakeQuiz: false };
     }
-    
+
     if (quizPassed) {
       return { status: 'completed', canTakeQuiz: false };
     }
-    
+
     if (monthCompleted) {
       return { status: 'available', canTakeQuiz: true };
     }
-    
+
     return { status: 'locked', canTakeQuiz: false };
   };
 
@@ -71,7 +71,7 @@ const Quizzes = () => {
     }
   };
 
-  const availableQuizzes = monthlyQuizzes.filter(quiz => 
+  const availableQuizzes = monthlyQuizzes.filter(quiz =>
     isMonthCompleted(quiz.month)
   ).length;
 
@@ -81,7 +81,7 @@ const Quizzes = () => {
       <div className="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button 
+            <button
               onClick={() => navigate("/dashboard")}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
@@ -195,33 +195,33 @@ const Quizzes = () => {
             return (
               <div
                 key={monthNumber}
-                className={`rounded-2xl p-4 border transition-all ${
-                  canTakeQuiz 
-                    ? 'hover:shadow-md cursor-pointer border-gray-200 bg-white shadow-sm' 
+                className={`rounded-2xl p-4 border transition-all ${canTakeQuiz
+                    ? 'hover:shadow-md cursor-pointer border-gray-200 bg-white shadow-sm'
                     : 'cursor-not-allowed'
-                } ${!canTakeQuiz ? getStatusColor(status) : 'border-gray-200 bg-white shadow-sm'}`}
+                  } ${!canTakeQuiz ? getStatusColor(status) : 'border-gray-200 bg-white shadow-sm'}`}
                 onClick={() => handleQuizClick(monthNumber)}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold ${
-                      canTakeQuiz 
-                        ? 'bg-primary text-white' 
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold ${canTakeQuiz
+                        ? 'bg-primary text-white'
                         : 'bg-gray-200 text-gray-500'
-                    }`}>
+                      }`}>
                       {monthNumber}
                     </div>
                     <div>
-                      <h3 className={`font-semibold ${
-                        canTakeQuiz ? 'text-gray-900' : 'text-gray-500'
-                      }`}>
+                      <h3 className={`font-semibold ${canTakeQuiz ? 'text-gray-900' : 'text-gray-500'
+                        }`}>
                         {monthName}
                       </h3>
                       {quiz ? (
-                        <p className={`text-sm ${
-                          canTakeQuiz ? 'text-gray-600' : 'text-gray-400'
-                        }`}>
-                          {quiz.title}
+                        <p className={`text-sm ${canTakeQuiz ? 'text-gray-600' : 'text-gray-400'
+                          }`}>
+                          {translate(language, {
+                            en: quiz.title,
+                            tl: quiz.title_tl,
+                            bis: quiz.title_bis
+                          })}
                         </p>
                       ) : (
                         <p className="text-sm text-gray-400">Coming Soon</p>
@@ -231,26 +231,26 @@ const Quizzes = () => {
 
                   <div className="flex items-center gap-2">
                     {status === 'locked' && (
-                      <Badge 
-                        count="Locked" 
+                      <Badge
+                        count="Locked"
                         style={{ backgroundColor: '#6b7280' }}
                       />
                     )}
                     {status === 'available' && (
-                      <Badge 
-                        count="Available" 
+                      <Badge
+                        count="Available"
                         style={{ backgroundColor: '#10b981' }}
                       />
                     )}
                     {status === 'completed' && (
-                      <Badge 
-                        count={`Done ${getQuizScore(monthNumber)}%`} 
+                      <Badge
+                        count={`Done ${getQuizScore(monthNumber)}%`}
                         style={{ backgroundColor: '#10b981' }}
                       />
                     )}
                     {!hasQuiz && (
-                      <Badge 
-                        count="Soon" 
+                      <Badge
+                        count="Soon"
                         style={{ backgroundColor: '#f59e0b' }}
                       />
                     )}
