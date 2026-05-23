@@ -4,16 +4,28 @@ export interface DailyArticle {
   day: number;
   month: number;
   title: string;
+  title_tl?: string;
+  title_bis?: string;
   description: string;
+  description_tl?: string;
+  description_bis?: string;
   fullContent?: string;
+  fullContent_tl?: string;
+  fullContent_bis?: string;
   additionalContent?: string;
+  additionalContent_tl?: string;
+  additionalContent_bis?: string;
   externalLink?: string;
   imagePath?: string;
   challengeType: ChallengeType;
   isRewardDay?: boolean;
   reward?: {
     title: string;
+    title_tl?: string;
+    title_bis?: string;
     message: string;
+    message_tl?: string;
+    message_bis?: string;
   };
 }
 

@@ -113,17 +113,17 @@ const Dashboard = () => {
 
     let removeAppState: (() => void) | null = null;
     import("@capacitor/app")
-      App.addListener('appStateChange', ({ isActive }) => {
-        const a = mainAudioRef.current;
-        if (!a) return;
-        if (!isActive) {
-          a.pause();
-        } else {
-          void a.play();
-        }
-      }).then(handle => {
-        removeAppState = () => handle.remove();
-      }).catch(console.error);
+    App.addListener('appStateChange', ({ isActive }) => {
+      const a = mainAudioRef.current;
+      if (!a) return;
+      if (!isActive) {
+        a.pause();
+      } else {
+        void a.play();
+      }
+    }).then(handle => {
+      removeAppState = () => handle.remove();
+    }).catch(console.error);
 
     return () => {
       mainAudioRef.current?.pause();
@@ -158,7 +158,7 @@ const Dashboard = () => {
           }
         }
         mainAudioRef.current.volume = enabled ? vol : 0;
-      } catch {}
+      } catch { }
     };
     window.addEventListener("settings-saved", onSettingsSaved as EventListener);
     return () => {
@@ -206,10 +206,10 @@ const Dashboard = () => {
 
     const bgColor = getChallengeColor(article.challengeType);
     const isCompleted = isLessonCompleted(date.toDate());
-    
+
     return (
-      <div 
-        style={{ 
+      <div
+        style={{
           position: 'relative',
           display: 'flex',
           alignItems: 'center',
@@ -241,12 +241,12 @@ const Dashboard = () => {
         <div className="bg-white p-6">
           <div className="flex items-center justify-between mb-2">
             <div>
-                <h1 className="text-4xl sm:text-7xl md:text-8xl leading-none font-extrabold tracking-tight flex items-end space-x-3 select-none">
-                          <span className="bounce-letter" style={{ color: "#2F92F3", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '0ms' } as React.CSSProperties}>S</span>
-                          <span className="bounce-letter" style={{ color: "#FF6A00", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '120ms' } as React.CSSProperties}>A</span>
-                          <span className="bounce-letter" style={{ color: "#00A695", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '240ms' } as React.CSSProperties}>F</span>
-                          <span className="bounce-letter" style={{ color: "#FFC048", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '360ms' } as React.CSSProperties}>E</span>
-                </h1>
+              <h1 className="text-4xl sm:text-7xl md:text-8xl leading-none font-extrabold tracking-tight flex items-end space-x-3 select-none">
+                <span className="bounce-letter" style={{ color: "#2F92F3", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '0ms' } as React.CSSProperties}>S</span>
+                <span className="bounce-letter" style={{ color: "#FF6A00", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '120ms' } as React.CSSProperties}>A</span>
+                <span className="bounce-letter" style={{ color: "#00A695", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '240ms' } as React.CSSProperties}>F</span>
+                <span className="bounce-letter" style={{ color: "#FFC048", textShadow: "0 6px 10px rgba(0,0,0,0.12)", "--delay": '360ms' } as React.CSSProperties}>E</span>
+              </h1>
               <p className="text-sm text-gray-500 mt-1">
                 {translate(language, {
                   en: "Learn Philippine Children's Law",

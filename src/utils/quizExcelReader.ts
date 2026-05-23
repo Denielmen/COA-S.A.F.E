@@ -4,16 +4,32 @@ import { MonthlyQuiz, QuizQuestion } from '../data/quizzes';
 interface QuizExcelRow {
   Month: number;
   QuizTitle: string;
+  QuizTitle_TL?: string;
+  QuizTitle_BIS?: string;
   QuizDescription: string;
+  QuizDescription_TL?: string;
+  QuizDescription_BIS?: string;
   PassingScore: number;
   QuestionId: number;
   Question: string;
+  Question_TL?: string;
+  Question_BIS?: string;
   Option1: string;
+  Option1_TL?: string;
+  Option1_BIS?: string;
   Option2: string;
+  Option2_TL?: string;
+  Option2_BIS?: string;
   Option3: string;
+  Option3_TL?: string;
+  Option3_BIS?: string;
   Option4: string;
+  Option4_TL?: string;
+  Option4_BIS?: string;
   CorrectAnswer: number;
   Explanation?: string;
+  Explanation_TL?: string;
+  Explanation_BIS?: string;
 }
 
 // Cache for loaded quiz data
@@ -48,27 +64,37 @@ export const loadQuizzesFromExcel = async (filePath: string = '/quizzes.xlsx'): 
 
     rawData.forEach(row => {
       const month = row.Month;
-      
+
       // Get or create quiz for this month
       if (!quizMap.has(month)) {
         quizMap.set(month, {
           month: month,
           title: row.QuizTitle,
+          title_tl: row.QuizTitle_TL,
+          title_bis: row.QuizTitle_BIS,
           description: row.QuizDescription,
+          description_tl: row.QuizDescription_TL,
+          description_bis: row.QuizDescription_BIS,
           passingScore: row.PassingScore,
           questions: []
         });
       }
 
       const quiz = quizMap.get(month)!;
-      
+
       // Create question object
       const question: QuizQuestion = {
         id: row.QuestionId,
         question: row.Question,
+        question_tl: row.Question_TL,
+        question_bis: row.Question_BIS,
         options: [row.Option1, row.Option2, row.Option3, row.Option4],
+        options_tl: [row.Option1_TL || '', row.Option2_TL || '', row.Option3_TL || '', row.Option4_TL || ''],
+        options_bis: [row.Option1_BIS || '', row.Option2_BIS || '', row.Option3_BIS || '', row.Option4_BIS || ''],
         correctAnswer: row.CorrectAnswer,
-        explanation: row.Explanation
+        explanation: row.Explanation,
+        explanation_tl: row.Explanation_TL,
+        explanation_bis: row.Explanation_BIS
       };
 
       quiz.questions.push(question);

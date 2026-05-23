@@ -325,18 +325,16 @@ const Lesson = () => {
           });
         } else {
           const rewardTitle =
-            article?.reward?.title ??
             translate(language, {
-              en: "Reward Day! 🎉",
-              tl: "Reward Day! 🎉",
-              bis: "Adlaw sa Ganti! 🎉",
+              en: article?.reward?.title || "Reward Day! 🎉",
+              tl: article?.reward?.title_tl || "Reward Day! 🎉",
+              bis: article?.reward?.title_bis || "Adlaw sa Ganti! 🎉",
             });
           const rewardMessage =
-            article?.reward?.message ??
             translate(language, {
-              en: "Fantastic job — you completed 30 days of learning!",
-              tl: "Ang galing — natapos mo ang 30 araw ng pag-aaral!",
-              bis: "Nindot kaayo — nahuman nimo ang 30 ka adlaw sa pagtuon!",
+              en: article?.reward?.message || "Fantastic job — you completed 30 days of learning!",
+              tl: article?.reward?.message_tl || "Ang galing — natapos mo ang 30 araw ng pag-aaral!",
+              bis: article?.reward?.message_bis || "Nindot kaayo — nahuman nimo ang 30 ka adlaw sa pagtuon!",
             });
 
           await Swal.fire({
@@ -383,8 +381,16 @@ const Lesson = () => {
     // Implement share functionality
     if (navigator.share && article) {
       navigator.share({
-        title: article.title,
-        text: article.description,
+        title: translate(language, {
+          en: article.title,
+          tl: article.title_tl,
+          bis: article.title_bis
+        }),
+        text: translate(language, {
+          en: article.description,
+          tl: article.description_tl,
+          bis: article.description_bis
+        }),
         url: window.location.href,
       });
     }
@@ -468,11 +474,19 @@ const Lesson = () => {
             Day {displayDay}
           </div>
           <h2 className="text-2xl font-bold text-foreground leading-tight">
-            {article.title}
+            {translate(language, {
+              en: article.title,
+              tl: article.title_tl,
+              bis: article.title_bis
+            })}
           </h2>
           {article.description && (
             <p className="mt-2 text-muted-foreground leading-relaxed whitespace-pre-wrap font-normal">
-              {article.description}
+              {translate(language, {
+                en: article.description,
+                tl: article.description_tl,
+                bis: article.description_bis
+              })}
             </p>
           )}
         </div>
@@ -512,7 +526,11 @@ const Lesson = () => {
                 })}
               </h4>
               <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                {article.fullContent}
+                {translate(language, {
+                  en: article.fullContent,
+                  tl: article.fullContent_tl,
+                  bis: article.fullContent_bis
+                })}
               </p>
             </div>
           )}
@@ -579,7 +597,11 @@ const Lesson = () => {
                   </h4>
                   <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
                     {/* Render text with automatic link detection */}
-                    {(article.additionalContent || article.externalLink || "").split(/(https?:\/\/[^\s]+)/g).map((part, index) => {
+                    {(translate(language, {
+                      en: article.additionalContent || article.externalLink || "",
+                      tl: article.additionalContent_tl || article.externalLink || "",
+                      bis: article.additionalContent_bis || article.externalLink || ""
+                    })).split(/(https?:\/\/[^\s]+)/g).map((part, index) => {
                       if (part.match(/^https?:\/\/[^\s]+$/)) {
                         return (
                           <a
